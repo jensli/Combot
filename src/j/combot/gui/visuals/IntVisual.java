@@ -1,6 +1,7 @@
 package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.BORDER;
+import j.combot.command.CommandPart;
 import j.combot.command.IntArg;
 
 import org.eclipse.swt.widgets.Composite;
@@ -9,7 +10,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 
 
-public class IntVisual extends BasePartVisual<Integer, IntArg> {
+public class IntVisual extends BasePartVisual<Integer> {
 
 	private Spinner spinner;
 
@@ -34,9 +35,10 @@ public class IntVisual extends BasePartVisual<Integer, IntArg> {
 
 
 	@Override
-	protected Control makeValueWidget( IntArg arg, Composite parent,
+	protected Control makeValueWidget( CommandPart<Integer> part, Composite parent,
 			Composite pair )
 	{
+		IntArg arg = (IntArg) part ;
 		spinner = new Spinner( pair, BORDER );
 		spinner.setSelection( arg.getDefaultValue() );
 		spinner.setMaximum( arg.getMax() );

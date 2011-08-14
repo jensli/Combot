@@ -31,7 +31,6 @@ public class Bootstrapper<ARGS_T extends StartArgs>
 		this.runMode = runMode;
 	}
 
-
 	public void runNoCatch() throws Exception
 	{
 		App app = null;

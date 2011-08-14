@@ -13,7 +13,8 @@ public class VisualFactory {
 		map = new HashMap<VisualType, VisualFact>();
 
 	@SuppressWarnings( "unchecked" )
-	public void addAll( Object[][] facts ) {
+	public void addAll( Object[][] facts )
+	{
 		for ( Object[] o : facts ) {
 			@SuppressWarnings( "rawtypes" )
 			VisualFact fact = (VisualFact) o[1];
@@ -24,14 +25,14 @@ public class VisualFactory {
 		}
 	}
 
-	public <T, S extends CommandPart<T, S>,  V extends PartVisual<T, S>>
-	void add( VisualType<T, S> type, VisualFact<T, S> fact ) {
+	public <T,  V extends PartVisual<T>>
+	void add( VisualType<T> type, VisualFact<T> fact ) {
 		map.put( type, fact );
 	}
 
 
-	public <T, S extends CommandPart<T, S>,  V extends PartVisual<T, S>>
-	V make( VisualType<T, S> type ) {
+	public <T, S extends CommandPart<T>,  V extends PartVisual<T>>
+	V make( VisualType<T> type ) {
 		@SuppressWarnings( "unchecked" )
 		V v = (V) map.get( type ).make();
 		return v;

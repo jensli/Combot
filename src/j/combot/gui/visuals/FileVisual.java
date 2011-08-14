@@ -1,6 +1,6 @@
 package j.combot.gui.visuals;
 
-import j.combot.command.FileArg;
+import j.combot.command.CommandPart;
 import j.util.util.NotImplementedException;
 
 import java.io.File;
@@ -8,10 +8,10 @@ import java.io.File;
 import org.eclipse.swt.widgets.Composite;
 
 
-public class FileVisual extends BasePartVisual<File, FileArg>
+public class FileVisual extends BasePartVisual<File>
 {
 	@Override
-	public void makeWidget( FileArg arg, Composite parent ) {
+	public void makeWidget( CommandPart<File> arg, Composite parent ) {
 		// TODO Auto-generated method stub
 	}
 

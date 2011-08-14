@@ -4,6 +4,7 @@ import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.test_command.Gui;
 import j.util.functional.Action0;
+import j.util.functional.Action1;
 import j.util.process.ProcessCallback;
 import j.util.process.ProcessHandler;
 import j.util.util.StringUtil;
@@ -25,6 +26,7 @@ public class CombotApp implements App {
 	private ProcessHandler processHandler;
 
 	private ProcessCallback processCallback = new ProcessCallback() {
+
 		public void receiveOutput( String line ) {
 			gui.receiveOutput( line );
 		}
@@ -117,6 +119,18 @@ public class CombotApp implements App {
 
 		processHandler = new ProcessHandler( new ProcessBuilder( args ), processCallback );
 
+		processHandler.setErrHandler( new Action1<Object>() {
+			public void run( Object arg ) {
+				if ( arg instanceof Throwable ) {
+					logger.warning( "Error in process handler: " +
+							Util.exceptionToString( (Throwable) arg ) );
+				} else {
+					logger.warning( "Error in process handler: " + arg.toString() );
+				}
+			}
+		} );
+
+
 		try {
 			processHandler.start();
 			gui.onCommandStarted( StringUtil.join( args, " " ) );
@@ -129,6 +143,7 @@ public class CombotApp implements App {
 
 
 	}
+
 
 	@Override
 	public void dispose( ExitCode exitCode ) {

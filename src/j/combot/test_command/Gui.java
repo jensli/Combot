@@ -12,7 +12,6 @@ import static org.eclipse.swt.SWT.V_SCROLL;
 import j.combot.Globals;
 import j.combot.command.Arg;
 import j.combot.command.Command;
-import j.combot.command.IntArg;
 import j.combot.gui.GuiGlobals;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.VisualFact;
@@ -52,7 +51,7 @@ public class Gui
 	private VisualFactory visualFactory = new VisualFactory();
 
 	public Gui() {
-		visualFactory.add( VisualTypes.STD_INT_TYPE, new VisualFact<Integer, IntArg>() {
+		visualFactory.add( VisualTypes.STD_INT_TYPE, new VisualFact<Integer>() {
 			public IntVisual make() {
 				return new IntVisual();
 			}
@@ -74,7 +73,8 @@ public class Gui
 	private Button stopButton;
 	private Button startButton;
 
-	private boolean isCommandRunning;
+	@SuppressWarnings( "unused" )
+	private boolean isCommandRunning = false;
 
 
 	public Notifyer<Command> getActiveCommand() {
@@ -100,9 +100,22 @@ public class Gui
 		Display.setAppName( Globals.APP_NAME );
 
 		GuiGlobals.initTitleFont( display );
-//		shell = buildShell( display );
+		shell = makeShell( display );
 //		makeTestContent();
-		makeTestCommand();
+//		Composite cmd =
+			makeCommandPanel( shell );
+
+//		shell.pack();
+		shell.setBounds( 50, 50, 400, 450 );
+	}
+
+
+	public Shell makeShell( Display display )
+	{
+		Shell shell = new Shell( display );
+		shell.setText( Globals.APP_NAME );
+		shell.setLayout( new FillLayout() );
+		return shell;
 	}
 
 	public void receiveOutput( final String line )
@@ -163,19 +176,15 @@ public class Gui
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private void makeTestCommand()
+	private Composite makeCommandPanel( Composite parent )
 	{
-		shell = new Shell( display );
-		shell.setText( Globals.APP_NAME );
-		shell.setLayout( new FillLayout() );
-
 		//
 		// Command title
 		//
 
 		Command cmd = activeCommand.get();
 
-		Composite page = new Composite( shell, NONE );
+		Composite page = new Composite( parent, NONE );
 		GridLayout pageLayout = new GridLayout( 1, false );
 
 		page.setLayout( pageLayout );
@@ -258,9 +267,7 @@ public class Gui
 
 		outputText.setEditable( false );
 
-
-		shell.pack();
-		shell.setBounds( 50, 50, 400, 450 );
+		return page;
 	}
 
 	public void onCommandStarted( String line )

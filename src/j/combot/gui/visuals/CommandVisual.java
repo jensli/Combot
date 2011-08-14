@@ -1,6 +1,6 @@
 package j.combot.gui.visuals;
 
-import j.combot.command.Command;
+import j.combot.command.CommandPart;
 import j.combot.gui.GuiGlobals;
 
 import org.eclipse.swt.SWT;
@@ -10,9 +10,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class CommandVisual extends BasePartVisual<String, Command> {
+public class CommandVisual extends BasePartVisual<String> {
 
-	public void makeWidget( Command cmd, Composite parent )
+	@Override
+	public void makeWidget( CommandPart<String> cmd, Composite parent )
 	{
 		Composite page = new Composite( parent, SWT.NONE );
 		page.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );

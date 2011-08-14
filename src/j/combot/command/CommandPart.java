@@ -2,16 +2,14 @@ package j.combot.command;
 
 import j.combot.gui.visuals.PartVisual;
 
-import org.eclipse.swt.widgets.Composite;
-
 //public abstract class CommandPart<T>
-public abstract class CommandPart<T, S extends CommandPart<T, S>>
+public abstract class CommandPart<T>
 {
 	private String title;
 	private String name;
-	private PartVisual<T, S> visual;
+	private PartVisual<T> visual;
 
-	public CommandPart( String title, String name, PartVisual<T, S> visual )
+	public CommandPart( String title, String name, PartVisual<T> visual )
 	{
 		this.title = title;
 		this.name = name;
@@ -26,12 +24,14 @@ public abstract class CommandPart<T, S extends CommandPart<T, S>>
 		return name;
 	}
 
-	public PartVisual<T, S> getVisual() {
+	public PartVisual<T> getVisual() {
 		return visual;
 	}
 
-	@SuppressWarnings( "unchecked" )
-	public void makeWidget( Composite parent ) {
-		visual.makeWidget( (S) this, parent );
+	public static <T> Arg<T> cast( CommandPart<T> part ) {
+		return (Arg<T>) part;
 	}
+
+
+
 }

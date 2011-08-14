@@ -4,7 +4,7 @@ import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.PartVisual;
 
 
-public class IntArg extends Arg<Integer, IntArg>
+public class IntArg extends Arg<Integer>
 {
 	private int min, max;
 
@@ -18,7 +18,7 @@ public class IntArg extends Arg<Integer, IntArg>
 	}
 
 	public IntArg( String title, String name, int min, int max,
-			int defaultValue, PartVisual<Integer, IntArg> visual, Validator v )
+			int defaultValue, PartVisual<Integer> visual, Validator v )
 	{
 		super( title, name, defaultValue, v, visual );
 		this.min = min;
@@ -26,7 +26,7 @@ public class IntArg extends Arg<Integer, IntArg>
 	}
 
 
-	public IntArg( String title, String name, PartVisual<Integer, IntArg> visual ) {
+	public IntArg( String title, String name, PartVisual<Integer> visual ) {
 		super( title, name, visual );
 		// TODO Auto-generated constructor stub
 	}

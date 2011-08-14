@@ -7,13 +7,13 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class Command extends CommandPart<String, Command>
+public class Command extends CommandPart<String>
 {
 //	private String command, title, description;
-	private List<Arg<?, ?>> args;
+	private List<Arg<?>> args;
 //	private CommandVisual visual;
 
-	public Command( String title, String command, Arg<?, ?>... args )
+	public Command( String title, String command, Arg<?>... args )
 	{
 		super( title, command, new CommandVisual() );
 		this.args = Lists.newArrayList( args );
@@ -23,7 +23,7 @@ public class Command extends CommandPart<String, Command>
 	public List<String> getArgStrings()
 	{
 		List<String> argStrings = new ArrayList<String>();
-		for ( Arg<?, ?> arg : args ) {
+		for ( Arg<?> arg : args ) {
 			for ( String s : arg.getArgString() ) {
 				argStrings.add( s );
 			}
@@ -35,7 +35,7 @@ public class Command extends CommandPart<String, Command>
 //		return visual;
 //	}
 
-	public List<Arg<?, ?>> getArgs() {
+	public List<Arg<?>> getArgs() {
 		return args;
 	}
 

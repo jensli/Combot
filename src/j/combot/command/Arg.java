@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Arg<T, S extends CommandPart<T, S>> extends CommandPart<T, S>
+public class Arg<T> extends CommandPart<T>
 {
 	private T defaultValue;
 	private Validator validator;
@@ -17,7 +17,7 @@ public class Arg<T, S extends CommandPart<T, S>> extends CommandPart<T, S>
 		}
 	};
 
-	public Arg( String title, String name, PartVisual<T, S> visual )
+	public Arg( String title, String name, PartVisual<T> visual )
 	{
 		this( title, name, null, NULL_VALIDATOR, visual );
 	}
@@ -25,7 +25,7 @@ public class Arg<T, S extends CommandPart<T, S>> extends CommandPart<T, S>
 
 
 	public Arg( String title, String name, T defaultValue,
-			Validator validator, PartVisual<T, S> visual ) {
+			Validator validator, PartVisual<T> visual ) {
 		super( title, name, visual );
 		this.defaultValue = defaultValue;
 	}

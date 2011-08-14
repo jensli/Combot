@@ -11,14 +11,14 @@ import org.eclipse.swt.widgets.Label;
 
 
 
-public abstract class BasePartVisual<T, S extends CommandPart<T, S>> implements PartVisual<T, S>
+public abstract class BasePartVisual<T> extends PartVisual<T>
 {
 	public BasePartVisual() {
 		// TODO: For prototyping, remove
 	}
 
 	@Override
-	public void makeWidget( S arg, Composite parent )
+	public void makeWidget( CommandPart<T> arg, Composite parent )
 	{
 		Label label = new Label( parent, LEFT );
 //		label.setLayoutData( new GridData( ) )
@@ -34,7 +34,8 @@ public abstract class BasePartVisual<T, S extends CommandPart<T, S>> implements 
 	}
 
 
-	protected Control makeValueWidget( S arg, Composite parent, Composite pair )
+
+	protected Control makeValueWidget( CommandPart<T> arg, Composite parent, Composite pair )
 	{
 		return null;
 	}
