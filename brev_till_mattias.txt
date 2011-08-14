@@ -1,0 +1,5 @@
+Hej Mattias!
+
+Jag satt och kodade ett litet gui-program härom dan. Programmet ska automatgenerera gui:n för terminal-kommandon. Jag har en snygg modell med klasser för olika sortes kommandon och argument. Varje del av ett kommando (delarna är argument) har ett ArgVisual-objekt som genererar en gui-komponent där man kan mata in ett värde för det argumentet.
+
+Problemet var att eftersom  
