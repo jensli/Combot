@@ -1,7 +1,7 @@
 package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.BORDER;
-import j.combot.command.CommandPart;
+import j.combot.command.Arg;
 import j.combot.command.IntArg;
 
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +35,7 @@ public class IntVisual extends BasePartVisual<Integer> {
 
 
 	@Override
-	protected Control makeValueWidget( CommandPart<Integer> part, Composite parent,
+	protected Control makeValueWidget( Arg<Integer> part, Composite parent,
 			Composite pair )
 	{
 		IntArg arg = (IntArg) part ;

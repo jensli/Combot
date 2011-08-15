@@ -1,7 +1,6 @@
 package j.combot.gui.visuals;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 
 public final class VisualTypes
@@ -11,7 +10,7 @@ public final class VisualTypes
 	public static VisualType<Integer> STD_INT_TYPE;
 	public static VisualType<String> STD_STRING_TYPE;
 	public static VisualType<String> STD_COMMAND_TYPE;
-	public static VisualType<List<Object>> STD_OPT_TYPE;
+	public static VisualType<Boolean> STD_OPT_TYPE;
 	public static VisualType<String> STD_NULL_TYPE;
 
 

@@ -1,13 +1,12 @@
 package j.combot;
 
 import j.combot.command.Arg;
-import j.combot.command.CommandPart;
 
 
 public class CmdUtil {
 	private CmdUtil() {}
 
-	public static <T> Arg<T> cast( CommandPart<T> part ) {
+	public static <T> Arg<T> cast( Arg<T> part ) {
 		return (Arg<T>) part;
 	}
 

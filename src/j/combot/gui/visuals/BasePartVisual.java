@@ -3,7 +3,7 @@ package j.combot.gui.visuals;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
-import j.combot.command.CommandPart;
+import j.combot.command.Arg;
 import j.combot.command.ValEntry;
 import j.combot.gui.ErrorIndicator;
 import j.combot.gui.GuiGlobals;
@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Label;
 
 
 
-public abstract class BasePartVisual<T> implements GuiPartVisual<T>
+public abstract class BasePartVisual<T> implements GuiArgVisual<T>
 {
-	private CommandPart<T> commandPart;
+	private Arg<T> commandPart;
 	private ErrorIndicator errorIndicator = new ErrorIndicator();
 
 	// Use caller to tell about validation?
@@ -30,7 +30,7 @@ public abstract class BasePartVisual<T> implements GuiPartVisual<T>
 	}
 
 	@Override
-	public void makeWidget( CommandPart<T> arg, Composite parent, VisualFactory visualFactory )
+	public void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
 	{
 		Label label = new Label( parent, NONE );
 
@@ -68,16 +68,16 @@ public abstract class BasePartVisual<T> implements GuiPartVisual<T>
 	}
 
 
-	public CommandPart<T> getCommandPart() {
+	public Arg<T> getCommandPart() {
 		return commandPart;
 	}
 
-	public void setCommandPart( CommandPart<T> commandPart ) {
+	public void setCommandPart( Arg<T> commandPart ) {
 		this.commandPart = commandPart;
 	}
 
 
-	protected Control makeValueWidget( CommandPart<T> arg, Composite parent, Composite pair )
+	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
 	{
 		return null;
 	}

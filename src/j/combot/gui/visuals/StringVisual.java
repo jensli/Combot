@@ -2,8 +2,7 @@ package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.SINGLE;
-import j.combot.CmdUtil;
-import j.combot.command.CommandPart;
+import j.combot.command.Arg;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -41,10 +40,10 @@ public class StringVisual  extends BasePartVisual<String>
 
 
 	@Override
-	protected Control makeValueWidget( CommandPart<String> part, Composite parent, Composite pair )
+	protected Control makeValueWidget( Arg<String> part, Composite parent, Composite pair )
 	{
 		text = new Text( pair, SINGLE | BORDER );
-		text.setText( CmdUtil.cast( part ).getDefaultValue() );
+		text.setText( part.getDefaultValue() );
 //		text.addSelectionListener( makeValidationListener() );
 		text.addModifyListener( new ModifyListener() {
 			@Override public void modifyText( ModifyEvent e ) {

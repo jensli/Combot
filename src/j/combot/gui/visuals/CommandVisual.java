@@ -3,7 +3,7 @@ package j.combot.gui.visuals;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
-import j.combot.command.CommandPart;
+import j.combot.command.Arg;
 import j.combot.gui.GuiGlobals;
 
 import org.eclipse.swt.layout.GridData;
@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Label;
 public class CommandVisual extends BasePartVisual<String> {
 
 	@Override
-	public void makeWidget( CommandPart<String> cmd, Composite parent, VisualFactory visualFactory )
+	public void makeWidget( Arg<String> cmd, Composite parent, VisualFactory visualFactory )
 	{
 		Composite page = new Composite( parent, NONE );
 		page.setLayoutData( new GridData( FILL, LEFT, true, false ) );

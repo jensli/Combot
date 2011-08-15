@@ -1,13 +1,13 @@
 package j.combot.gui.visuals;
 
-import j.combot.command.CommandPart;
+import j.combot.command.Arg;
 
 import org.eclipse.swt.widgets.Composite;
 
 public class NullVisual extends BasePartVisual<String>
 {
 	@Override
-	public void makeWidget( CommandPart<String> arg,
+	public void makeWidget( Arg<String> arg,
 			Composite parent, VisualFactory visualFactory )
 	{
 		;

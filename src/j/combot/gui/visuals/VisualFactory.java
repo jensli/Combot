@@ -26,12 +26,12 @@ public class VisualFactory {
 	}
 
 
-	public <T> GuiPartVisual<T> make( VisualType<T> type )
+	public <T> GuiArgVisual<T> make( VisualType<T> type )
 	{
 		VisFact<?> visualFact = map.get( type );
 
 		@SuppressWarnings( "unchecked" )
-		GuiPartVisual<T> v = (GuiPartVisual<T>)  visualFact.make();
+		GuiArgVisual<T> v = (GuiArgVisual<T>)  visualFact.make();
 		return v;
 	};
 }

@@ -1,8 +1,8 @@
 package j.combot.gui;
 
 import j.combot.command.Arg;
-import j.combot.gui.visuals.GuiPartVisual;
-import j.combot.gui.visuals.PartVisual;
+import j.combot.gui.visuals.GuiArgVisual;
+import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualFactory;
 
 import java.util.List;
@@ -23,9 +23,9 @@ public final class GuiUtil {
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public static void createVisual( Arg<?> arg, Composite comp, VisualFactory visualFactory )
 	{
-		GuiPartVisual<?> visual = visualFactory.make( arg.getVisualType() );
+		GuiArgVisual<?> visual = visualFactory.make( arg.getVisualType() );
 		visual.setCommandPart( (Arg) arg );
-		arg.setVisual( (PartVisual) visual );
+		arg.setVisual( (ArgVisual) visual );
 		visual.makeWidget( (Arg) arg, comp, visualFactory );
 	}
 

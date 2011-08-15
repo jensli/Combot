@@ -14,8 +14,7 @@ import static org.eclipse.swt.SWT.V_SCROLL;
 import j.combot.Globals;
 import j.combot.command.Arg;
 import j.combot.command.Command;
-import j.combot.command.CommandPart;
-import j.combot.gui.visuals.GuiPartVisual;
+import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.swt.util.SwtUtil;
 import j.util.caller.BasicCaller0;
@@ -166,8 +165,8 @@ public class Gui
 	private void makeCommandPanel( Command cmd, Composite page )
 	{
 		// Commmand title
-		GuiPartVisual<?> commandVisual = visualFactory.make( cmd.getVisualType() );
-		commandVisual.makeWidget( (CommandPart) cmd, page, null );
+		GuiArgVisual<?> commandVisual = visualFactory.make( cmd.getVisualType() );
+		commandVisual.makeWidget( (Arg) cmd, page, null );
 
 		Label comArgSep = new Label( page, SEPARATOR | HORIZONTAL );
 		comArgSep.setLayoutData( new GridData( FILL, LEFT, true, false ) );
@@ -187,10 +186,8 @@ public class Gui
 		argsComp.setLayout( argsLayout );
 
 		// Add the acctual args
-		for ( Arg<?> arg : cmd.getArgs() ) {
+		for ( Arg<?> arg : cmd.getArgGroup() ) {
 			GuiUtil.createVisual( arg, argsComp, visualFactory );
-
-//			arg.getVisual().makeWidget( arg, argsComp );
 		}
 
 		argsComp.pack();

@@ -1,6 +1,6 @@
 package j.combot.command;
 
-import j.combot.gui.visuals.PartVisual;
+import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualTypes;
 
 
@@ -30,7 +30,7 @@ public class IntArg extends Arg<Integer>
 	}
 
 
-	public IntArg( String title, String name, PartVisual<Integer> visual ) {
+	public IntArg( String title, String name, ArgVisual<Integer> visual ) {
 		super( title, name );
 	}
 

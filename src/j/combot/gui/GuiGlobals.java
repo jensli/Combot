@@ -4,15 +4,11 @@ import static org.eclipse.swt.SWT.COLOR_BLUE;
 import static org.eclipse.swt.SWT.COLOR_RED;
 import static org.eclipse.swt.SWT.ICON_ERROR;
 import j.combot.gui.visuals.CommandVisual;
-import j.combot.gui.visuals.GuiPartVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
 import j.combot.gui.visuals.OptVisual;
 import j.combot.gui.visuals.StringVisual;
-import j.combot.gui.visuals.VisFact;
 import j.combot.gui.visuals.VisualTypes;
-
-import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -79,38 +75,40 @@ public final class GuiGlobals
 
 
 	public static final VisFactEntry<?>[] VIS_FACTS = new VisFactEntry[] {
+		new VisFactEntry<Integer>( VisualTypes.STD_INT_TYPE, IntVisual.class ),
+		new VisFactEntry<String>( VisualTypes.STD_STRING_TYPE, StringVisual.class ),
+		new VisFactEntry<String>( VisualTypes.STD_COMMAND_TYPE, CommandVisual.class ),
+		new VisFactEntry<String>( VisualTypes.STD_NULL_TYPE, NullVisual.class ),
+		new VisFactEntry<Boolean>( VisualTypes.STD_OPT_TYPE, OptVisual.class ),
 
-		new VisFactEntry<Integer>(
-				VisualTypes.STD_INT_TYPE,
-				new VisFact<Integer>() {
-					public GuiPartVisual<Integer> make() {
-						return new IntVisual();
-					}
-				} ),
-
-		new VisFactEntry<String>(
-				VisualTypes.STD_STRING_TYPE, new VisFact<String>() {
-					public GuiPartVisual<String> make() {
-						return new StringVisual(); }
-				} ),
-
-		new VisFactEntry<String>(
-				VisualTypes.STD_COMMAND_TYPE,
-				new VisFact<String>() {
-					public GuiPartVisual<String> make() { return new CommandVisual(); }
-				} ),
-
-		new VisFactEntry<String>(
-				VisualTypes.STD_NULL_TYPE,
-				new VisFact<String>() {
-					public GuiPartVisual<String> make() { return new NullVisual(); }
-				} ),
-
-		new VisFactEntry<List<Object>>(
-				VisualTypes.STD_OPT_TYPE,
-				new VisFact<List<Object>>() {
-					public GuiPartVisual<List<Object>> make() { return new OptVisual(); }
-				} ),
+//		new VisFactEntry<Integer>(
+//				VisualTypes.STD_INT_TYPE,
+//				new VisFact<Integer>() {
+//					public GuiPartVisual<Integer> make() { return new IntVisual(); }
+//				} ),
+//
+//		new VisFactEntry<String>(
+//				VisualTypes.STD_STRING_TYPE, new VisFact<String>() {
+//					public GuiPartVisual<String> make() { return new StringVisual(); }
+//				} ),
+//
+//		new VisFactEntry<String>(
+//				VisualTypes.STD_COMMAND_TYPE,
+//				new VisFact<String>() {
+//					public GuiPartVisual<String> make() { return new CommandVisual(); }
+//				} ),
+//
+//		new VisFactEntry<String>(
+//				VisualTypes.STD_NULL_TYPE,
+//				new VisFact<String>() {
+//					public GuiPartVisual<String> make() { return new NullVisual(); }
+//				} ),
+//
+//		new VisFactEntry<Boolean>(
+//				VisualTypes.STD_OPT_TYPE,
+//				new VisFact<Boolean>() {
+//					public GuiPartVisual<Boolean> make() { return new OptVisual(); }
+//				} ),
 
 	};
 
@@ -118,12 +116,12 @@ public final class GuiGlobals
 	public static void initImage( int size, Display display )
 	{
 		if ( ERROR_ICON != null ) return;
-	
+
 		Image image = display.getSystemImage( ICON_ERROR );
 		ImageData data = image.getImageData();
 		data = data.scaledTo( size, size );
 		ERROR_ICON = new Image( display, data );
-	
+
 		display.disposeExec( new Runnable() {
 			public void run() {
 				ERROR_ICON.dispose();
