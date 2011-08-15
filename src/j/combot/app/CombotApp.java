@@ -2,7 +2,7 @@ package j.combot.app;
 
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
-import j.combot.test_command.Gui;
+import j.combot.gui.Gui;
 import j.util.functional.Action0;
 import j.util.functional.Action1;
 import j.util.process.ProcessCallback;
@@ -84,10 +84,9 @@ public class CombotApp implements App {
 	public void init( StartMode mode )
 	{
 		logger.info( "Initializing" );
-		gui = new Gui();
-
 		loadCommands();
 
+		gui = new Gui();
 		gui.setActiveCommand( commands.get( 2 ) );
 
 		gui.getStartCaller().addListener( new Action0() {

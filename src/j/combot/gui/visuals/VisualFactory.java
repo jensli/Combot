@@ -1,6 +1,6 @@
 package j.combot.gui.visuals;
 
-import j.combot.command.CommandPart;
+import j.combot.gui.VisFactEntry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,32 +9,29 @@ import java.util.Map;
 
 public class VisualFactory {
 
-	@SuppressWarnings( "rawtypes" ) private Map<VisualType, VisualFact>
-		map = new HashMap<VisualType, VisualFact>();
+//	@SuppressWarnings( "rawtypes" )
+	private Map<VisualType<?>, VisFact<?>>
+		map = new HashMap<VisualType<?>, VisFact<?>>();
 
-	@SuppressWarnings( "unchecked" )
-	public void addAll( Object[][] facts )
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
+	public void addAll( VisFactEntry<?>[] facts )
 	{
-		for ( Object[] o : facts ) {
-			@SuppressWarnings( "rawtypes" )
-			VisualFact fact = (VisualFact) o[1];
-			@SuppressWarnings( "rawtypes" )
-			VisualType type = (VisualType) o[0];
-
-			add( type, fact );
+		for ( VisFactEntry<?> e : facts ) {
+			add( (VisualType) e.type, (VisFact) e.fact );
 		}
 	}
 
-	public <T,  V extends PartVisual<T>>
-	void add( VisualType<T> type, VisualFact<T> fact ) {
+	public <T> void add( VisualType<T> type, VisFact<T> fact ) {
 		map.put( type, fact );
 	}
 
 
-	public <T, S extends CommandPart<T>,  V extends PartVisual<T>>
-	V make( VisualType<T> type ) {
+	public <T> GuiPartVisual<T> make( VisualType<T> type )
+	{
+		VisFact<?> visualFact = map.get( type );
+
 		@SuppressWarnings( "unchecked" )
-		V v = (V) map.get( type ).make();
+		GuiPartVisual<T> v = (GuiPartVisual<T>)  visualFact.make();
 		return v;
 	};
 }

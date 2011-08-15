@@ -1,6 +1,8 @@
 package j.combot.command;
 
-import j.combot.gui.visuals.CommandVisual;
+import j.combot.gui.visuals.VisualTypes;
+import j.util.util.NotImplementedException;
+import j.util.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,31 +11,23 @@ import com.google.common.collect.Lists;
 
 public class Command extends CommandPart<String>
 {
-//	private String command, title, description;
 	private List<Arg<?>> args;
-//	private CommandVisual visual;
 
 	public Command( String title, String command, Arg<?>... args )
 	{
-		super( title, command, new CommandVisual() );
+		super( title, command );
 		this.args = Lists.newArrayList( args );
-//		this.visual = new CommandVisual();
+		setVisualType( VisualTypes.STD_COMMAND_TYPE );
 	}
 
 	public List<String> getArgStrings()
 	{
-		List<String> argStrings = new ArrayList<String>();
+		List<String> argStrings = new ArrayList<String>(args.size());
 		for ( Arg<?> arg : args ) {
-			for ( String s : arg.getArgString() ) {
-				argStrings.add( s );
-			}
+			argStrings.addAll( arg.getArgStrings() );
 		}
 		return argStrings;
 	}
-
-//	public CommandVisual getVisual() {
-//		return visual;
-//	}
 
 	public List<Arg<?>> getArgs() {
 		return args;
@@ -41,10 +35,10 @@ public class Command extends CommandPart<String>
 
 	@Override
 	public String toString() {
-		return "<" + getName() + " " + args + ">";
+		return Util.simpleToString( this, getName(), args );
 	}
 
-
-
-
+	@Override public List<ValEntry> validate() {
+		throw new NotImplementedException();
+	}
 }

@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 public class FileVisual extends BasePartVisual<File>
 {
 	@Override
-	public void makeWidget( CommandPart<File> arg, Composite parent ) {
+	public void makeWidget( CommandPart<File> arg, Composite parent, VisualFactory visualFactory ) {
 		// TODO Auto-generated method stub
 	}
 

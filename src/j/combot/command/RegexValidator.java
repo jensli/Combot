@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class RegexValidator implements Validator
+public class RegexValidator implements Validator<String>
 {
 	private Pattern pattern;
 	private String errorMessage;
@@ -23,14 +23,13 @@ public class RegexValidator implements Validator
 	}
 
 
-
 	@Override
-	public List<String> validate( String value )
+	public List<ValEntry> validate( String value )
 	{
 		if ( pattern.matcher( value ).matches() ) {
 			String msg = (errorMessage == null ? errorMessage :
 				"Input does not matches regex: ") + pattern.pattern();
-			return Arrays.asList( msg );
+			return Arrays.asList( new ValEntry( msg ) );
 		} else {
 			return Collections.emptyList();
 		}

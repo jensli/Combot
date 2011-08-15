@@ -2,8 +2,16 @@ package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
+import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.CommandPart;
+import j.combot.command.ValEntry;
+import j.combot.gui.ErrorIndicator;
+import j.combot.gui.GuiGlobals;
 
+import java.util.List;
+
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -11,34 +19,66 @@ import org.eclipse.swt.widgets.Label;
 
 
 
-public abstract class BasePartVisual<T> extends PartVisual<T>
+public abstract class BasePartVisual<T> implements GuiPartVisual<T>
 {
+	private CommandPart<T> commandPart;
+	private ErrorIndicator errorIndicator = new ErrorIndicator();
+
+	// Use caller to tell about validation?
+
 	public BasePartVisual() {
-		// TODO: For prototyping, remove
 	}
 
 	@Override
-	public void makeWidget( CommandPart<T> arg, Composite parent )
+	public void makeWidget( CommandPart<T> arg, Composite parent, VisualFactory visualFactory )
 	{
-		Label label = new Label( parent, LEFT );
-//		label.setLayoutData( new GridData( ) )
+		Label label = new Label( parent, NONE );
 
 		label.setText( arg.getTitle() + ":" );
 
 		Control c = makeValueWidget( arg, parent, parent );
+		c.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 
-		GridData gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = FILL;
-		c.setLayoutData( gridData );
+		errorIndicator.setFont( GuiGlobals.SMALL_FONT );
+
+		// Error indication
+		new Label( parent, NONE ); // Empty label to take up a cell
+
+		errorIndicator.makeWidget( parent );
 	}
 
+
+	@Override
+	public void setValidateResult( List<ValEntry> errors )
+	{
+		if ( errors.isEmpty() ) {
+			errorIndicator.clearError();
+		} else {
+			errorIndicator.setError( errors.get( 0 ).message );
+		}
+	}
+
+
+	protected SelectionAdapter makeValidationListener() {
+		return new SelectionAdapter() {
+			@Override public void widgetSelected( SelectionEvent e ) {
+				setValidateResult( getCommandPart().validate() );
+			}
+		};
+	}
+
+
+	public CommandPart<T> getCommandPart() {
+		return commandPart;
+	}
+
+	public void setCommandPart( CommandPart<T> commandPart ) {
+		this.commandPart = commandPart;
+	}
 
 
 	protected Control makeValueWidget( CommandPart<T> arg, Composite parent, Composite pair )
 	{
 		return null;
 	}
-
-
 }

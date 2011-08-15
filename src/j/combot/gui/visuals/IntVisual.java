@@ -43,12 +43,14 @@ public class IntVisual extends BasePartVisual<Integer> {
 		spinner.setSelection( arg.getDefaultValue() );
 		spinner.setMaximum( arg.getMax() );
 		spinner.setMinimum( arg.getMin() );
+
+		spinner.addSelectionListener( makeValidationListener() );
 		return spinner;
 	}
 
 
-
-	@Override public Integer getValue() {
+	@Override
+	public Integer getValue() {
 		return Integer.parseInt( spinner.getText() );
 	}
 

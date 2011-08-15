@@ -1,21 +1,23 @@
-package j.combot.test_command;
+package j.combot.gui;
 
 import static org.eclipse.swt.SWT.BEGINNING;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.HORIZONTAL;
+import static org.eclipse.swt.SWT.H_SCROLL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.SEPARATOR;
+import static org.eclipse.swt.SWT.TOP;
 import static org.eclipse.swt.SWT.V_SCROLL;
 import j.combot.Globals;
 import j.combot.command.Arg;
 import j.combot.command.Command;
-import j.combot.gui.GuiGlobals;
-import j.combot.gui.visuals.IntVisual;
-import j.combot.gui.visuals.VisualFact;
+import j.combot.command.CommandPart;
+import j.combot.gui.visuals.GuiPartVisual;
 import j.combot.gui.visuals.VisualFactory;
+import j.swt.util.SwtUtil;
 import j.util.caller.BasicCaller0;
 import j.util.notifying.Notifyer;
 
@@ -47,16 +49,16 @@ public class Gui
 
 	private Shell shell;
 	private Display display;
+	private Label status;
+	private Label command;
+
+	private Button stopButton;
+	private Button startButton;
+
 
 	private VisualFactory visualFactory = new VisualFactory();
 
 	public Gui() {
-		visualFactory.add( VisualTypes.STD_INT_TYPE, new VisualFact<Integer>() {
-			public IntVisual make() {
-				return new IntVisual();
-			}
-		});
-
 	}
 
 	private BasicCaller0 startCaller = new BasicCaller0(),
@@ -67,12 +69,6 @@ public class Gui
 
 	@SuppressWarnings( "unused" )
 	private List<Command> commands;
-	private Label status;
-
-	private volatile int transactionNr = Integer.MIN_VALUE;
-	private Button stopButton;
-	private Button startButton;
-
 	@SuppressWarnings( "unused" )
 	private boolean isCommandRunning = false;
 
@@ -81,32 +77,19 @@ public class Gui
 		return activeCommand;
 	}
 
-	private int getTransactionNr() {
-		return transactionNr;
-	}
-
-	private void incTransactionNr() {
-		transactionNr++;
-	}
-
-	private boolean isCorrectTransaction( int nr ) {
-		return nr == transactionNr;
-	}
-
 
 	public void init()
 	{
-		display = new Display();
+		visualFactory.addAll( GuiGlobals.VIS_FACTS );
+
 		Display.setAppName( Globals.APP_NAME );
 
-		GuiGlobals.initTitleFont( display );
-		shell = makeShell( display );
-//		makeTestContent();
-//		Composite cmd =
-			makeCommandPanel( shell );
+		display = new Display();
+		GuiGlobals.init( display );
 
-//		shell.pack();
-		shell.setBounds( 50, 50, 400, 450 );
+		shell = makeShell( display );
+
+		makeGui( shell );
 	}
 
 
@@ -120,26 +103,20 @@ public class Gui
 
 	public void receiveOutput( final String line )
 	{
-		final int currTransNr = getTransactionNr();
-
-		display.asyncExec( new Runnable() {
+		display.syncExec( new Runnable() {
 			public void run() {
-				if ( isCorrectTransaction( currTransNr ) ) {
-					outputText.append( line + "\n" );
-				}
+				outputText.append( line + "\n" );
+				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
 	}
 
 	public void receiveError( final String line )
 	{
-		final int currTransNr = getTransactionNr();
-
 		display.syncExec( new Runnable() {
 			public void run() {
-				if ( isCorrectTransaction( currTransNr ) ) {
-					outputText.append( line + "\n" );
-				}
+				SwtUtil.appendStyled( outputText, line + "\n", GuiGlobals.RED );
+				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
 	}
@@ -154,17 +131,8 @@ public class Gui
 
 	public void onHasTerminated( int code )
 	{
-		status.setText( "Terminated with exit code: " + code );
-		outputText.append( "Terminated with exit code: " + code );
+		setStatus( "Terminated with exit code " + code );
 		setCommandRunning( false );
-	}
-
-	public BasicCaller0 getStartCaller() {
-		return startCaller;
-	}
-
-	public BasicCaller0 getStopCaller() {
-		return stopCaller;
 	}
 
 	public void setCommadList( List<Command> commands ) {
@@ -175,45 +143,43 @@ public class Gui
 		activeCommand.set( command );
 	}
 
-	@SuppressWarnings( "unchecked" )
-	private Composite makeCommandPanel( Composite parent )
+	private Composite makeGui( Composite parent )
 	{
-		//
-		// Command title
-		//
-
-		Command cmd = activeCommand.get();
 
 		Composite page = new Composite( parent, NONE );
-		GridLayout pageLayout = new GridLayout( 1, false );
+		page.setLayout( new GridLayout( 1, false ) );
 
-		page.setLayout( pageLayout );
+		Command cmd = activeCommand.get();
+		makeCommandPanel( cmd, page );
 
-		cmd.getVisual().makeWidget( cmd, page );
+		Label argButtonSep = new Label( page, SEPARATOR | HORIZONTAL );
+		argButtonSep.setLayoutData( new GridData( FILL, TOP, true, false ) );
+
+		makeControlPanel( page );
+
+		makeOutputPanel( page );
+
+		return page;
+	}
+
+	@SuppressWarnings( { "rawtypes", "unchecked" } )
+	private void makeCommandPanel( Command cmd, Composite page )
+	{
+		// Commmand title
+		GuiPartVisual<?> commandVisual = visualFactory.make( cmd.getVisualType() );
+		commandVisual.makeWidget( (CommandPart) cmd, page, null );
 
 		Label comArgSep = new Label( page, SEPARATOR | HORIZONTAL );
 		comArgSep.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 
-		//
-		// Part with arguments
-		//
-
 		// Scrolling
 		ScrolledComposite scrolled = new ScrolledComposite( page, V_SCROLL );
-
 		scrolled.setExpandHorizontal( true );
 		scrolled.setShowFocusedControl( true );
 		scrolled.setAlwaysShowScrollBars( true );
-
-		GridData argsScrollData = new GridData();
-		argsScrollData.horizontalAlignment = FILL;
-		argsScrollData.grabExcessHorizontalSpace = true;
-		argsScrollData.verticalAlignment = FILL;
-		argsScrollData.grabExcessVerticalSpace = true;
-		scrolled.setLayoutData( argsScrollData );
+		scrolled.setLayoutData( new GridData( FILL, FILL, true, true) );
 
 		// Args
-
 		Composite argsComp = new Composite( scrolled, NONE );
 		scrolled.setContent( argsComp );
 
@@ -221,22 +187,31 @@ public class Gui
 		argsComp.setLayout( argsLayout );
 
 		// Add the acctual args
-		for ( @SuppressWarnings( "rawtypes" ) Arg arg : cmd.getArgs() ) {
-			arg.getVisual().makeWidget( arg, argsComp );
+		for ( Arg<?> arg : cmd.getArgs() ) {
+			GuiUtil.createVisual( arg, argsComp, visualFactory );
+
+//			arg.getVisual().makeWidget( arg, argsComp );
 		}
 
 		argsComp.pack();
 		scrolled.pack();
+	}
 
-		//
-		// Control panel
-		//
+	// Output text
+	private void makeOutputPanel( Composite parent )
+	{
+		outputText = new StyledText( parent, BORDER | V_SCROLL | H_SCROLL );
+		GridData outputData = new GridData( FILL, FILL, true, true);
+		outputData.minimumHeight = 100;
+		outputText.setLayoutData( outputData );
 
-		Label argButtonSep = new Label( page, SEPARATOR | HORIZONTAL );
-		argButtonSep.setLayoutData( new GridData( FILL, LEFT, true, false ) );
+		outputText.setEditable( false );
+	}
 
+	public Composite makeControlPanel( Composite parent )
+	{
 		// Start and stop buttons
-		Composite controls = new Composite( page, NONE );
+		Composite controls = new Composite( parent, NONE );
 		controls.setLayout( new RowLayout( HORIZONTAL ) );
 
 		startButton = new Button( controls, PUSH );
@@ -256,40 +231,17 @@ public class Gui
 			public void widgetSelected( SelectionEvent e ) { stopCaller.call(); }
 		});
 
-		status = new Label( page, NONE );
+		command = new Label( parent, NONE );
+		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+		setCommandLine( "" );
+
+		status = new Label( parent, NONE );
 		status.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+		setStatus( "Not started" );
 
-		// Output text
-		outputText = new StyledText( page, BORDER | V_SCROLL );
-		GridData outputData = new GridData( FILL, FILL, true, true);
-		outputData.minimumHeight = 100;
-		outputText.setLayoutData( outputData );
-
-		outputText.setEditable( false );
-
-		return page;
+		return controls;
 	}
 
-	public void onCommandStarted( String line )
-	{
-		setCommandRunning( true );
-		incTransactionNr();
-		status.setText( "Running command: " + line );
-		outputText.setText( "" );
-	}
-
-	public void setCommandRunning( boolean b )
-	{
-		isCommandRunning = b;
-		stopButton.setEnabled( b );
-		startButton.setEnabled( !b );
-	}
-
-	public void onCommandStopped()
-	{
-		stopButton.setEnabled( false );
-		incTransactionNr();
-	}
 
 	// Doesnt return until SWT is stopped
 	public void run()
@@ -306,9 +258,49 @@ public class Gui
 	}
 
 
+	private void setStatus( String s ) {
+		status.setText( "Status: " + s );
+	}
+
+	public void onCommandStarted( String line )
+	{
+		setStatus( "Running" );
+		setCommandLine( line );
+		setCommandRunning( true );
+		outputText.setText( "" );
+	}
+
+
+	private void setCommandLine( String line ) {
+		command.setText( "Command line: " + line );
+	}
+
+	public void setCommandRunning( boolean b )
+	{
+		isCommandRunning = b;
+		stopButton.setEnabled( b );
+		startButton.setEnabled( !b );
+	}
+
+	public void onCommandStopped()
+	{
+		stopButton.setEnabled( false );
+	}
+
 	public void dipose() {
 		display.dispose();
 	}
+
+	public BasicCaller0 getStartCaller() {
+		return startCaller;
+	}
+
+	public BasicCaller0 getStopCaller() {
+		return stopCaller;
+	}
+
+
+
 }
 
 

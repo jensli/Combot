@@ -1,16 +1,20 @@
 package j.combot.command;
 
-import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.PartVisual;
+import j.combot.gui.visuals.VisualTypes;
 
 
 public class IntArg extends Arg<Integer>
 {
 	private int min, max;
 
+	{
+		setVisualType( VisualTypes.STD_INT_TYPE );
+	}
+
 	public IntArg( String title, String name, int min, int max, int defaultValue )
 	{
-		this( title, name, min, max, defaultValue, new IntVisual(), NULL_VALIDATOR );
+		this( title, name, min, max, defaultValue, NULL_VALIDATOR );
 	}
 
 	public IntArg( String title, String name ) {
@@ -18,17 +22,16 @@ public class IntArg extends Arg<Integer>
 	}
 
 	public IntArg( String title, String name, int min, int max,
-			int defaultValue, PartVisual<Integer> visual, Validator v )
+			int defaultValue, Validator<? super Integer> v )
 	{
-		super( title, name, defaultValue, v, visual );
+		super( title, name, defaultValue, v );
 		this.min = min;
 		this.max = max;
 	}
 
 
 	public IntArg( String title, String name, PartVisual<Integer> visual ) {
-		super( title, name, visual );
-		// TODO Auto-generated constructor stub
+		super( title, name );
 	}
 
 	public int getMin() {

@@ -1,20 +1,29 @@
 package j.combot.command;
 
 import j.combot.gui.visuals.PartVisual;
+import j.combot.gui.visuals.VisualType;
+
+import java.util.List;
 
 //public abstract class CommandPart<T>
 public abstract class CommandPart<T>
 {
-	private String title;
-	private String name;
-	private PartVisual<T> visual;
+	private String
+		title,
+		name;
 
-	public CommandPart( String title, String name, PartVisual<T> visual )
+	private PartVisual<T> visual;
+	private VisualType<T> visualType;
+
+	public CommandPart( String title, String name )
 	{
 		this.title = title;
 		this.name = name;
-		this.visual = visual;
 	}
+
+	public abstract List<ValEntry> validate();
+	public abstract List<String> getArgStrings();
+
 
 	public String getTitle() {
 		return title;
@@ -28,10 +37,26 @@ public abstract class CommandPart<T>
 		return visual;
 	}
 
-	public static <T> Arg<T> cast( CommandPart<T> part ) {
-		return (Arg<T>) part;
+
+	public void setVisual( PartVisual<T> visual ) {
+		this.visual = visual;
 	}
 
+	public VisualType<T> getVisualType() {
+		return visualType;
+	}
+
+	public void setVisualType( VisualType<T> visualType ) {
+		this.visualType = visualType;
+	}
+
+	public void setTitle( String title ) {
+		this.title = title;
+	}
+
+	public void setName( String name ) {
+		this.name = name;
+	}
 
 
 }

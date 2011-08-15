@@ -1,19 +1,16 @@
 package j.combot.gui.visuals;
 
-import j.combot.command.Arg;
 import j.combot.command.CommandPart;
+import j.combot.command.ValEntry;
 
-import org.eclipse.swt.widgets.Composite;
+import java.util.List;
 
 
 //public interface PartVisual<T>
-public abstract class PartVisual<T>
+public interface PartVisual<T>
 {
-	public abstract void makeWidget( CommandPart<T> part, Composite parent );
 	public abstract T getValue();
-
-	public Arg<T> cast( CommandPart<T> part ) {
-		return (Arg<T>) part;
-	}
-
+	public CommandPart<T> getCommandPart();
+	public void setCommandPart( CommandPart<T> commandPart );
+	public void setValidateResult( List<ValEntry> errors );
 }
