@@ -27,4 +27,9 @@ public class Command extends ComposedArg<String>
 	@Override public List<ValEntry> validate() {
 		throw new NotImplementedException();
 	}
+
+	@Override public Command clone() {
+		return (Command) super.clone();
+	}
+
 }

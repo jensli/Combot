@@ -5,8 +5,11 @@ import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
 import j.combot.command.ValEntry;
-import j.combot.gui.ErrorIndicator;
 import j.combot.gui.GuiGlobals;
+import j.combot.gui.misc.ErrorIndicator;
+import j.combot.gui.misc.ValidationEvent;
+import j.combot.gui.misc.ValidationListener;
+import j.util.caller.GenericCaller;
 
 import java.util.List;
 
@@ -19,15 +22,25 @@ import org.eclipse.swt.widgets.Label;
 
 
 
-public abstract class BasePartVisual<T> implements GuiArgVisual<T>
+public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 {
 	private Arg<T> commandPart;
 	private ErrorIndicator errorIndicator = new ErrorIndicator();
+//	private List<ValidationListener> validationListeners = new ArrayList<ValidationListener>( 1 );
+
+	private GenericCaller<ValidationEvent, ValidationListener> valCaller =
+			new GenericCaller<>( ValidationEvent.class, ValidationListener.class );
+	private Control valueControl;
 
 	// Use caller to tell about validation?
 
-	public BasePartVisual() {
+	public BaseArgVisual() {
 	}
+
+	protected void setValueControl( Control c ) {
+		valueControl = c;
+	}
+
 
 	@Override
 	public void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
@@ -36,39 +49,54 @@ public abstract class BasePartVisual<T> implements GuiArgVisual<T>
 
 		label.setText( arg.getTitle() + ":" );
 
-		Control c = makeValueWidget( arg, parent, parent );
-		c.setLayoutData( new GridData( FILL, LEFT, true, false ) );
+		valueControl = makeValueWidget( arg, parent, parent );
+		valueControl.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 
 		errorIndicator.setFont( GuiGlobals.SMALL_FONT );
 
 		// Error indication
 		new Label( parent, NONE ); // Empty label to take up a cell
 
-		errorIndicator.makeWidget( parent );
+		Control errInd = errorIndicator.makeWidget( parent );
+		errInd.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 	}
 
+	@Override
+	public void addValidationListener( ValidationListener l ) {
+		valCaller.addListener( l );
+	}
 
 	@Override
 	public void setValidateResult( List<ValEntry> errors )
 	{
 		if ( errors.isEmpty() ) {
 			errorIndicator.clearError();
+			valueControl.setToolTipText( "" );
 		} else {
 			errorIndicator.setError( errors.get( 0 ).message );
+
+			String tip = "";
+			for ( ValEntry e : errors ) {
+				tip = tip + e.message + "\n";
+			}
+			// TODO: Set tooltip on validator control also?
+			valueControl.setToolTipText( tip );
 		}
+
+		valCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
 
 
 	protected SelectionAdapter makeValidationListener() {
 		return new SelectionAdapter() {
-			@Override public void widgetSelected( SelectionEvent e ) {
-				setValidateResult( getCommandPart().validate() );
+			public void widgetSelected( SelectionEvent e ) {
+				setValidateResult( getArg().validate() );
 			}
 		};
 	}
 
 
-	public Arg<T> getCommandPart() {
+	public Arg<T> getArg() {
 		return commandPart;
 	}
 
@@ -76,7 +104,14 @@ public abstract class BasePartVisual<T> implements GuiArgVisual<T>
 		this.commandPart = commandPart;
 	}
 
+	public void dispose() {
+		if ( valueControl != null ) {
+			valueControl.dispose();
+		}
+	}
 
+
+	@SuppressWarnings( "static-method" )
 	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
 	{
 		return null;

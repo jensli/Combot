@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 
 
-public class IntVisual extends BasePartVisual<Integer> {
+public class IntVisual extends BaseArgVisual<Integer> {
 
 	private Spinner spinner;
 

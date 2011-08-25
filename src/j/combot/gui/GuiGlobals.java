@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
@@ -35,6 +36,11 @@ public final class GuiGlobals
 		RED,
     	BLUE;
 
+	public static int
+		FONT_HEIGHT,
+		FONT_WIDTH,
+		UNIT,
+		SPACING;
 
 	public static void init( Display display )
 	{
@@ -43,6 +49,14 @@ public final class GuiGlobals
 		TITLE_FONT = makeTitleFont( display.getSystemFont(), 1.3, SWT.BOLD, display );
 		SMALL_FONT = makeTitleFont( display.getSystemFont(), 0.9, SWT.NONE, display );
 		BIG_FONT = makeTitleFont( display.getSystemFont(), 1.3, SWT.NONE, display );
+
+		GC gc = new GC( display );
+		FONT_HEIGHT = gc.getFontMetrics().getHeight();
+		FONT_WIDTH = gc.getFontMetrics().getAverageCharWidth();
+		UNIT = FONT_HEIGHT;
+		SPACING = UNIT / 2;
+		gc.dispose();
+
 
 		display.disposeExec( new Runnable() {
 			public void run() {
@@ -75,11 +89,11 @@ public final class GuiGlobals
 
 
 	public static final VisFactEntry<?>[] VIS_FACTS = new VisFactEntry[] {
-		new VisFactEntry<Integer>( VisualTypes.STD_INT_TYPE, IntVisual.class ),
-		new VisFactEntry<String>( VisualTypes.STD_STRING_TYPE, StringVisual.class ),
-		new VisFactEntry<String>( VisualTypes.STD_COMMAND_TYPE, CommandVisual.class ),
-		new VisFactEntry<String>( VisualTypes.STD_NULL_TYPE, NullVisual.class ),
-		new VisFactEntry<Boolean>( VisualTypes.STD_OPT_TYPE, OptVisual.class ),
+		new VisFactEntry<>( VisualTypes.STD_INT_TYPE, IntVisual.class ),
+		new VisFactEntry<>( VisualTypes.STD_STRING_TYPE, StringVisual.class ),
+		new VisFactEntry<>( VisualTypes.STD_COMMAND_TYPE, CommandVisual.class ),
+		new VisFactEntry<>( VisualTypes.STD_NULL_TYPE, NullVisual.class ),
+		new VisFactEntry<>( VisualTypes.STD_OPT_TYPE, OptVisual.class ),
 
 //		new VisFactEntry<Integer>(
 //				VisualTypes.STD_INT_TYPE,
@@ -111,7 +125,6 @@ public final class GuiGlobals
 //				} ),
 
 	};
-
 
 	public static void initImage( int size, Display display )
 	{

@@ -4,7 +4,7 @@ import j.combot.command.Arg;
 
 import org.eclipse.swt.widgets.Composite;
 
-public class NullVisual extends BasePartVisual<String>
+public class NullVisual extends BaseArgVisual<String>
 {
 	@Override
 	public void makeWidget( Arg<String> arg,

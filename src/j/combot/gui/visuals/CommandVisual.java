@@ -12,13 +12,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class CommandVisual extends BasePartVisual<String> {
+public class CommandVisual extends BaseArgVisual<String> {
 
 	@Override
 	public void makeWidget( Arg<String> cmd, Composite parent, VisualFactory visualFactory )
 	{
 		Composite page = new Composite( parent, NONE );
-		page.setLayoutData( new GridData( FILL, LEFT, true, false ) );
+		page.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );
 		GridLayout pageLayout = new GridLayout( 2, false );
 		page.setLayout( pageLayout );
 
@@ -29,7 +29,6 @@ public class CommandVisual extends BasePartVisual<String> {
 		Label name = new Label( page, NONE );
 		name.setFont( GuiGlobals.BIG_FONT );
 		name.setText( " (" + cmd.getName() + ")" );
-
 	}
 
 	@Override public String getValue() {

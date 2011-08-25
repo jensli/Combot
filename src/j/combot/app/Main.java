@@ -1,18 +1,43 @@
 package j.combot.app;
 
-import j.combot.app.App.RunMode;
+import j.combot.app.Bootstrapper.RunMode;
 
 public class Main
 {
+
+	// Make this into a DefaultBootstrapper class
+	public static final class CombotBootstrapper implements Bootstrapper
+	{
+		private CombotApp app;
+
+		public CombotBootstrapper() {
+		}
+
+		@Override
+		public void init( StartMode mode, String[] strArgs )
+		{
+			CombotArgs args = new CombotArgs( strArgs );
+			args.run();
+			app = new CombotApp( args );
+			app.init( mode );
+		}
+
+		@Override
+		public void dispose( ExitCode code ) {
+			app.dispose( code );
+			app = null;
+		}
+
+		@Override
+		public ExitCode run() throws Exception {
+			return app.run();
+		}
+	}
+
 	public static void main( String[] args ) throws Exception
 	{
-		Bootstrapper<CombotArgs> bootstrapper = new Bootstrapper<CombotArgs>(
-			new AppFactory<CombotArgs>() {
-				public CombotApp make( CombotArgs args ) {
-					return new CombotApp( args );
-				}
-			},
-			new CombotArgs( args ) );
+		BootstrapperRunner<CombotArgs> bootstrapper
+			= new BootstrapperRunner<>( new CombotBootstrapper() );
 
 		bootstrapper.setRunMode( RunMode.DEBUG );
 

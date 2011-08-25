@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 
 
-public class StringVisual  extends BasePartVisual<String>
+public class StringVisual  extends BaseArgVisual<String>
 {
 	private Text text;
 
@@ -47,7 +47,7 @@ public class StringVisual  extends BasePartVisual<String>
 //		text.addSelectionListener( makeValidationListener() );
 		text.addModifyListener( new ModifyListener() {
 			@Override public void modifyText( ModifyEvent e ) {
-				setValidateResult( getCommandPart().validate() );
+				setValidateResult( getArg().validate() );
 			}
 		});
 		return text;

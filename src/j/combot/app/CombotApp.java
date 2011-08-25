@@ -1,8 +1,10 @@
 package j.combot.app;
 
+import j.combot.app.Bootstrapper.ExitCode;
+import j.combot.app.Bootstrapper.StartMode;
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
-import j.combot.gui.Gui;
+import j.combot.gui.CombotGui;
 import j.util.functional.Action0;
 import j.util.functional.Action1;
 import j.util.process.ProcessCallback;
@@ -10,18 +12,23 @@ import j.util.process.ProcessHandler;
 import j.util.util.StringUtil;
 import j.util.util.Util;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class CombotApp implements App {
+public class CombotApp
+{
 
-	private Logger logger = Util.makeLogger( this );
+	private Logger logger = Util.getClassLogger( this );
 
-	private Gui gui;
+	private CombotGui gui;
 
-	private List<Command> commands = new ArrayList<Command>();
+	private List<Command> commands = new ArrayList<>();
 
 	private ProcessHandler processHandler;
 
@@ -46,24 +53,41 @@ public class CombotApp implements App {
 
 	private void loadCommands()
 	{
-		commands.add( makeCommand( "grep" ) );
-		commands.add( makeCommand( "ls" ) );
-		commands.add( makeCommand( "find" ) );
+		URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+
+		try {
+			File path = new File( url.toURI() );
+
+			File[] comClasses = path.listFiles( new FilenameFilter() {
+				public boolean accept( File dir, String name ) {
+					return name.endsWith( ".class" );
+				}
+			} );
+
+			for ( File com : comClasses ) {
+				String filename = com.getName();
+				String className = filename.substring( 0, filename.length() - ".class".length() );
+				commands.add( makeCommand( className ) );
+			}
+
+
+		} catch ( URISyntaxException exc ) {
+			logger.warning( "Error while reading commands: " + exc );
+		}
+
+//		commands.add( makeCommand( "grep" ) );
+//		commands.add( makeCommand( "ls" ) );
+//		commands.add( makeCommand( "find" ) );
 	}
 
-	public Command makeCommand( String name )
+	public static Command makeCommand( String name )
 	{
 			CommandFactory commandFactory;
 
 			try {
 				commandFactory = (CommandFactory) Class.forName( name ).newInstance();
-			} catch ( InstantiationException exc ) {
-				exc.printStackTrace();
-				throw new RuntimeException( exc );
-			} catch ( IllegalAccessException exc ) {
-				exc.printStackTrace();
-				throw new RuntimeException( exc );
-			} catch ( ClassNotFoundException exc ) {
+			} catch ( InstantiationException | IllegalAccessException | ClassNotFoundException exc )
+			{
 				exc.printStackTrace();
 				throw new RuntimeException( exc );
 			}
@@ -80,14 +104,12 @@ public class CombotApp implements App {
 		return ExitCode.STOP;
 	}
 
-	@Override
 	public void init( StartMode mode )
 	{
 		logger.info( "Initializing" );
 		loadCommands();
 
-		gui = new Gui();
-		gui.setActiveCommand( commands.get( 2 ) );
+		gui = new CombotGui();
 
 		gui.getStartCaller().addListener( new Action0() {
 			public void run() { startCommand(); }
@@ -97,7 +119,20 @@ public class CombotApp implements App {
 			public void run() { stopCommand(); }
 		});
 
+		gui.getDefaultCommandCaller().addListener( new Action1<Command>() {
+			public void run( Command arg ) {
+
+			}
+		} );
+
 		gui.init();
+		gui.setCommadList( commands );
+//		gui.setActiveCommand( commands.get( 2 ) );
+	}
+
+
+	private void makeNewCommand( Command cmd ) {
+		
 	}
 
 	private void stopCommand()
@@ -110,7 +145,7 @@ public class CombotApp implements App {
 
 	private void startCommand()
 	{
-		Command cmd = gui.getActiveCommand().get();
+		Command cmd = gui.getActiveCommand();
 		logger.info( "Running command: " + cmd );
 
 		List<String> args = cmd.getArgStrings();
@@ -144,12 +179,9 @@ public class CombotApp implements App {
 	}
 
 
-	@Override
 	public void dispose( ExitCode exitCode ) {
 		gui.dipose();
 	}
-
-
 
 
 }

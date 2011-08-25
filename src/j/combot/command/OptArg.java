@@ -10,24 +10,24 @@ import java.util.List;
 
 public class OptArg extends ComposedArg<Boolean>
 {
+	// Super class clone method is sufficient
+
 	private ArgGroup parts = new ArgGroup();
 
-	public OptArg( String title, String name, Arg<?>... childs )
+	public OptArg( String title, String name, boolean def, Arg<?>... childs )
 	{
 		super( title, name, childs );
 		parts.addAll( childs );
 
+		setDefaultValue( def );
 		setVisualType( VisualTypes.STD_OPT_TYPE );
-
 		setName( StringUtil.join( parts.getNames() , " " ) );
 	}
 
-	public OptArg( String title, Arg<?>... childs )
+	public OptArg( String title, boolean def, Arg<?>... childs )
 	{
-		this( title, "", childs );
+		this( title, "", def, childs );
 	}
-
-
 
 	@Override
 	public List<String> getArgStrings()

@@ -7,6 +7,8 @@ import java.util.List;
 
 public class ConstArg extends Arg<String>
 {
+	// Super class clone method is sufficient
+
 	private String value;
 
 	public ConstArg( String title, String name, String value )
@@ -20,6 +22,4 @@ public class ConstArg extends Arg<String>
 	public List<String> getArgStrings() {
 		return Collections.singletonList( value );
 	}
-
-
 }

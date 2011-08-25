@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class RegexValidator implements Validator<String>
+public class RegexValidator extends Validator<String>
 {
 	private Pattern pattern;
 	private String errorMessage;

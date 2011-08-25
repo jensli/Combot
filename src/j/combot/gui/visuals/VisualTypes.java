@@ -19,7 +19,7 @@ public final class VisualTypes
 		Field[] fs = VisualTypes.class.getFields();
 
 		for ( Field f : fs ) {
-				f.set( null, new VisualType<Object>( f.getName() ) );
+				f.set( null, new VisualType<>( f.getName() ) );
 		}
 
 		} catch ( IllegalArgumentException exc ) {

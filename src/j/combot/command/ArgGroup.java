@@ -11,9 +11,9 @@ public class ArgGroup implements Iterable<Arg<?>>
 {
 	private List<Arg<?>> args;
 
-	public ArgGroup( List<Arg<?>> childs )
+	public ArgGroup( List<? extends Arg<?>> childs )
 	{
-		this.args = childs;
+		this.args = new ArrayList<>( childs );
 	}
 
 	public ArgGroup( Arg<?>... args ) {
@@ -76,14 +76,31 @@ public class ArgGroup implements Iterable<Arg<?>>
 		return result;
 	}
 
+	public List<String> getTitles()
+	{
+		List<String> result = makeResultList();
+		for ( Arg<?> c : args ) {
+			result.add( c.getTitle() );
+		}
+		return result;
+	}
+
 
 	private <S> List<S> makeResultList() {
-		return new ArrayList<S>( args.size() );
+		return new ArrayList<>( args.size() );
 	}
 
 	@Override
 	public Iterator<Arg<?>> iterator() {
 		return args.iterator();
+	}
+
+	public ArgGroup clone() {
+		List<Arg<?>> result = makeResultList();
+		for ( Arg<?> a : args ) {
+			result.add( a.clone() );
+		}
+		return new ArgGroup( result );
 	}
 
 

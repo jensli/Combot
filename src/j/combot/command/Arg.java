@@ -8,8 +8,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Arg<T>
+public abstract class Arg<T> implements Cloneable
 {
+	// Pay attention to cloning when adding more fields
+
+	public static final Validator<String> EMPTY_VALIDATOR = new LengthValidator( 1 );
+
 	private T defaultValue;
 	private Validator<? super T> validator;
 
@@ -26,15 +30,8 @@ public abstract class Arg<T>
 		}
 	};
 
-	public static final Validator<String> EMPTY_VALIDATOR = new Validator<String>() {
-		@Override public List<ValEntry> validate( String value ) {
-			if ( value.isEmpty() ) {
-				return Collections.singletonList( new ValEntry( "This field can not be empty" ) );
-			} else {
-				return Collections.emptyList();
-			}
-		}
-	};
+
+
 
 
 	public String getTitle() {
@@ -48,7 +45,6 @@ public abstract class Arg<T>
 	public ArgVisual<T> getVisual() {
 		return visual;
 	}
-
 
 	public void setVisual( ArgVisual<T> visual ) {
 		this.visual = visual;
@@ -83,8 +79,13 @@ public abstract class Arg<T>
 		this.validator = validator;
 	}
 
-	public List<ValEntry> validate() {
-		return validator.validate( getVisual().getValue() );
+	public List<ValEntry> validate()
+	{
+		List<ValEntry> entires = validator.validate( getVisual().getValue() );
+		for ( ValEntry e : entires ) {
+			e.sender = this;
+		}
+		return entires;
 	}
 
 	public List<String> getArgStrings()
@@ -100,6 +101,12 @@ public abstract class Arg<T>
 		}
 	}
 
+
+
+	public void setDefaultValue( T defaultValue ) {
+		this.defaultValue = defaultValue;
+	}
+
 	@Override
 	public String toString() {
 		return Util.simpleToString( this, getName() );
@@ -108,4 +115,21 @@ public abstract class Arg<T>
 	public T getDefaultValue() {
 		return defaultValue;
 	}
+
+	@SuppressWarnings( "unchecked" )
+	public Arg<T> clone() {
+		try {
+			Arg<T> res;
+			res = (Arg<T>) super.clone();
+			res.visual = null;
+			return res;
+		} catch ( CloneNotSupportedException exc ) {
+			throw new RuntimeException( exc );
+		}
+	}
+
+//	public Arg<T> copy() {
+//		return new Arg<>( title, name, defaultValue, validator );
+//	}
+
 }

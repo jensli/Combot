@@ -1,17 +1,15 @@
-package j.combot.gui;
+package j.combot.gui.misc;
 
-import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.ICON_ERROR;
-import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
@@ -23,6 +21,12 @@ public class ErrorIndicator
 
 	public static Image cachedErrorIcon = null;
 	public static int lastFontSize = -1;
+
+	public ErrorIndicator() {}
+
+	public ErrorIndicator( Composite parent ) {
+		makeWidget( parent );
+	}
 
 	public void setError( String message )
 	{
@@ -41,10 +45,9 @@ public class ErrorIndicator
 		this.font = font;
 	}
 
-	public void makeWidget( Composite parent )
+	public Control makeWidget( Composite parent )
 	{
 		Composite row = new Composite( parent, NONE );
-		row.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 		row.setLayout( new RowLayout( HORIZONTAL ) );
 
 		errorIcon = new Label( row, NONE );
@@ -54,6 +57,8 @@ public class ErrorIndicator
 
 		errorIcon.setImage( makeIcon( error.getSize().y, error.getDisplay() ) );
 		errorIcon.setVisible( false );
+
+		return row;
 	}
 
 	public static Image makeIcon( int size, Display display )
@@ -79,7 +84,6 @@ public class ErrorIndicator
 
 
 	}
-
 
 
 }

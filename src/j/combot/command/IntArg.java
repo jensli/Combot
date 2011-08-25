@@ -6,6 +6,8 @@ import j.combot.gui.visuals.VisualTypes;
 
 public class IntArg extends Arg<Integer>
 {
+	// Super class clone method is sufficient
+
 	private int min, max;
 
 	{

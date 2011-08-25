@@ -11,9 +11,9 @@ public class find implements CommandFactory {
 	public Command make() {
 		return new Command( "Find command", "find",
 					new StringArg( "Location", "", "/" ),
-					new OptArg( "Depth first", new ConstArg( "", "", "-depth" ) ),
+					new OptArg( "Depth first", false, new ConstArg( "", "", "-depth" ) ),
 					new StringArg( "Name", "-name", "*" ),
-					new OptArg( "Limit depth",
+					new OptArg( "Limit depth", true,
 							new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) )
 		);
 	}

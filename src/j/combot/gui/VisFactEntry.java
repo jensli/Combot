@@ -19,9 +19,7 @@ public class VisFactEntry<T> {
 			public GuiArgVisual<T> make() {
 				try {
 					return cls.newInstance();
-				} catch ( InstantiationException exc ) {
-					throw new RuntimeException( exc );
-				} catch ( IllegalAccessException exc ) {
+				} catch ( InstantiationException | IllegalAccessException exc ) {
 					throw new RuntimeException( exc );
 				}
 			}
