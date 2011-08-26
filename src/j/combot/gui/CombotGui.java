@@ -180,10 +180,8 @@ public class CombotGui
 
 	public void signalTerminated( final int code ) {
 		display.syncExec( new Runnable() {
-			public void run() {
-				onHasTerminated( code );
-			}
-		});
+			public void run() { onHasTerminated( code ); }
+		} );
 	}
 
 	public void onHasTerminated( int code )

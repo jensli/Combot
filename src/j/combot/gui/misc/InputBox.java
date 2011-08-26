@@ -3,8 +3,10 @@ package j.combot.gui.misc;
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.CENTER;
 import static org.eclipse.swt.SWT.DEFAULT;
+import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
+import static org.eclipse.swt.SWT.SEPARATOR;
 import j.combot.command.Arg;
 import j.combot.command.ValEntry;
 import j.combot.command.Validator;
@@ -111,13 +113,21 @@ public class InputBox extends Dialog
 		data.bottom = new FormAttachment( 100, 0 );
 		cancel.setLayoutData( data );
 
+		Label sep = new Label( dialog, SEPARATOR | HORIZONTAL );
+		data = new FormData();
+		data.left = new FormAttachment( 0, 0 );
+		data.right = new FormAttachment( 100, 0 );
+		data.bottom = new FormAttachment( cancel, 0, DEFAULT );
+		sep.setLayoutData( data );
+		sep.pack();
+
 		errorIndicator = new ErrorIndicator();
 		Control error = errorIndicator.makeWidget( dialog );
 		data = new FormData();
 		data.width = 600;
 		data.left = new FormAttachment( 0, 0 );
 		data.right = new FormAttachment( 100, 0 );
-		data.bottom = new FormAttachment( cancel, 0, DEFAULT );
+		data.bottom = new FormAttachment( sep, 0, DEFAULT );
 		error.setLayoutData( data );
 
 		inputText = new Text( dialog, BORDER );
