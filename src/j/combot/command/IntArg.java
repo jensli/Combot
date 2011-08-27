@@ -16,7 +16,7 @@ public class IntArg extends Arg<Integer>
 
 	public IntArg( String title, String name, int min, int max, int defaultValue )
 	{
-		this( title, name, min, max, defaultValue, NULL_VALIDATOR );
+		this( title, name, min, max, defaultValue, Validator.NULL_VALIDATOR );
 	}
 
 	public IntArg( String title, String name ) {

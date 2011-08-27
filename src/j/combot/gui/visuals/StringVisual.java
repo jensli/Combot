@@ -2,7 +2,11 @@ package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.SINGLE;
+
+import java.util.List;
+
 import j.combot.command.Arg;
+import j.combot.command.ValEntry;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -47,7 +51,8 @@ public class StringVisual  extends BaseArgVisual<String>
 //		text.addSelectionListener( makeValidationListener() );
 		text.addModifyListener( new ModifyListener() {
 			@Override public void modifyText( ModifyEvent e ) {
-				setValidateResult( getArg().validate() );
+				List<ValEntry> validate = getArg().validate();
+				setValidateResult( validate );
 			}
 		});
 		return text;

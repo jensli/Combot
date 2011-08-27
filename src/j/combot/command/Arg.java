@@ -12,8 +12,6 @@ public abstract class Arg<T> implements Cloneable
 {
 	// Pay attention to cloning when adding more fields
 
-	public static final Validator<String> EMPTY_VALIDATOR = new LengthValidator( 1 );
-
 	private T defaultValue;
 	private Validator<? super T> validator;
 
@@ -23,16 +21,6 @@ public abstract class Arg<T> implements Cloneable
 
 	private ArgVisual<T> visual;
 	private VisualType<T> visualType;
-
-	public static final Validator<Object> NULL_VALIDATOR = new Validator<Object>() {
-		@Override public List<ValEntry> validate( Object value ) {
-			return Collections.emptyList();
-		}
-	};
-
-
-
-
 
 	public String getTitle() {
 		return title;
@@ -68,7 +56,7 @@ public abstract class Arg<T> implements Cloneable
 
 	public Arg( String title, String name  )
 	{
-		this( title, name, null, NULL_VALIDATOR );
+		this( title, name, null, Validator.NULL_VALIDATOR );
 	}
 
 	public Arg( String title, String name, T defaultValue, Validator<? super T> validator )
@@ -97,14 +85,18 @@ public abstract class Arg<T> implements Cloneable
 		} else if ( getName().isEmpty() ) {
 			return Arrays.asList( value );
 		} else {
+			// Here is coded the behaviour to return args and parameters as
+			// distingt tokens
 			return Arrays.asList( getName(), value );
 		}
 	}
 
-
-
 	public void setDefaultValue( T defaultValue ) {
 		this.defaultValue = defaultValue;
+	}
+
+	public void setDefaultFromVisual() {
+		setDefaultValue( getVisual().getValue() );
 	}
 
 	@Override
@@ -121,7 +113,8 @@ public abstract class Arg<T> implements Cloneable
 		try {
 			Arg<T> res;
 			res = (Arg<T>) super.clone();
-			res.visual = null;
+			// Reference to visual is shared
+//			res.visual = null;
 			return res;
 		} catch ( CloneNotSupportedException exc ) {
 			throw new RuntimeException( exc );

@@ -7,7 +7,6 @@ import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.SEPARATOR;
-import j.combot.command.Arg;
 import j.combot.command.ValEntry;
 import j.combot.command.Validator;
 import j.combot.gui.GuiGlobals;
@@ -44,7 +43,7 @@ public class InputBox extends Dialog
 		result,
 		message;
 
-	private Validator<? super String> validator = Arg.EMPTY_VALIDATOR;
+	private Validator<? super String> validator = Validator.EMPTY_VALIDATOR;
 	private Action0 resultCallback;
 
 	private boolean

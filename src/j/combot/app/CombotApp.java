@@ -5,6 +5,7 @@ import j.combot.app.Bootstrapper.StartMode;
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.gui.CombotGui;
+import j.combot.gui.CombotGui.NewCommandEvent;
 import j.util.functional.Action0;
 import j.util.functional.Action1;
 import j.util.process.ProcessCallback;
@@ -17,7 +18,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,7 +28,7 @@ public class CombotApp
 
 	private CombotGui gui;
 
-	private List<Command> commands = new ArrayList<>();
+	private CommandContainer commands = new CommandContainer();
 
 	private ProcessHandler processHandler;
 
@@ -119,9 +119,9 @@ public class CombotApp
 			public void run() { stopCommand(); }
 		});
 
-		gui.getDefaultCommandCaller().addListener( new Action1<Command>() {
-			public void run( Command arg ) {
-
+		gui.getNewCommandCaller().addListener( new Action1<NewCommandEvent>() {
+			public void run( NewCommandEvent arg ) {
+				makeNewCommand( arg.parentComamnd, arg.baseCmd, arg.newTitle );
 			}
 		} );
 
@@ -131,8 +131,14 @@ public class CombotApp
 	}
 
 
-	private void makeNewCommand( Command cmd ) {
-		
+	private void makeNewCommand( Command parentCmd, Command baseCmd, String newTitle )
+	{
+		Command newCmd = baseCmd.clone();
+		newCmd.setDefaultFromVisual();
+		newCmd.setTitle( newTitle );
+
+		commands.addChild( parentCmd, newCmd );
+		gui.addChildCommand( parentCmd, newCmd );
 	}
 
 	private void stopCommand()
@@ -145,7 +151,7 @@ public class CombotApp
 
 	private void startCommand()
 	{
-		Command cmd = gui.getActiveCommand();
+		Command cmd = gui.getActiveCmd();
 		logger.info( "Running command: " + cmd );
 
 		List<String> args = cmd.getArgStrings();
@@ -180,7 +186,7 @@ public class CombotApp
 
 
 	public void dispose( ExitCode exitCode ) {
-		gui.dipose();
+		gui.dispose();
 	}
 
 

@@ -29,6 +29,13 @@ public class OptArg extends ComposedArg<Boolean>
 		this( title, "", def, childs );
 	}
 
+
+
+	@Override public void setDefaultFromVisual() {
+		super.setDefaultFromVisual(); // ComposedArg
+		setDefaultValue( getVisual().getValue() ); // Reimplement Arg
+	}
+
 	@Override
 	public List<String> getArgStrings()
 	{

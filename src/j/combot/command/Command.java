@@ -14,11 +14,6 @@ public class Command extends ComposedArg<String>
 		setVisualType( VisualTypes.STD_COMMAND_TYPE );
 	}
 
-	public List<String> getArgStrings()
-	{
-		return getArgGroup().getArgStrings();
-	}
-
 	@Override
 	public String toString() {
 		return Util.simpleToString( this, getName(), getArgGroup().getArgs() );
@@ -28,6 +23,7 @@ public class Command extends ComposedArg<String>
 		throw new NotImplementedException();
 	}
 
+	// Reimplement clone even if there are no fields,
 	@Override public Command clone() {
 		return (Command) super.clone();
 	}

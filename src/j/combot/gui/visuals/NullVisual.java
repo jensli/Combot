@@ -15,7 +15,7 @@ public class NullVisual extends BaseArgVisual<String>
 
 	@Override
 	public String getValue() {
-		throw new UnsupportedOperationException();
+		return getArg().getDefaultValue();
 	}
 
 }

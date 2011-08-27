@@ -1,24 +1,35 @@
 package j.combot.command;
 
-import java.util.Collections;
+import j.util.util.StringUtil;
+
 import java.util.List;
 
 public class EnumValidator extends Validator<Object> {
 
 	private List<? extends Object> legalValues;
 
-	public EnumValidator( List<? extends Object> legalValues ) {
+	private boolean invert = false;
+
+	public EnumValidator( List<? extends Object> legalValues, boolean invert ) {
 		this.legalValues = legalValues;
+		this.invert = invert;
+	}
+
+	public EnumValidator( List<? extends Object> legalValues ) {
+		this( legalValues, false );
 	}
 
 	@Override
-	public List<ValEntry> validate( Object value )
+	protected List<ValEntry> validateInt( Object value )
 	{
-		if ( legalValues.contains( value ) ) {
-			return Collections.emptyList();
+		String values = StringUtil.join( legalValues, ", " );
+
+		if ( invert ) {
+			return standardValidate(  !legalValues.contains( value ),
+					"The value can not be one of: " + values  );
 		} else {
-			return Collections.singletonList(
-					new ValEntry( value.toString() + " is not a valid value" ) );
+			return standardValidate( legalValues.contains( value ),
+					"The value must be one of: " + values  );
 		}
 	}
 

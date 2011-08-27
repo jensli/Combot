@@ -24,7 +24,7 @@ public class RegexValidator extends Validator<String>
 
 
 	@Override
-	public List<ValEntry> validate( String value )
+	protected List<ValEntry> validateInt( String value )
 	{
 		if ( pattern.matcher( value ).matches() ) {
 			String msg = (errorMessage == null ? errorMessage :

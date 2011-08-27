@@ -24,12 +24,16 @@ import org.eclipse.swt.widgets.Label;
 
 public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 {
-	private Arg<T> commandPart;
+	private Arg<T> arg;
 	private ErrorIndicator errorIndicator = new ErrorIndicator();
 //	private List<ValidationListener> validationListeners = new ArrayList<ValidationListener>( 1 );
 
 	private GenericCaller<ValidationEvent, ValidationListener> valCaller =
 			new GenericCaller<>( ValidationEvent.class, ValidationListener.class );
+
+	// The sublass spesific control that gets the acctual input from the user,
+	// i.e. not the label but the input field. Often this if the only control a
+	// subclass needs to create.
 	private Control valueControl;
 
 	// Use caller to tell about validation?
@@ -97,11 +101,11 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 
 	public Arg<T> getArg() {
-		return commandPart;
+		return arg;
 	}
 
-	public void setCommandPart( Arg<T> commandPart ) {
-		this.commandPart = commandPart;
+	public void setArg( Arg<T> arg ) {
+		this.arg = arg;
 	}
 
 	public void dispose() {
@@ -110,7 +114,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		}
 	}
 
-
+//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
 	@SuppressWarnings( "static-method" )
 	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
 	{

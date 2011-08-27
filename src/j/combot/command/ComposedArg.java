@@ -1,7 +1,9 @@
 package j.combot.command;
 
+import java.util.List;
 
-public class ComposedArg<T> extends Arg<T>
+
+public abstract class ComposedArg<T> extends Arg<T>
 {
 	private ArgGroup args = new ArgGroup();
 
@@ -13,6 +15,21 @@ public class ComposedArg<T> extends Arg<T>
 
 	public ArgGroup getArgGroup() {
 		return args;
+	}
+
+	@Override
+	public List<String> getArgStrings()
+	{
+		return getArgGroup().getArgStrings();
+	}
+
+
+
+
+	@Override public void setDefaultFromVisual() {
+		for ( Arg<?> a : args ) {
+			a.setDefaultFromVisual();
+		}
 	}
 
 	@Override public Arg<T> clone() {

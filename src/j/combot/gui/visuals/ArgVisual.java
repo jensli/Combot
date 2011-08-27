@@ -11,7 +11,7 @@ public interface ArgVisual<T>
 
 	public Arg<T> getArg();
 
-	public void setCommandPart( Arg<T> commandPart );
+	public void setArg( Arg<T> commandPart );
 
 	public void setValidateResult( List<ValEntry> errors );
 

@@ -4,6 +4,7 @@ import j.util.util.Util;
 
 import java.util.List;
 
+
 public class NotValidator extends Validator<Object>
 {
 	private Object notObject;
@@ -12,7 +13,7 @@ public class NotValidator extends Validator<Object>
 		this.notObject = notObject;
 	}
 
-	@Override public List<ValEntry> validate( Object value ) {
+	@Override protected List<ValEntry> validateInt( Object value ) {
 		return standardValidate( Util.equals( notObject, value ), "Value can not be " + value );
 	}
 

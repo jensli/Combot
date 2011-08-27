@@ -37,7 +37,7 @@ public final class GuiUtil
 	public static void createVisual( Arg<?> arg, Composite comp, VisualFactory visualFactory )
 	{
 		GuiArgVisual<?> visual = visualFactory.make( arg );
-		visual.setCommandPart( (Arg) arg );
+		visual.setArg( (Arg) arg );
 		arg.setVisual( (ArgVisual) visual );
 		visual.makeWidget( (Arg) arg, comp, visualFactory );
 	}

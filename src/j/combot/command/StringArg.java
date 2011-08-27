@@ -12,7 +12,7 @@ public class StringArg extends Arg<String>
 	}
 
 	public StringArg( String title, String name, String defaultValue ) {
-		this( title, name, defaultValue, EMPTY_VALIDATOR );
+		this( title, name, defaultValue, Validator.EMPTY_VALIDATOR );
 	}
 
 	public StringArg( String title, String name, String defaultValue, Validator<? super String> validator ) {
