@@ -1,5 +1,6 @@
 package j.combot.app;
 
+import j.combot.command.Arg;
 import j.combot.command.ArgGroup;
 import j.combot.command.Command;
 
@@ -8,11 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Iterables;
+
 public class CommandContainer implements Iterable<Entry<Command, ArgGroup>>
 {
 	private Map<Command, ArgGroup> commands = new LinkedHashMap<>();
 
-	public void add( Command c ) {
+	public void addParent( Command c ) {
 		commands.put( c, new ArgGroup() );
 	}
 
@@ -28,7 +31,14 @@ public class CommandContainer implements Iterable<Entry<Command, ArgGroup>>
 		return commands;
 	}
 
-	@Override public Iterator<Entry<Command, ArgGroup>> iterator() {
+	public Iterable<Arg<?>> getLinear() {
+		return Iterables.concat( 
+					commands.keySet(), 
+					Iterables.concat( commands.values() ) );
+	}
+
+	@Override
+	public Iterator<Entry<Command, ArgGroup>> iterator() {
 		return commands.entrySet().iterator();
 	}
 

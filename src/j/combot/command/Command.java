@@ -11,7 +11,7 @@ public class Command extends ComposedArg<String>
 	public Command( String title, String command, Arg<?>... args )
 	{
 		super( title, command , args );
-		setVisualType( VisualTypes.STD_COMMAND_TYPE );
+		setVisualType( VisualTypes.COMMAND_TYPE );
 	}
 
 	@Override

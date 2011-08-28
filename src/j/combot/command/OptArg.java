@@ -20,7 +20,7 @@ public class OptArg extends ComposedArg<Boolean>
 		parts.addAll( childs );
 
 		setDefaultValue( def );
-		setVisualType( VisualTypes.STD_OPT_TYPE );
+		setVisualType( VisualTypes.OPT_TYPE );
 		setName( StringUtil.join( parts.getNames() , " " ) );
 	}
 

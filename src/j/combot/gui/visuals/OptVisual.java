@@ -6,8 +6,8 @@ import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
 import j.combot.command.OptArg;
-import j.combot.gui.GuiGlobals;
 import j.combot.gui.misc.GuiUtil;
+import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,7 +53,7 @@ public class OptVisual extends BaseArgVisual<Boolean>
 			comp.setLayout( new GridLayout( 2, false ) );
 			GridData compData = new GridData( FILL, LEFT, true, false );
 			compData.horizontalSpan = 2;
-			compData.horizontalIndent = (int) ( GuiGlobals.UNIT * 1.5 );
+			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
 			comp.setLayoutData( compData );
 
 			enabled.addSelectionListener( new SelectionAdapter() {

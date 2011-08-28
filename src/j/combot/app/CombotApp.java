@@ -5,8 +5,6 @@ import j.combot.app.Bootstrapper.StartMode;
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.gui.CombotGui;
-import j.combot.gui.CombotGui.NewCommandEvent;
-import j.util.functional.Action0;
 import j.util.functional.Action1;
 import j.util.process.ProcessCallback;
 import j.util.process.ProcessHandler;
@@ -51,6 +49,10 @@ public class CombotApp
 
 	}
 
+	public void deleteCmd( Command cmd ) {
+		commands.getCommands().remove( cmd );
+	}
+
 	private void loadCommands()
 	{
 		URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
@@ -67,7 +69,7 @@ public class CombotApp
 			for ( File com : comClasses ) {
 				String filename = com.getName();
 				String className = filename.substring( 0, filename.length() - ".class".length() );
-				commands.add( makeCommand( className ) );
+				commands.addParent( makeCommand( className ) );
 			}
 
 
@@ -80,14 +82,17 @@ public class CombotApp
 //		commands.add( makeCommand( "find" ) );
 	}
 
-	public static Command makeCommand( String name )
+	/**
+	 * Looks in the default package and loads the CommandFactory class with name
+	 * className, returning the Command that the factory creates.
+	 */
+	private static Command makeCommand( String className )
 	{
 			CommandFactory commandFactory;
 
 			try {
-				commandFactory = (CommandFactory) Class.forName( name ).newInstance();
-			} catch ( InstantiationException | IllegalAccessException | ClassNotFoundException exc )
-			{
+				commandFactory = (CommandFactory) Class.forName( className ).newInstance();
+			} catch ( InstantiationException | IllegalAccessException | ClassNotFoundException exc ) {
 				exc.printStackTrace();
 				throw new RuntimeException( exc );
 			}
@@ -100,7 +105,6 @@ public class CombotApp
 	{
 		logger.info( "Running" );
 		gui.run();
-
 		return ExitCode.STOP;
 	}
 
@@ -109,29 +113,28 @@ public class CombotApp
 		logger.info( "Initializing" );
 		loadCommands();
 
-		gui = new CombotGui();
+		gui = new CombotGui( this );
 
-		gui.getStartCaller().addListener( new Action0() {
-			public void run() { startCommand(); }
-		});
+//		gui.getStartCaller().addListener( new Action0() {
+//			public void run() { startCommand(); }
+//		});
+//
+//		gui.getStopCaller().addListener( new Action0() {
+//			public void run() { stopCommand(); }
+//		});
 
-		gui.getStopCaller().addListener( new Action0() {
-			public void run() { stopCommand(); }
-		});
-
-		gui.getNewCommandCaller().addListener( new Action1<NewCommandEvent>() {
-			public void run( NewCommandEvent arg ) {
-				makeNewCommand( arg.parentComamnd, arg.baseCmd, arg.newTitle );
-			}
-		} );
+//		gui.getNewCommandCaller().addListener( new Action1<NewCommandEvent>() {
+//			public void run( NewCommandEvent arg ) {
+//				makeNewCommand( arg.parentComamnd, arg.baseCmd, arg.newTitle );
+//			}
+//		} );
 
 		gui.init();
 		gui.setCommadList( commands );
 //		gui.setActiveCommand( commands.get( 2 ) );
 	}
 
-
-	private void makeNewCommand( Command parentCmd, Command baseCmd, String newTitle )
+	public void makeNewCommand( Command parentCmd, Command baseCmd, String newTitle )
 	{
 		Command newCmd = baseCmd.clone();
 		newCmd.setDefaultFromVisual();
@@ -141,7 +144,7 @@ public class CombotApp
 		gui.addChildCommand( parentCmd, newCmd );
 	}
 
-	private void stopCommand()
+	public void stopCommand()
 	{
 		logger.info( "Stopping command" );
 		processHandler.destroy();
@@ -149,7 +152,7 @@ public class CombotApp
 		gui.onCommandStopped();
 	}
 
-	private void startCommand()
+	public void startCmd()
 	{
 		Command cmd = gui.getActiveCmd();
 		logger.info( "Running command: " + cmd );

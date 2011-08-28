@@ -5,10 +5,10 @@ import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
 import j.combot.command.ValEntry;
-import j.combot.gui.GuiGlobals;
 import j.combot.gui.misc.ErrorIndicator;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
+import j.swt.util.SwtStdValues;
 import j.util.caller.GenericCaller;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valueControl = makeValueWidget( arg, parent, parent );
 		valueControl.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 
-		errorIndicator.setFont( GuiGlobals.SMALL_FONT );
+		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
 
 		// Error indication
 		new Label( parent, NONE ); // Empty label to take up a cell

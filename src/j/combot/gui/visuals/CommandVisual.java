@@ -4,7 +4,7 @@ import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
-import j.combot.gui.GuiGlobals;
+import j.swt.util.SwtStdValues;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,11 +23,11 @@ public class CommandVisual extends BaseArgVisual<String> {
 		page.setLayout( pageLayout );
 
 		Label title = new Label( page, NONE );
-		title.setFont( GuiGlobals.TITLE_FONT );
+		title.setFont( SwtStdValues.TITLE_FONT );
 		title.setText( cmd.getTitle() );
 
 		Label name = new Label( page, NONE );
-		name.setFont( GuiGlobals.BIG_FONT );
+		name.setFont( SwtStdValues.BIG_FONT );
 		name.setText( " (" + cmd.getName() + ")" );
 	}
 

@@ -17,7 +17,7 @@ public class StringArg extends Arg<String>
 
 	public StringArg( String title, String name, String defaultValue, Validator<? super String> validator ) {
 		super( title, name, defaultValue, validator );
-		setVisualType( VisualTypes.STD_STRING_TYPE );
+		setVisualType( VisualTypes.STRING_TYPE );
 	}
 
 }

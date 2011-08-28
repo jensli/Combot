@@ -11,7 +11,7 @@ public class IntArg extends Arg<Integer>
 	private int min, max;
 
 	{
-		setVisualType( VisualTypes.STD_INT_TYPE );
+		setVisualType( VisualTypes.INT_TYPE );
 	}
 
 	public IntArg( String title, String name, int min, int max, int defaultValue )

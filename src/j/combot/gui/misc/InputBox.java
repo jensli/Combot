@@ -9,7 +9,7 @@ import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.SEPARATOR;
 import j.combot.command.ValEntry;
 import j.combot.command.Validator;
-import j.combot.gui.GuiGlobals;
+import j.swt.util.SwtStdValues;
 import j.util.functional.Action0;
 
 import java.util.List;
@@ -86,9 +86,9 @@ public class InputBox extends Dialog
 		dialog = new Shell( getParent(), getStyle() );
 		dialog.setText( getText() );
 		FormLayout formLayout = new FormLayout();
-		formLayout.marginWidth = GuiGlobals.SPACING;
-		formLayout.marginHeight = GuiGlobals.SPACING;
-		formLayout.spacing = GuiGlobals.SPACING;
+		formLayout.marginWidth = SwtStdValues.SPACING;
+		formLayout.marginHeight = SwtStdValues.SPACING;
+		formLayout.spacing = SwtStdValues.SPACING;
 		dialog.setLayout( formLayout );
 
 		Label label = new Label( dialog, NONE );
@@ -99,7 +99,7 @@ public class InputBox extends Dialog
 		ok = new Button( dialog, PUSH );
 		ok.setText( "OK" );
 		data = new FormData();
-		data.width = GuiGlobals.UNIT * 5;
+		data.width = SwtStdValues.BUTTON_WIDTH;
 		data.right = new FormAttachment( 100, 0 );
 		data.bottom = new FormAttachment( 100, 0 );
 		ok.setLayoutData( data );
@@ -107,7 +107,7 @@ public class InputBox extends Dialog
 		Button cancel = new Button( dialog, PUSH );
 		cancel.setText( "Cancel" );
 		data = new FormData();
-		data.width = GuiGlobals.UNIT * 5;
+		data.width = SwtStdValues.BUTTON_WIDTH;
 		data.right = new FormAttachment( ok, 0, DEFAULT );
 		data.bottom = new FormAttachment( 100, 0 );
 		cancel.setLayoutData( data );

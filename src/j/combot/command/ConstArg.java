@@ -15,7 +15,7 @@ public class ConstArg extends Arg<String>
 	{
 		super( title, name );
 		this.value = value;
-		setVisualType( VisualTypes.STD_NULL_TYPE );
+		setVisualType( VisualTypes.NULL_TYPE );
 	}
 
 	@Override

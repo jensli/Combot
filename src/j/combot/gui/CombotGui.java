@@ -14,6 +14,7 @@ import static org.eclipse.swt.SWT.SINGLE;
 import static org.eclipse.swt.SWT.TOP;
 import static org.eclipse.swt.SWT.V_SCROLL;
 import j.combot.Globals;
+import j.combot.app.CombotApp;
 import j.combot.app.CommandContainer;
 import j.combot.command.Arg;
 import j.combot.command.ArgGroup;
@@ -28,19 +29,23 @@ import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
+import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
-import j.util.caller.BasicCaller;
-import j.util.caller.BasicCaller0;
-import j.util.caller.Caller;
 import j.util.functional.Action0;
+import j.util.tree.TreeImpl;
+import j.util.util.Asserts;
+import j.util.util.Util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -88,16 +93,16 @@ public class CombotGui
 
 	private final VisualFactory visualFactory;
 
-	private BasicCaller0
-		startCaller = new BasicCaller0(),
-		stopCaller = new BasicCaller0();
+//	private BasicCaller0
+//		startCaller = new BasicCaller0(),
+//		stopCaller = new BasicCaller0();
 
-	private BasicCaller<NewCommandEvent> defaultCommandCaller = new BasicCaller<>();
+//	private BasicCaller<NewCommandEvent> defaultCommandCaller = new BasicCaller<>();
 
 	@SuppressWarnings( "unused" )
 //	private List<Command> commands;
 
-	private ArgGroup commands;
+	private CommandContainer commands;
 
 	@SuppressWarnings( "unused" )
 	private boolean isCommandRunning = false;
@@ -127,20 +132,28 @@ public class CombotGui
 		}
 	};
 
+	private CombotApp app;
+	private StackLayout cmdStackLayout;
 
-	public CombotGui() {
+
+	public CombotGui( CombotApp app ) {
 		visualFactory = new VisualFactory();
+		this.app = app;
 	}
 
 	public Command getActiveCmd() {
-		return (Command) tree.getSelection()[ 0 ].getData();
+		return ((CommandData) tree.getSelection()[ 0 ].getData()).cmd;
+	}
+
+	public CommandData getActiveCmdData() {
+		return (CommandData) tree.getSelection()[ 0 ].getData();
 	}
 
 	public void init()
 	{
 		Display.setAppName( Globals.APP_NAME );
 		display = new Display();
-		GuiGlobals.init( display );
+		SwtStdValues.init( display );
 
 		visualFactory.addValidationListener( valLis );
 
@@ -173,7 +186,7 @@ public class CombotGui
 	{
 		display.syncExec( new Runnable() {
 			public void run() {
-				SwtUtil.appendStyled( outputText, line + "\n", GuiGlobals.RED );
+				SwtUtil.appendStyled( outputText, line + "\n", SwtStdValues.RED );
 //				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
@@ -198,56 +211,108 @@ public class CombotGui
 		for ( Entry<Command, ArgGroup> parent : commands ) {
 			addCommand( parent.getKey() );
 			for ( Arg<?> a : parent.getValue() ) {
-				addChildCommand( parent.getKey(), a );
+				addChildCommand( parent.getKey(), (Command) a );
 			}
 		}
 	}
 
-	public void addChildCommand( Command parent, Arg<?> child )
+	private void initCmd( TreeItem item, Command cmd, j.util.tree.Tree<CommandData> parent )
 	{
-		for ( TreeItem i : tree.getItems() ) {
-			if ( i.getData().equals( parent ) ) {
-				TreeItem c = new TreeItem( i, NONE );
-				c.setText( child.getTitle() );
-				c.setData( child );
-				return;
-			}
-		}
-
-		throw new NoSuchElementException( "Parent command do not exist in gui" );
+		item.setText( cmd.getTitle() );
+		Composite panel = makeCommandPanel( cmd, commandPanel );
+		CommandData cData = new CommandData( cmd, panel, item );
+		parent.add( cData  );
+		item.setData( cData );
 	}
+
+	public void addChildCommand( Command parent, Command child )
+	{
+		j.util.tree.Tree<CommandData> p = cmdData.findSubtree( parent );
+		CommandData parentData = p.getRoot();
+		Asserts.notNull( parentData, "Parent command do not exist in gui" );
+
+		TreeItem childItem = new TreeItem( parentData.item, NONE );
+
+		initCmd( childItem, child, p  );
+		tree.setSelection( childItem );
+
+//		childItem.setText( child.getTitle() );
+//		Composite panel = makeCommandPanel( child, commandPanel );
+//		CommandData cData = new CommandData( child, panel, childItem );
+//		cmdData.add( cData  );
+//		childItem.setData( cData );
+
+
+
+
+//		for ( TreeItem item : tree.getItems() ) {
+//			if ( item.getData().equals( parent ) ) {
+//				TreeItem c = new TreeItem( item, NONE );
+//				c.setText( child.getTitle() );
+//				c.setData( child );
+//				tree.setSelection( c );
+//
+//				Composite panel = makeCommandPanel( child, commandPanel );
+//				cmdData.add( new CommandData( child, panel, c )  );
+//
+//				return;
+//			}
+//		}
+
+	}
+
+//	private void initTreeItem( Item
 
 	public void addCommand( Command cmd )
 	{
-		TreeItem p = new TreeItem( tree, NONE );
-		p.setText( cmd.getTitle() );
-		p.setData( cmd );
+		TreeItem item = new TreeItem( tree, NONE );
+		initCmd( item, cmd, cmdData );
 	}
 
-//	private TreeItem addCommand( TreeItem parent, Arg<?> c )
-//	{
-//		TreeItem item = new TreeItem( tree, NONE );
-//		item.setText( c.getTitle() );
-//		item.setData( c );
-//
-//		return item;
-//	}
 
 	// Switches to a new command panel, creating all the widgets.
-	public void switchActiveCommand( Command cmd )
+	public void switchActiveCommand( CommandData cmd )
 	{
-		if ( commandPanel != null ) {
-			commandPanel.dispose();
+//		if ( commandPanel != null ) {
+//			commandPanel.dispose();
+//		}
+//
+//		commandPanel = makeCommandPanel( cmd, rightPanel );
+//		commandPanel.setLayoutData( new GridData( FILL, TOP, true, false ) );
+//		commandPanel.moveAbove( rightPanel.getChildren()[ 0 ] );
+
+		cmdStackLayout.topControl =  cmd.page;
+		commandPanel.layout();
+	}
+
+	j.util.tree.Tree<CommandData> cmdData = new TreeImpl<>( new CmdCmp() );
+
+	static class CommandData {
+
+		public CommandData( Command cmd, Composite page, TreeItem item ) {
+			this.cmd = cmd;
+			this.page = page;
+			this.item = item;
 		}
 
-		commandPanel = makeCommandPanel( cmd, rightPanel );
-		commandPanel.setLayoutData( new GridData( FILL, TOP, true, false ) );
-		commandPanel.moveAbove( rightPanel.getChildren()[ 0 ] );
-		rightPanel.layout();
+		public Command cmd;
+		public Composite page;
+		public TreeItem item;
+
+		public static List<Command> getCmds( Collection<CommandData> l ) {
+			List<Command> rl = new ArrayList<>();
+			for ( CommandData cd : l ) {
+				rl.add( cd.cmd );
+			}
+			return rl;
+		}
 	}
+
 
 	private Composite makeGui( Composite parent )
 	{
+		cmdData.setRoot( null );
+
 		Composite gui = new Composite( parent, NONE );
 		gui.setLayout( new GridLayout( 2, false ) );
 //		gui.setLayout( new RowLayout() );
@@ -259,6 +324,15 @@ public class CombotGui
 		rightPanel = new Composite( gui, NONE );
 		rightPanel.setLayout( new GridLayout( 1, false ) );
 		rightPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
+
+		commandPanel = new Composite( rightPanel, NONE );
+		commandPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
+		cmdStackLayout = new StackLayout();
+		commandPanel.setLayout( cmdStackLayout );
+
+//		for ( Arg<?> cmd : commands.getLinear() ) {
+//			makeCommandPanel( (Command) cmd, commandPanel );
+//		}
 
 		Label argButtonSep = new Label( rightPanel, SEPARATOR | HORIZONTAL );
 		argButtonSep.setLayoutData( new GridData( FILL, TOP, true, false ) );
@@ -286,7 +360,7 @@ public class CombotGui
 		ToolBar toolBar = new ToolBar( panel, NONE );
 
 		ToolItem saveItem = new ToolItem( toolBar, PUSH );
-		saveItem.setText( "Save as defaults" );
+		saveItem.setText( "Save as new" );
 		saveItem.addSelectionListener( new SelectionAdapter() {
 			@Override public void widgetSelected( SelectionEvent e ) {
 				startCreateDefaults();
@@ -298,7 +372,7 @@ public class CombotGui
 		delItem.setText( "Delete" );
 		delItem.addSelectionListener( new SelectionAdapter() {
 			@Override public void widgetSelected( SelectionEvent e ) {
-				deleteCurrent();
+				delCurrentCmd();
 			}
 		} );
 
@@ -306,7 +380,7 @@ public class CombotGui
 			public void widgetSelected( SelectionEvent e ) {
 				TreeItem i = (TreeItem) e.item;
 				delItem.setEnabled( i.getParentItem() != null );
-				switchActiveCommand( (Command) i.getData() );
+				switchActiveCommand( (CommandData) i.getData() );
 			}
 		} );
 
@@ -329,23 +403,36 @@ public class CombotGui
 		return panel;
 	}
 
-	private void deleteCurrent() {
-
+	private void delCurrentCmd()
+	{
+		Command cmdToDel = getActiveCmd();
+		switchActiveCommand( cmdData.findSubtree( cmdToDel ).getParent().getRoot() );
+		tree.getSelection()[ 0 ].dispose();
+		app.deleteCmd( cmdToDel );
 	}
 
 	private void saveCurrentDefaults()
 	{
 		if ( !defaultsNameBox.isOk() ) return;
+
 		String newTitle = defaultsNameBox.getResult();
-		getNewCommandCaller().call(
-				new NewCommandEvent( getActiveCmdParent(), getActiveCmd(), newTitle ) );
+		app.makeNewCommand( getActiveCmdParent(), getActiveCmd(), newTitle );
+//		getNewCommandCaller().call(
+//				new NewCommandEvent( getActiveCmdParent(), getActiveCmd(), newTitle ) );
 	}
 
+	/**
+	 * Gets the currently parent of the currently selected command. The parent
+	 * of top level command is considered to be it self.
+	 */
 	private Command getActiveCmdParent()
 	{
-		TreeItem i = tree.getSelection()[ 0 ];
-		i = i.getParentItem() == null ? i : i.getParentItem();
-		return (Command) i.getData();
+		TreeItem i = tree.getSelection()[ 0 ],
+				parent = i.getParentItem();
+		// If there is a parent choose that, else i itself
+		i = parent == null ? i : parent;
+
+		return ((CommandData) i.getData()).cmd;
 	}
 
 	public class NewCommandEvent {
@@ -411,17 +498,18 @@ public class CombotGui
 		controls = new Composite( panel, NONE );
 		RowLayout buttonLayout = new RowLayout( HORIZONTAL );
 		buttonLayout.pack = false;
-		buttonLayout.spacing = GuiGlobals.SPACING;
+		buttonLayout.spacing = SwtStdValues.SPACING;
 		controls.setLayout( buttonLayout );
 
 		// Start button
 		startButton = new Button( controls, PUSH );
 		startButton.setText( "Start" );
-		startButton.setLayoutData( new RowData( GuiGlobals.FONT_HEIGHT * 5, DEFAULT ) );
+		startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
 
 		startButton.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected( SelectionEvent e ) {
-				startCaller.call();
+				app.startCmd();
+//				startCaller.call();
 			}
 		});
 
@@ -431,7 +519,10 @@ public class CombotGui
 		stopButton.setEnabled( false );
 
 		stopButton.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected( SelectionEvent e ) { stopCaller.call(); }
+			public void widgetSelected( SelectionEvent e ) {
+				app.stopCommand();
+//				stopCaller.call();
+			}
 		});
 
 		// Status labels
@@ -505,37 +596,54 @@ public class CombotGui
 		display.dispose();
 	}
 
-	public Caller<Action0> getStartCaller() {
-		return startCaller;
-	}
-
-	public Caller<Action0> getStopCaller() {
-		return stopCaller;
-	}
-
-	public BasicCaller<NewCommandEvent> getNewCommandCaller() {
-		return defaultCommandCaller;
-	}
+//	public Caller<Action0> getStartCaller() {
+//		return startCaller;
+//	}
+//
+//	public Caller<Action0> getStopCaller() {
+//		return stopCaller;
+//	}
+//
+//	public BasicCaller<NewCommandEvent> getNewCommandCaller() {
+//		return defaultCommandCaller;
+//	}
 
 	private void startCreateDefaults()
 	{
-		TreeItem item = tree.getSelection()[0],
-				parent = item.getParentItem();
+//		Command c = getActiveCmd();
+//
+//		j.util.tree.Tree<CommandData> cmdTree = cmdData.findSubtree( c );
+//
+//		TreeItem item = tree.getSelection()[ 0 ],
+//				parent = item.getParentItem();
+//
+//		if ( parent == null ) parent = item;
 
-		if ( parent == null ) parent = item;
-
-
-
-		List<Command> list = SwtUtil.getData( parent.getItems() );
-		list.add( (Command) parent.getData() );
+		List<String> list = new ArrayList<>();
+		for ( CommandData cda : Iterables.skip( cmdData, 1 ) ) {
+			list.add( cda.cmd.getTitle() );
+		}
 
 		defaultsNameBox.setValidator(
 				new CombinedValidator<>(
 						Validator.EMPTY_VALIDATOR,
-						new EnumValidator( new ArgGroup( list ).getTitles(), true ) ) );
+						new EnumValidator( list, true ) ) );
 
 		defaultsNameBox.open();
 	}
+
+	private class CmdCmp implements Comparator<Object>{
+		@Override
+		public int compare( Object o1, Object o2 )
+		{
+			if ( o1 instanceof CommandData ) o1 = ((CommandData) o1).cmd;
+			if ( o2 instanceof CommandData ) o2 = ((CommandData) o2).cmd;
+
+			return Util.equals( o1, o2 ) ? 0 : 1;
+		}
+
+	}
+
 
 }
 
