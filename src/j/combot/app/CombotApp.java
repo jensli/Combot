@@ -5,19 +5,25 @@ import j.combot.app.Bootstrapper.StartMode;
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.gui.CombotGui;
+import j.combot.gui.CommandData;
 import j.util.functional.Action1;
+import j.util.prefs.PrefUtil;
 import j.util.process.ProcessCallback;
 import j.util.process.ProcessHandler;
 import j.util.util.StringUtil;
 import j.util.util.Util;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
 
 public class CombotApp
 {
@@ -26,61 +32,115 @@ public class CombotApp
 
 	private CombotGui gui;
 
-	private CommandContainer commands = new CommandContainer();
+//	private CommandContainer commands = new CommandContainer();
 
 	private ProcessHandler processHandler;
 
-	private ProcessCallback processCallback = new ProcessCallback() {
+	private static final String COMMAND_CHILDS = "command_childs";
 
-		public void receiveOutput( String line ) {
-			gui.receiveOutput( line );
-		}
+	private Preferences rootPrefs = Preferences.userNodeForPackage( getClass() ),
+			childCmdPrefs = rootPrefs.node( COMMAND_CHILDS );
 
-		public void receiveError( String line ) {
-			gui.receiveError( line );
-		}
 
-		public void signalTerminated( int code ) {
-			gui.signalTerminated( code );
-		}
-	};
+	private ProcessCallback processCallback;
 
 	public CombotApp( StartArgs args ) {
-
 	}
 
-	public void deleteCmd( Command cmd ) {
-		commands.getCommands().remove( cmd );
+	public static Collection<Command> loadCmdPrefs( Preferences prefs, Command cmd ) throws BackingStoreException
+	{
+		Preferences cmdPrefs = prefs.node( cmd.getTitle() );
+
+		List<Command> result = new ArrayList<>();
+
+		for ( String childName : cmdPrefs.childrenNames() ) {
+
+			Command childCmd = cmd.clone();
+			childCmd.setTitle( childName );
+
+			PrefUtil.loadTree( cmdPrefs, childCmd );
+
+			result.add( childCmd );
+		}
+
+		return result;
 	}
 
-	private void loadCommands()
+
+	public void onQuit( CommandData cmds )
+	{
+		logger.info( "Quitting" );
+		savePrefs( cmds );
+	}
+
+	private void savePrefs( CommandData cmds )
+	{
+		try {
+			childCmdPrefs.removeNode();
+			childCmdPrefs = rootPrefs.node( COMMAND_CHILDS );
+
+			saveCmdsPrefs( childCmdPrefs, cmds );
+
+			childCmdPrefs.flush();
+			logger.info( "Preferances saved" );
+		} catch ( BackingStoreException exc ) {
+			logger.warning( "Error when saving preferances: " +
+					Util.exceptionToString( exc ) );
+		}
+	}
+
+	public static void saveCmdsPrefs( Preferences prefs, CommandData cmds ) throws BackingStoreException
+	{
+		for ( CommandData cmdData : cmds.getChildren() ) {
+			for ( CommandData d : cmdData.getChildren() ) {
+				Preferences cmdChildPrefs = prefs.node( cmdData.cmd.getTitle() );
+				PrefUtil.saveTree( cmdChildPrefs, d.cmd );
+			}
+		}
+	}
+
+
+	private void loadCmds()
 	{
 		URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+		File[] comClasses;
 
 		try {
 			File path = new File( url.toURI() );
-
-			File[] comClasses = path.listFiles( new FilenameFilter() {
-				public boolean accept( File dir, String name ) {
-					return name.endsWith( ".class" );
-				}
-			} );
-
-			for ( File com : comClasses ) {
-				String filename = com.getName();
-				String className = filename.substring( 0, filename.length() - ".class".length() );
-				commands.addParent( makeCommand( className ) );
-			}
-
-
+			comClasses = path.listFiles( Util.sufixFileFilter( ".class" ) );
 		} catch ( URISyntaxException exc ) {
 			logger.warning( "Error while reading commands: " + exc );
+			return;
 		}
 
-//		commands.add( makeCommand( "grep" ) );
-//		commands.add( makeCommand( "ls" ) );
-//		commands.add( makeCommand( "find" ) );
+		List<Command> cmds = new ArrayList<>();
+
+		for ( File com : comClasses ) {
+			String filename = com.getName();
+			String className = filename.substring( 0, filename.length() - ".class".length() );
+			cmds.add( makeCommand( className ) );
+		}
+
+		for ( Command cmd : cmds ) {
+			gui.addCommand( cmd );
+
+			try {
+				Collection<Command> childCmds = loadCmdPrefs( childCmdPrefs, cmd );
+
+				for ( Command child : childCmds ) {
+					gui.addChildCommand( cmd, child );
+				}
+
+			} catch ( BackingStoreException exc ) {
+				logger.warning( "Error while reading default values: "
+						+ Util.exceptionToString( exc ) );
+			}
+		}
+
+
+
 	}
+
 
 	/**
 	 * Looks in the default package and loads the CommandFactory class with name
@@ -111,7 +171,13 @@ public class CombotApp
 	public void init( StartMode mode )
 	{
 		logger.info( "Initializing" );
-		loadCommands();
+//		try {
+//			rootPrefs.removeNode();
+//		} catch ( BackingStoreException exc ) {
+//			// TODO Auto-generated catch block
+//			exc.printStackTrace();
+//			throw new RuntimeException( exc );
+//		}
 
 		gui = new CombotGui( this );
 
@@ -130,23 +196,23 @@ public class CombotApp
 //		} );
 
 		gui.init();
-		gui.setCommadList( commands );
+		loadCmds();
+//		gui.setCommadList( commands );
 //		gui.setActiveCommand( commands.get( 2 ) );
 	}
 
 	public void makeNewCommand( Command parentCmd, Command baseCmd, String newTitle )
 	{
 		Command newCmd = baseCmd.clone();
-		newCmd.setDefaultFromVisual();
 		newCmd.setTitle( newTitle );
+		newCmd.setDefaultFromVisual();
 
-		commands.addChild( parentCmd, newCmd );
 		gui.addChildCommand( parentCmd, newCmd );
 	}
 
 	public void stopCommand()
 	{
-		logger.info( "Stopping command" );
+		logger.info( "Command forcefully stopped" );
 		processHandler.destroy();
 		processHandler = null;
 		gui.onCommandStopped();
@@ -192,5 +258,23 @@ public class CombotApp
 		gui.dispose();
 	}
 
+
+	{
+		processCallback = new ProcessCallback() {
+
+			public void receiveOutput( String line ) {
+				gui.receiveOutput( line );
+			}
+
+			public void receiveError( String line ) {
+				gui.receiveError( line );
+			}
+
+			public void signalTerminated( int code ) {
+				gui.signalTerminated( code );
+			}
+		};
+
+	}
 
 }

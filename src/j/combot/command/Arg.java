@@ -2,57 +2,46 @@ package j.combot.command;
 
 import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualType;
+import j.util.prefs.PrefNodeName;
+import j.util.prefs.PrefValue;
+import j.util.tree2.TreeItem;
 import j.util.util.Util;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Arg<T> implements Cloneable
+public abstract class Arg<T> extends TreeItem<Object, Arg<?>> implements Cloneable
 {
 	// Pay attention to cloning when adding more fields
 
+	// The value that is set to the visual when the arg is loaded.
+	@PrefValue
 	private T defaultValue;
+
+	// The text used to present the Arg in the gui.
+	@PrefNodeName
+	private String title;
+
+	// Used as the acctual arg name, often in the form "-name"
+	private String name;
+
+	// prefix is prepended to arg when it is created, sufix if appended.
+	private String
+		valuePrefix, valueSufix;
+
+	// Decides whethere the value in the visual is valid, or returns a list of
+	// errors. Often run when value in visual changes.
 	private Validator<? super T> validator;
 
-	private String
-		title,
-		name;
-
+	// The visual repersentation of the arg, used to get the value.
+	// Set by the gui using the visualType.
 	private ArgVisual<T> visual;
+
+	// Read by the gui to decide which kind of visual to create for the arg.
 	private VisualType<T> visualType;
 
-	public String getTitle() {
-		return title;
-	}
 
-	public String getName() {
-		return name;
-	}
-
-	public ArgVisual<T> getVisual() {
-		return visual;
-	}
-
-	public void setVisual( ArgVisual<T> visual ) {
-		this.visual = visual;
-	}
-
-	public VisualType<T> getVisualType() {
-		return visualType;
-	}
-
-	public void setVisualType( VisualType<T> visualType ) {
-		this.visualType = visualType;
-	}
-
-	public void setTitle( String title ) {
-		this.title = title;
-	}
-
-	public void setName( String name ) {
-		this.name = name;
-	}
 
 	public Arg( String title, String name  )
 	{
@@ -101,28 +90,71 @@ public abstract class Arg<T> implements Cloneable
 
 	@Override
 	public String toString() {
-		return Util.simpleToString( this, getName() );
+		return Util.simpleToString( this, getTitle(), getDefaultValue() );
 	}
 
 	public T getDefaultValue() {
 		return defaultValue;
 	}
 
-	@SuppressWarnings( "unchecked" )
-	public Arg<T> clone() {
-		try {
-			Arg<T> res;
-			res = (Arg<T>) super.clone();
-			// Reference to visual is shared
-//			res.visual = null;
-			return res;
-		} catch ( CloneNotSupportedException exc ) {
-			throw new RuntimeException( exc );
-		}
+//	@SuppressWarnings( "unchecked" )
+//	public Arg<T> clone() {
+//			Arg<T> res;
+//			res = (Arg<T>) super.clone();
+//			// Reference to visual is shared
+////			res.visual = null;
+//			return res;
+//	}
+
+
+	public String getTitle() {
+		return title;
 	}
 
-//	public Arg<T> copy() {
-//		return new Arg<>( title, name, defaultValue, validator );
-//	}
+	public String getName() {
+		return name;
+	}
+
+	public ArgVisual<T> getVisual() {
+		return visual;
+	}
+
+	public void setVisual( ArgVisual<T> visual ) {
+		this.visual = visual;
+	}
+
+	public VisualType<T> getVisualType() {
+		return visualType;
+	}
+
+	public void setVisualType( VisualType<T> visualType ) {
+		this.visualType = visualType;
+	}
+
+	public void setTitle( String title ) {
+		this.title = title;
+	}
+
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public String getValuePrefix() {
+		return valuePrefix;
+	}
+
+	public void setValuePrefix( String valuePrefix ) {
+		this.valuePrefix = valuePrefix;
+	}
+
+	public String getValueSufix() {
+		return valueSufix;
+	}
+
+	public void setValueSufix( String valueSufix ) {
+		this.valueSufix = valueSufix;
+	}
+
+
 
 }

@@ -16,7 +16,7 @@ public class Command extends ComposedArg<String>
 
 	@Override
 	public String toString() {
-		return Util.simpleToString( this, getName(), getArgGroup().getArgs() );
+		return Util.simpleToString( this, getTitle(), getChildren() );
 	}
 
 	@Override public List<ValEntry> validate() {

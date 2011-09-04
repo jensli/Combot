@@ -78,7 +78,7 @@ public class InputBox extends Dialog
 		dialog.setVisible( true );
 		inputText.setSelection( 0, inputText.getCharCount() );
 		inputText.setFocus();
-		setValidateResult();
+		setValidateResult( false );
 	}
 
 	private void make()
@@ -141,7 +141,7 @@ public class InputBox extends Dialog
 
 		inputText.addModifyListener( new ModifyListener() {
 			@Override public void modifyText( ModifyEvent e ) {
-				setValidateResult();
+				setValidateResult( true );
 			}
 		} );
 
@@ -173,23 +173,17 @@ public class InputBox extends Dialog
 	}
 
 
-	private void setValidateResult()
+	private void setValidateResult( boolean updateIndicator )
 	{
 		List<ValEntry> errors = validator.validate( getValue() );
-
 		ok.setEnabled( errors.isEmpty() );
 
-		if ( errors.isEmpty() ) {
-			errorIndicator.clearError();
-//			valueControl.setToolTipText( "" );
-		} else {
-			errorIndicator.setError( errors.get( 0 ).message );
-//			String tip = "";
-//			for ( ValEntry e : errors ) {
-//				tip = tip + e.message + "\n";
-//			}
-//			// TODO: Set tooltip on validator control also?
-//			valueControl.setToolTipText( tip );
+		if ( updateIndicator ) {
+			if ( errors.isEmpty() ) {
+				errorIndicator.clearError();
+			} else {
+				errorIndicator.setError( errors.get( 0 ).message );
+			}
 		}
 	}
 
@@ -204,6 +198,7 @@ public class InputBox extends Dialog
 		result = getValue();
 //		if ( close ) dialog.close();
 		dialog.setVisible( false );
+		errorIndicator.clearError();
 		resultCallback.run();
 	}
 

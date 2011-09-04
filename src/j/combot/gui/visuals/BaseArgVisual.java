@@ -114,7 +114,12 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		}
 	}
 
-//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
+	@Override
+	public Control getValueControl() {
+		return valueControl;
+	}
+
+	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
 	@SuppressWarnings( "static-method" )
 	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
 	{

@@ -7,13 +7,14 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+// Make a annotation processor that creates classes like this?
 public class ArgGroup implements Iterable<Arg<?>>
 {
-	private List<Arg<?>> args;
+	private Collection<Arg<?>> args;
 
-	public ArgGroup( List<? extends Arg<?>> childs )
+	public ArgGroup( Collection<Arg<?>> childs )
 	{
-		this.args = new ArrayList<>( childs );
+		this.args = childs;
 	}
 
 	public ArgGroup( Arg<?>... args ) {
@@ -34,19 +35,21 @@ public class ArgGroup implements Iterable<Arg<?>>
 		}
 	}
 
-
-
 	public boolean isEmpty() {
 		return args.isEmpty();
 	}
 
-	public List<Arg<?>> getArgs() {
+	public Collection<Arg<?>> getArgs() {
 		return args;
 	}
 
 
 	public ArgGroup() {
 		this( new ArrayList<Arg<?>>( 2 ) );
+	}
+
+	public void setArgs( Collection<Arg<?>> args ) {
+		this.args = args;
 	}
 
 	public List<ValEntry> validate()
@@ -85,7 +88,6 @@ public class ArgGroup implements Iterable<Arg<?>>
 		return result;
 	}
 
-
 	private <S> List<S> makeResultList() {
 		return new ArrayList<>( args.size() );
 	}
@@ -98,7 +100,7 @@ public class ArgGroup implements Iterable<Arg<?>>
 	public ArgGroup clone() {
 		List<Arg<?>> result = makeResultList();
 		for ( Arg<?> a : args ) {
-			result.add( a.clone() );
+			result.add( (Arg<?>) a.clone() );
 		}
 		return new ArgGroup( result );
 	}

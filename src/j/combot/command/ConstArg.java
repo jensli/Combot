@@ -9,17 +9,15 @@ public class ConstArg extends Arg<String>
 {
 	// Super class clone method is sufficient
 
-	private String value;
-
 	public ConstArg( String title, String name, String value )
 	{
 		super( title, name );
-		this.value = value;
 		setVisualType( VisualTypes.NULL_TYPE );
+		setDefaultValue( value );
 	}
 
 	@Override
 	public List<String> getArgStrings() {
-		return Collections.singletonList( value );
+		return Collections.singletonList( getDefaultValue() );
 	}
 }

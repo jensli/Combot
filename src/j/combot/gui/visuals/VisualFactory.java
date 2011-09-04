@@ -1,7 +1,7 @@
 package j.combot.gui.visuals;
 
 import j.combot.command.Arg;
-import j.combot.gui.VisFactEntry;
+import j.combot.gui.VisFact;
 import j.combot.gui.misc.ValidationListener;
 
 import java.util.ArrayList;
@@ -11,18 +11,17 @@ import java.util.Map;
 
 
 
-public class VisualFactory {
-
-//	@SuppressWarnings( "rawtypes" )
+public class VisualFactory
+{
 	private Map<VisualType<?>, VisFact<?>> map = new HashMap<>();
 
 	private List<ValidationListener> validationListeners = new ArrayList<>( 1 );
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
-	public void addAll( VisFactEntry<?>[] facts )
+	public void addAll( VisFact<?>[] facts )
 	{
-		for ( VisFactEntry<?> e : facts ) {
-			add( (VisualType) e.type, (VisFact) e.fact );
+		for ( VisFact<?> e : facts ) {
+			add( (VisualType) e.getType(), e );
 		}
 	}
 
@@ -34,13 +33,12 @@ public class VisualFactory {
 		map.put( type, fact );
 	}
 
-
 	public <T> GuiArgVisual<T> make( Arg<T> arg )
 	{
-		VisFact<?> visualFact = map.get( arg.getVisualType() );
-
 		@SuppressWarnings( "unchecked" )
-		GuiArgVisual<T> v = (GuiArgVisual<T>)  visualFact.make();
+		VisFact<T> visualFact = (VisFact<T>) map.get( arg.getVisualType() );
+
+		GuiArgVisual<T> v = visualFact.make();
 
 		arg.setVisual( v );
 		for ( ValidationListener l : validationListeners ) {
@@ -49,3 +47,10 @@ public class VisualFactory {
 		return v;
 	};
 }
+
+
+
+
+
+
+
