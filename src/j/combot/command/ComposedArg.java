@@ -1,19 +1,28 @@
 package j.combot.command;
 
-import java.util.Arrays;
+import j.util.prefs.PrefNodeCollection;
+
+import java.util.Collection;
 import java.util.List;
 
 
 public abstract class ComposedArg<T> extends Arg<T>
 {
+	@PrefNodeCollection
+	private ArgGroup argGroup = new ArgGroup();
+
 	public ComposedArg( String title, String name, Arg<?>... args )
 	{
 		super( title, name );
-		addChildren( Arrays.asList( args ) );
+		argGroup.addAll( args );
 	}
 
 	public ArgGroup getArgGroup() {
-		return new ArgGroup( getChildren() );
+		return argGroup;
+	}
+
+	public Collection<Arg<?>> getChildren() {
+		return argGroup.getArgs();
 	}
 
 	@Override
@@ -28,5 +37,14 @@ public abstract class ComposedArg<T> extends Arg<T>
 			a.setDefaultFromVisual();
 		}
 	}
+
+	@Override
+	public Arg<T> clone()
+	{
+		ComposedArg<T> cl = (ComposedArg<T>) super.clone();
+		cl.argGroup = argGroup.clone();
+		return cl;
+	}
+
 
 }

@@ -81,7 +81,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 			String tip = "";
 			for ( ValEntry e : errors ) {
-				tip = tip + e.message + "\n";
+				tip += e.message + "\n";
 			}
 			// TODO: Set tooltip on validator control also?
 			valueControl.setToolTipText( tip );

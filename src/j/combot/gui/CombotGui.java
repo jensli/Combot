@@ -536,7 +536,7 @@ public class CombotGui
 
 				String toolTip = errorMap.isEmpty() ?  "" : "Can not start because of errors";
 				for ( ValEntry en : Iterables.concat( errorMap.values() ) ) {
-					toolTip = toolTip + "\n" + en.sender.getTitle() + ": " + en.message;
+					toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
 				}
 
 				controls.setToolTipText( toolTip );

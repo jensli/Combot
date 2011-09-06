@@ -58,7 +58,7 @@ public class CombotApp
 			Command childCmd = cmd.clone();
 			childCmd.setTitle( childName );
 
-			PrefUtil.loadTree( cmdPrefs, childCmd );
+			PrefUtil.load( cmdPrefs, childCmd );
 
 			result.add( childCmd );
 		}
@@ -94,7 +94,7 @@ public class CombotApp
 		for ( CommandData cmdData : cmds.getChildren() ) {
 			for ( CommandData d : cmdData.getChildren() ) {
 				Preferences cmdChildPrefs = prefs.node( cmdData.cmd.getTitle() );
-				PrefUtil.saveTree( cmdChildPrefs, d.cmd );
+				PrefUtil.save( cmdChildPrefs, d.cmd );
 			}
 		}
 	}

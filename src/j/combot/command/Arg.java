@@ -4,14 +4,13 @@ import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualType;
 import j.util.prefs.PrefNodeName;
 import j.util.prefs.PrefValue;
-import j.util.tree2.TreeItem;
 import j.util.util.Util;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Arg<T> extends TreeItem<Object, Arg<?>> implements Cloneable
+public abstract class Arg<T> implements Cloneable
 {
 	// Pay attention to cloning when adding more fields
 
@@ -154,6 +153,18 @@ public abstract class Arg<T> extends TreeItem<Object, Arg<?>> implements Cloneab
 	public void setValueSufix( String valueSufix ) {
 		this.valueSufix = valueSufix;
 	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public Arg<T> clone() {
+		try {
+			return (Arg<T>) super.clone();
+		} catch ( CloneNotSupportedException exc ) {
+			exc.printStackTrace();
+			throw new RuntimeException( exc );
+		}
+	}
+
 
 
 

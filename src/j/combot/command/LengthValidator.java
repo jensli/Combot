@@ -45,8 +45,8 @@ public final class LengthValidator extends Validator<String>
 			if ( useMax || min != 1 ) {
 				m = "The value must be " + min + " or more";
 				// Add message about max limit
-				if ( useMax ) m = m + " and " + max + " or less ";
-				m = m + " characters long";
+				if ( useMax ) m += " and " + max + " or less";
+				m += " characters long";
 			} else {
 				m = "The value can not be emptry";
 			}
