@@ -14,8 +14,13 @@ public final class VisualTypes
 {
 	private VisualTypes() {}
 
+	public static VisualType<Object>
+		GROUP_TYPE;
+
+
 	public static VisualType<Integer>
-		INT_TYPE;
+		INT_TYPE,
+		RADIO_TYPE;
 
 	public static VisualType<String>
 		STRING_TYPE,
@@ -25,12 +30,13 @@ public final class VisualTypes
 	public static VisualType<Boolean>
 		OPT_TYPE;
 
+	// Initialize all fields with a VisualType object
 	static {
 		try {
 			for ( Field f : VisualTypes.class.getFields() ) {
 					f.set( null, new VisualType<>( f.getName() ) );
 			}
-		} catch ( IllegalArgumentException | IllegalAccessException exc ) {
+		} catch ( ReflectiveOperationException exc ) {
 			exc.printStackTrace();
 			throw new RuntimeException( exc );
 		}

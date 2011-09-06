@@ -1,5 +1,7 @@
 package j.combot.command;
 
+import j.combot.validator.ValEntry;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

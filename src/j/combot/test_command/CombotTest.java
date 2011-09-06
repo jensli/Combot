@@ -3,8 +3,8 @@ package j.combot.test_command;
 import static java.lang.System.out;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
-import j.combot.command.LengthValidator;
 import j.combot.gui.misc.InputBox;
+import j.combot.validator.LengthValidator;
 import j.util.functional.Action0;
 
 import org.eclipse.swt.events.SelectionAdapter;

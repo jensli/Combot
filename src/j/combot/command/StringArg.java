@@ -1,6 +1,7 @@
 package j.combot.command;
 
 import j.combot.gui.visuals.VisualTypes;
+import j.combot.validator.Validator;
 
 public class StringArg extends Arg<String>
 {

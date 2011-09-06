@@ -2,6 +2,7 @@ package j.combot.command;
 
 import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualTypes;
+import j.combot.validator.Validator;
 
 
 public class IntArg extends Arg<Integer>

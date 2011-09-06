@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Label;
 public class ErrorIndicator
 {
 	private Label errorIcon;
-	private Label error;
+	private Label errorMsg;
 	private Font font;
 
 	public static Image cachedErrorIcon = null;
@@ -31,14 +31,14 @@ public class ErrorIndicator
 	public void setError( String message )
 	{
 		errorIcon.setVisible( true );
-		error.setText( message );
-		error.pack();
+		errorMsg.setText( message );
+		errorMsg.pack();
 	}
 
 	public void clearError()
 	{
 		errorIcon.setVisible( false );
-		error.setText( "" );
+		errorMsg.setText( "" );
 	}
 
 	public void setFont( Font font ) {
@@ -51,11 +51,11 @@ public class ErrorIndicator
 		row.setLayout( new RowLayout( HORIZONTAL ) );
 
 		errorIcon = new Label( row, NONE );
-		error = new Label( row, NONE );
-		error.setFont( font );
-		error.pack();
+		errorMsg = new Label( row, NONE );
+		errorMsg.setFont( font );
+		errorMsg.pack();
 
-		errorIcon.setImage( makeIcon( error.getSize().y, error.getDisplay() ) );
+		errorIcon.setImage( makeIcon( errorMsg.getSize().y, errorMsg.getDisplay() ) );
 		errorIcon.setVisible( false );
 
 		return row;

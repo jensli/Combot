@@ -17,14 +17,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+
+
+
+
 public class OptVisual extends BaseArgVisual<Boolean>
 {
-	private Button enabled;
-
-	@SuppressWarnings( "unused" )
-	private boolean isEnabled = false;  // Save state here is Control is incorrect?
-
-	private Composite comp;
+	private Button enabledBtn;
 
 	@Override
 	public Boolean getValue() {
@@ -35,53 +34,104 @@ public class OptVisual extends BaseArgVisual<Boolean>
 
 	@Override
 	public void makeWidget(
-			Arg<Boolean> part, Composite parent, VisualFactory visualFactory )
+			Arg<Boolean> arg, Composite parent, VisualFactory visualFactory )
 	{
-		OptArg optArg = (OptArg) part;
+		OptArg optArg = (OptArg) arg;
 
-		enabled = new Button( parent, CHECK );
-		enabled.setText( optArg.getTitle() );
-		enabled.setSelection( part.getDefaultValue() );
+		// Button that enables/disables children
+		enabledBtn = new Button( parent, CHECK );
+		enabledBtn.setText( "" );
+		enabledBtn.setSelection( optArg.getDefaultValue() );
 		GridData butData = new GridData();
 		butData.horizontalSpan = 2;
-		enabled.setLayoutData( butData );
-		setValueControl( enabled );
+		enabledBtn.setLayoutData( butData );
+		setValueControl( enabledBtn );
 
+		// Add panel for children
+		final Composite childsComp = new Composite( parent, NONE );
+		childsComp.setLayout( new GridLayout( 2, false ) );
+		GridData compData = new GridData( FILL, LEFT, true, false );
+		compData.horizontalSpan = 2;
+		compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+		childsComp.setLayoutData( compData );
 
-		if ( !optArg.getArgGroup().isEmpty() ) {
-			comp = new Composite( parent, NONE );
-			comp.setLayout( new GridLayout( 2, false ) );
-			GridData compData = new GridData( FILL, LEFT, true, false );
-			compData.horizontalSpan = 2;
-			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
-			comp.setLayoutData( compData );
-
-			enabled.addSelectionListener( new SelectionAdapter() {
-				@Override public void widgetSelected( SelectionEvent e ) {
-					SwtUtil.recursiveSetEnabled( comp, isEnabled() );
-				}
-			});
-
-			for ( Arg<?> arg : optArg.getArgGroup() ) {
-				GuiUtil.createVisual( arg, comp, visualFactory );
+		enabledBtn.addSelectionListener( new SelectionAdapter() {
+			@Override public void widgetSelected( SelectionEvent e ) {
+				// TODO: This enables/disables ALL children, should only be
+				// parent. When switching back, children should regain their
+				// previous state, not all of them should be enabled.
+				SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
 			}
+		} );
 
-			SwtUtil.recursiveSetEnabled( comp, isEnabled() );
-		}
+		GuiUtil.createVisual( optArg.getChild(), childsComp, visualFactory );
+
+		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
 	}
 
 	public boolean isEnabled() {
-		return enabled.getSelection();
+		return enabledBtn.getSelection();
 	}
-
-
-
-	@Override
-	public void dispose() {
-
-	}
-
 
 
 
 }
+
+//public class OptVisual extends BaseArgVisual<Boolean>
+//{
+//	private Button enabledBtn;
+//
+//	@Override
+//	public Boolean getValue() {
+//		return isEnabled();
+//	}
+//
+//
+//
+//	@Override
+//	public void makeWidget(
+//			Arg<Boolean> part, Composite parent, VisualFactory visualFactory )
+//	{
+//		OptArg optArg = (OptArg) part;
+//
+//		// Button that enables/disables children
+//		enabledBtn = new Button( parent, CHECK );
+//		enabledBtn.setText( optArg.getTitle() );
+//		enabledBtn.setSelection( part.getDefaultValue() );
+//		GridData butData = new GridData();
+//		butData.horizontalSpan = 2;
+//		enabledBtn.setLayoutData( butData );
+//		setValueControl( enabledBtn );
+//
+//		// Add panel for children
+//		final Composite childsComp = new Composite( parent, NONE );
+//		childsComp.setLayout( new GridLayout( 2, false ) );
+//		GridData compData = new GridData( FILL, LEFT, true, false );
+//		compData.horizontalSpan = 2;
+//		compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+//		childsComp.setLayoutData( compData );
+//
+//		enabledBtn.addSelectionListener( new SelectionAdapter() {
+//			@Override public void widgetSelected( SelectionEvent e ) {
+//				// TODO: This enables/disables ALL children, should only be
+//				// parent. When switching back, children should regain their
+//				// previous state, not all of them should be enabled.
+//				SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
+//			}
+//		} );
+//
+//		// Loop over children and add them reursivly.
+//		for ( Arg<?> arg : optArg.getArgGroup() ) {
+//			GuiUtil.createVisual( arg, childsComp, visualFactory );
+//		}
+//
+//		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
+//	}
+//
+//	public boolean isEnabled() {
+//		return enabledBtn.getSelection();
+//	}
+//
+//
+//
+//}

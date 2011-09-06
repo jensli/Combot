@@ -18,16 +18,13 @@ import j.combot.app.CombotApp;
 import j.combot.app.CommandContainer;
 import j.combot.command.Arg;
 import j.combot.command.ArgGroup;
-import j.combot.command.CombinedValidator;
 import j.combot.command.Command;
-import j.combot.command.EnumValidator;
-import j.combot.command.ValEntry;
-import j.combot.command.Validator;
 import j.combot.gui.misc.GuiUtil;
 import j.combot.gui.misc.InputBox;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.CommandVisual;
+import j.combot.gui.visuals.GroupVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
@@ -35,6 +32,10 @@ import j.combot.gui.visuals.OptVisual;
 import j.combot.gui.visuals.StringVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.combot.gui.visuals.VisualTypes;
+import j.combot.validator.CombinedValidator;
+import j.combot.validator.EnumValidator;
+import j.combot.validator.ValEntry;
+import j.combot.validator.Validator;
 import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
 import j.util.functional.Action0;
@@ -544,6 +545,7 @@ public class CombotGui
 
 
 			VIS_FACTS = new VisFact[] {
+					new VisFact<>( VisualTypes.GROUP_TYPE, GroupVisual.class ),
 					new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
 					new VisFact<>( VisualTypes.STRING_TYPE, StringVisual.class ),
 					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),

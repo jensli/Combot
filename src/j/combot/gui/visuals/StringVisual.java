@@ -6,7 +6,7 @@ import static org.eclipse.swt.SWT.SINGLE;
 import java.util.List;
 
 import j.combot.command.Arg;
-import j.combot.command.ValEntry;
+import j.combot.validator.ValEntry;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

@@ -4,10 +4,10 @@ import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
-import j.combot.command.ValEntry;
 import j.combot.gui.misc.ErrorIndicator;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
+import j.combot.validator.ValEntry;
 import j.swt.util.SwtStdValues;
 import j.util.caller.GenericCaller;
 
@@ -56,14 +56,21 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valueControl = makeValueWidget( arg, parent, parent );
 		valueControl.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 
-		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
-
-		// Error indication
 		new Label( parent, NONE ); // Empty label to take up a cell
 
+		// Error indication
+		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
 		Control errInd = errorIndicator.makeWidget( parent );
 		errInd.setLayoutData( new GridData( FILL, LEFT, true, false ) );
 	}
+
+	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
+	@SuppressWarnings( "static-method" )
+	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
+	{
+		return null;
+	}
+
 
 	@Override
 	public void addValidationListener( ValidationListener l ) {
@@ -119,10 +126,4 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		return valueControl;
 	}
 
-	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
-	@SuppressWarnings( "static-method" )
-	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
-	{
-		return null;
-	}
 }

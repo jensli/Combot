@@ -1,4 +1,4 @@
-package j.combot.command;
+package j.combot.validator;
 
 import j.util.util.Util;
 

@@ -1,6 +1,7 @@
 package j.combot.command;
 
 import j.combot.gui.visuals.VisualTypes;
+import j.combot.validator.ValEntry;
 import j.util.util.NotImplementedException;
 import j.util.util.Util;
 

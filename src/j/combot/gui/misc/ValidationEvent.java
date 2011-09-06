@@ -1,7 +1,7 @@
 package j.combot.gui.misc;
 
 import j.combot.command.Arg;
-import j.combot.command.ValEntry;
+import j.combot.validator.ValEntry;
 
 import java.util.List;
 

@@ -1,4 +1,5 @@
-package j.combot.command;
+package j.combot.validator;
+
 
 import java.util.Arrays;
 import java.util.List;

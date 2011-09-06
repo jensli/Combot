@@ -1,20 +1,28 @@
 package j.combot.command;
 
+import j.combot.gui.visuals.VisualType;
+import j.combot.gui.visuals.VisualTypes;
 import j.util.prefs.PrefNodeCollection;
 
 import java.util.Collection;
 import java.util.List;
 
 
-public abstract class ComposedArg<T> extends Arg<T>
+public class ComposedArg<T> extends Arg<T>
 {
 	@PrefNodeCollection
 	private ArgGroup argGroup = new ArgGroup();
 
-	public ComposedArg( String title, String name, Arg<?>... args )
+	public ComposedArg( String title, String name, Arg<?>... children )
 	{
 		super( title, name );
-		argGroup.addAll( args );
+		argGroup.addAll( children );
+		setVisualType( (VisualType<T>) VisualTypes.GROUP_TYPE );
+	}
+
+	public ComposedArg( String title, Arg<?>... children )
+	{
+		this( title, "composed no name", children );
 	}
 
 	public ArgGroup getArgGroup() {

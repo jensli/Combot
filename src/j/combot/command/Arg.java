@@ -2,6 +2,8 @@ package j.combot.command;
 
 import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualType;
+import j.combot.validator.ValEntry;
+import j.combot.validator.Validator;
 import j.util.prefs.PrefNodeName;
 import j.util.prefs.PrefValue;
 import j.util.util.Util;
