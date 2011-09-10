@@ -3,7 +3,7 @@ package j.combot.gui.visuals;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
-import j.combot.command.ComposedArg;
+import j.combot.command.CompositeArg;
 import j.swt.util.SwtStdValues;
 import j.util.util.NotImplementedException;
 
@@ -13,10 +13,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class ComposedVisual extends BaseArgVisual<Object>
+public class CompositeVisual extends BaseArgVisual<Object>
 {
 	private Composite childsComp;
-
 
 	@Override
 	public Boolean getValue() {
@@ -28,7 +27,7 @@ public class ComposedVisual extends BaseArgVisual<Object>
 	@Override
 	public void makeWidget( Arg<Object> part, Composite parent, Button parentLbl, VisualFactory visualFactory )
 	{
-		ComposedArg compArg = (ComposedArg) part;
+		CompositeArg compArg = (CompositeArg) part;
 
 		if ( parentLbl != null ) {
 			parentLbl.setText( compArg.getTitle() );
@@ -54,9 +53,6 @@ public class ComposedVisual extends BaseArgVisual<Object>
 		for ( Arg<?> arg : compArg.getArgGroup() ) {
 			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, visualFactory );
 		}
-
-//		setValueControl( childsComp );
-//		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
 	}
 
 
@@ -65,7 +61,7 @@ public class ComposedVisual extends BaseArgVisual<Object>
 	{
 		super.setEnabled( b );
 		childsComp.setEnabled( b );
-		for ( ArgVisual<?> v : ((ComposedArg) getArg()).getArgGroup().getVisuals() ) {
+		for ( ArgVisual<?> v : ((CompositeArg) getArg()).getArgGroup().getVisuals() ) {
 			v.setEnabled( b );
 		}
 	}

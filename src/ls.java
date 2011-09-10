@@ -1,6 +1,6 @@
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
-import j.combot.command.ComposedArg;
+import j.combot.command.CompositeArg;
 import j.combot.command.IntArg;
 import j.combot.command.OptArg;
 import j.combot.command.StringArg;
@@ -13,7 +13,7 @@ public class ls implements CommandFactory {
 				new StringArg( "Pattern", "" ),
 				new OptArg( true, new StringArg( "Hejj", "hej" ) ),
 				new OptArg( true,
-						new ComposedArg( "Some group",
+						new CompositeArg( "Some group",
 								new StringArg( "Hej", "hej" ),
 								new IntArg( "Int", "int" )
 						)

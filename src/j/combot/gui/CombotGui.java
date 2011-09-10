@@ -23,7 +23,7 @@ import j.combot.gui.misc.InputBox;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.CommandVisual;
-import j.combot.gui.visuals.ComposedVisual;
+import j.combot.gui.visuals.CompositeVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
@@ -549,7 +549,7 @@ public class CombotGui
 
 
 			VIS_FACTS = new VisFact[] {
-					new VisFact<>( VisualTypes.GROUP_TYPE, ComposedVisual.class ),
+					new VisFact<>( VisualTypes.GROUP_TYPE, CompositeVisual.class ),
 					new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
 					new VisFact<>( VisualTypes.STRING_TYPE, StringVisual.class ),
 					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),

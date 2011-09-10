@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Command extends Arg<String>
 {
-	private ComposedArg children;
+	private CompositeArg children;
 
 	public Command( String title, String command, Arg<?>... args )
 	{
 		super( title, command );
 		setVisualType( VisualTypes.COMMAND_TYPE );
-		children = new ComposedArg( "cmd comp", args );
+		children = new CompositeArg( "cmd comp", args );
 	}
 
 	@Override

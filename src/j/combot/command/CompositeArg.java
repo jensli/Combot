@@ -7,12 +7,12 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class ComposedArg extends Arg<Object>
+public class CompositeArg extends Arg<Object>
 {
 	@PrefNodeCollection
 	private ArgGroup argGroup = new ArgGroup();
 
-	public ComposedArg( String title, Arg<?>... children )
+	public CompositeArg( String title, Arg<?>... children )
 	{
 		super( title, "Comp" );
 		argGroup.addAll( children );
@@ -28,8 +28,10 @@ public class ComposedArg extends Arg<Object>
 		return argGroup;
 	}
 
-
-
+	/**
+	 * Used by visuals if they want to create different widgets if there are
+	 * children.
+	 */
 	@Override
 	public boolean isSimple() {
 		return false;
@@ -53,9 +55,9 @@ public class ComposedArg extends Arg<Object>
 	}
 
 	@Override
-	public ComposedArg clone()
+	public CompositeArg clone()
 	{
-		ComposedArg cl = (ComposedArg) super.clone();
+		CompositeArg cl = (CompositeArg) super.clone();
 		cl.argGroup = argGroup.clone();
 		return cl;
 	}

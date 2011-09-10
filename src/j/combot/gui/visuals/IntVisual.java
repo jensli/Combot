@@ -14,25 +14,6 @@ public class IntVisual extends BaseArgVisual<Integer> {
 
 	private Spinner spinner;
 
-//	@Override
-//	public void makeWidget( IntArg arg, Composite parent )
-//	{
-//		Composite pair = new Composite( parent, NONE );
-//		RowLayout pairLayout = new RowLayout( HORIZONTAL );
-//		pair.setLayout( pairLayout );
-//
-//
-////		Button enabled = new Button( pair, CHECK );
-////		enabled.setText( arg.getTitle() + ":" );
-//		Label label = new Label( pair, SWT.LEFT );
-//		label.setText( arg.getTitle() + ":" );
-//
-//		spinner = new Spinner( pair, BORDER );
-//		spinner.setMaximum( arg.getMax() );
-//		spinner.setMinimum( arg.getMin() );
-//	}
-
-
 
 	@Override
 	protected Control makeValueWidget( Arg<Integer> part, Composite parent,

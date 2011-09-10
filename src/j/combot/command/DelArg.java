@@ -5,6 +5,9 @@ import j.util.prefs.PrefNode;
 
 import java.util.List;
 
+/**
+ * Delegating Arg
+ */
 public class DelArg<T> extends Arg<T> {
 
 	@PrefNode
@@ -15,17 +18,16 @@ public class DelArg<T> extends Arg<T> {
 		this.child = child;
 	}
 
-
 	public Arg<?> getChild() {
 		return child;
 	}
 
-
 	@Override
 	public void setDefaultFromVisual() {
-		super.setDefaultValue( getVisual().getValue() );
+		super.setDefaultFromVisual();
 		child.setDefaultFromVisual();
 	}
+
 	@Override
 	public List<String> getArgStrings() {
 		return child.getArgStrings();
