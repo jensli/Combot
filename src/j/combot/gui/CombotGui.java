@@ -19,12 +19,11 @@ import j.combot.app.CommandContainer;
 import j.combot.command.Arg;
 import j.combot.command.ArgGroup;
 import j.combot.command.Command;
-import j.combot.gui.misc.GuiUtil;
 import j.combot.gui.misc.InputBox;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.CommandVisual;
-import j.combot.gui.visuals.GroupVisual;
+import j.combot.gui.visuals.ComposedVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
@@ -176,7 +175,7 @@ public class CombotGui
 	{
 		display.syncExec( new Runnable() {
 			public void run() {
-				SwtUtil.appendStyled( outputText, line + "\n", SwtStdValues.RED );
+				SwtUtil.appendStyled( outputText, line + "\n", SwtStdValues.COLOR_RED );
 //				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
@@ -366,9 +365,11 @@ public class CombotGui
 		Composite panel = new Composite( parent, NONE );
 		panel.setLayout( new GridLayout( 2, false ) );
 
+		SwtStdValues.setDebugColor( panel, SwtStdValues.COLOR_DARK_GREEN );
+
 		// Commmand title
 		GuiArgVisual<?> commandVisual = visualFactory.make( cmd );
-		commandVisual.makeWidget( (Arg) cmd, panel, null, visualFactory );
+		commandVisual.makeWidget( (Arg) cmd, panel, visualFactory );
 
 		Label comArgSep = new Label( panel, SEPARATOR | HORIZONTAL );
 		comArgSep.setLayoutData( new GridData( FILL, TOP, true, false, 2, 1 ) );
@@ -384,12 +385,15 @@ public class CombotGui
 		Composite argsComp = new Composite( scrolled, NONE );
 		scrolled.setContent( argsComp );
 
+		SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
+
+
 		GridLayout argsLayout = new GridLayout( 2, false );
 		argsComp.setLayout( argsLayout );
 
 		// Add the acctual args
 		for ( Arg<?> arg : cmd.getArgGroup() ) {
-			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, null, visualFactory );
+			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, visualFactory );
 		}
 
 		argsComp.pack();
@@ -545,7 +549,7 @@ public class CombotGui
 
 
 			VIS_FACTS = new VisFact[] {
-					new VisFact<>( VisualTypes.GROUP_TYPE, GroupVisual.class ),
+					new VisFact<>( VisualTypes.GROUP_TYPE, ComposedVisual.class ),
 					new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
 					new VisFact<>( VisualTypes.STRING_TYPE, StringVisual.class ),
 					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),

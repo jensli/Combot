@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -25,6 +26,8 @@ import org.eclipse.swt.widgets.Label;
 public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 {
 	private Arg<T> arg;
+	private boolean enabled = true;
+
 	private ErrorIndicator errorIndicator = new ErrorIndicator();
 //	private List<ValidationListener> validationListeners = new ArrayList<ValidationListener>( 1 );
 
@@ -45,23 +48,44 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valueControl = c;
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
 
 	@Override
-	public void makeWidget( Arg<T> arg, Composite parent, Composite childrenParent, VisualFactory visualFactory )
-	{
-		Label label = new Label( parent, NONE );
+	public void setEnabled( boolean b ) {
+		enabled = b;
+		if ( valueControl != null ) valueControl.setEnabled( b );
+	}
 
-		label.setText( arg.getTitle() + ":" );
+	@Override
+	public void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
+	{
+		makeWidget( arg, parent, null, visualFactory );
+	}
+
+	@Override
+	public void makeWidget( Arg<T> arg, Composite parent, Button parentLabel, VisualFactory visualFactory )
+	{
+		String title = arg.getTitle() + ":";
+
+		if ( parentLabel != null ) {
+			parentLabel.setText( title );
+		} else {
+			Label label = new Label( parent, NONE );
+			label.setText( title );
+		}
 
 		valueControl = makeValueWidget( arg, parent, parent );
 		valueControl.setLayoutData( new GridData( FILL, FILL, false, false ) );
 
-//		new Label( parent, NONE ); // Empty label to take up a cell
+		new Label( parent, NONE ); // Empty label to take up a cell
 
 		// Error indication
 		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
 		Control errInd = errorIndicator.makeWidget( parent );
-		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );
+		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 1, 1 ) );
 	}
 
 	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );

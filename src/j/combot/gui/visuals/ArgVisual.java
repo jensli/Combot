@@ -15,5 +15,9 @@ public interface ArgVisual<T>
 
 	public void setValidateResult( List<ValEntry> errors );
 
+	public boolean isEnabled();
+
+	public void setEnabled( boolean b );
+
 	public void dispose();
 }

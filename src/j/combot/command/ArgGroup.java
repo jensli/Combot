@@ -1,5 +1,6 @@
 package j.combot.command;
 
+import j.combot.gui.visuals.ArgVisual;
 import j.combot.validator.ValEntry;
 
 import java.util.ArrayList;
@@ -86,6 +87,14 @@ public class ArgGroup implements Iterable<Arg<?>>
 		List<String> result = makeResultList();
 		for ( Arg<?> c : args ) {
 			result.add( c.getTitle() );
+		}
+		return result;
+	}
+
+	public List<ArgVisual<?>> getVisuals() {
+		List<ArgVisual<?>> result = makeResultList();
+		for ( Arg<?> c : args ) {
+			result.add( c.getVisual() );
 		}
 		return result;
 	}

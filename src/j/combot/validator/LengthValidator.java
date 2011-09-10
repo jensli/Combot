@@ -48,7 +48,7 @@ public final class LengthValidator extends Validator<String>
 				if ( useMax ) m += " and " + max + " or less";
 				m += " characters long";
 			} else {
-				m = "The value can not be emptry";
+				m = "This value can not be emptry";
 			}
 
 			return Collections.singletonList( new ValEntry( m ) );

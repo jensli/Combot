@@ -43,6 +43,10 @@ public abstract class Arg<T> implements Cloneable
 	private VisualType<T> visualType;
 
 
+	@SuppressWarnings( "static-method" )
+	public boolean isSimple() {
+		return true;
+	}
 
 	public Arg( String title, String name  )
 	{

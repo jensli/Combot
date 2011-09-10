@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Label;
 public class CommandVisual extends BaseArgVisual<String> {
 
 	@Override
-	public void makeWidget( Arg<String> cmd, Composite parent, Composite childrenParent, VisualFactory visualFactory )
+	public void makeWidget( Arg<String> cmd, Composite parent, VisualFactory visualFactory )
 	{
 		Composite page = new Composite( parent, NONE );
 		page.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );

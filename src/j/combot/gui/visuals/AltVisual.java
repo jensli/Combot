@@ -3,17 +3,13 @@ package j.combot.gui.visuals;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
-import static org.eclipse.swt.SWT.RADIO;
 import j.combot.command.AltArg;
 import j.combot.command.Arg;
-import j.combot.gui.misc.GuiUtil;
 import j.swt.util.SwtStdValues;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -34,7 +30,7 @@ public class AltVisual extends BaseArgVisual<Integer> {
 
 	@Override
 	public void makeWidget(
-			Arg<Integer> part, Composite parent, Composite childrenParent, VisualFactory visualFactory )
+			Arg<Integer> part, Composite parent, VisualFactory visualFactory )
 	{
 		AltArg optArg = (AltArg) part;
 
@@ -49,36 +45,36 @@ public class AltVisual extends BaseArgVisual<Integer> {
 		radioParent.setLayoutData( radioData );
 
 		// Loop over children and add them reursivly.
-		for ( Arg<?> arg : optArg.getArgGroup() ) {
-
-			// Button that enables/disables children
-			radioBtn = new Button( radioParent, RADIO );
-			radioBtn.setText( optArg.getTitle() );
-			GridData butData = new GridData();
-			butData.horizontalSpan = 2;
-			radioBtn.setLayoutData( butData );
-			setValueControl( radioBtn );
-
-			titles.add( radioBtn );
-
-			// Add panel for children
-			final Composite childsComp = new Composite( radioParent, NONE );
-			childsComp.setLayout( new GridLayout( 2, false ) );
-			GridData compData = new GridData( FILL, LEFT, true, false );
-			compData.horizontalSpan = 2;
-			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
-			childsComp.setLayoutData( compData );
-
-			childComps.add( childsComp );
-
-			radioBtn.addSelectionListener( new SelectionAdapter() {
-				@Override public void widgetSelected( SelectionEvent e ) {
-					setEnabledFromSelected();
-				}
-			} );
-
-			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, null, visualFactory );
-		}
+//		for ( Arg<?> arg : optArg.getArgGroup() ) {
+//
+//			// Button that enables/disables children
+//			radioBtn = new Button( radioParent, RADIO );
+//			radioBtn.setText( optArg.getTitle() );
+//			GridData butData = new GridData();
+//			butData.horizontalSpan = 2;
+//			radioBtn.setLayoutData( butData );
+//			setValueControl( radioBtn );
+//
+//			titles.add( radioBtn );
+//
+//			// Add panel for children
+//			final Composite childsComp = new Composite( radioParent, NONE );
+//			childsComp.setLayout( new GridLayout( 2, false ) );
+//			GridData compData = new GridData( FILL, LEFT, true, false );
+//			compData.horizontalSpan = 2;
+//			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+//			childsComp.setLayoutData( compData );
+//
+//			childComps.add( childsComp );
+//
+//			radioBtn.addSelectionListener( new SelectionAdapter() {
+//				@Override public void widgetSelected( SelectionEvent e ) {
+//					setEnabledFromSelected();
+//				}
+//			} );
+//
+//			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, null, visualFactory );
+//		}
 
 //		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
 

@@ -1,18 +1,14 @@
 package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.CHECK;
-import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
-import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.TOP;
 import j.combot.command.Arg;
 import j.combot.command.OptArg;
-import j.swt.util.SwtUtil;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -31,31 +27,41 @@ public class OptVisual extends BaseArgVisual<Boolean>
 
 
 
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	@Override
 	public void makeWidget(
-			Arg<Boolean> arg, Composite parent, Composite childrenParent, VisualFactory visualFactory )
+			Arg<Boolean> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
 	{
 		OptArg optArg = (OptArg) arg;
 
 
-		Composite checkComp = new Composite( parent, NONE );
-		checkComp.setLayout( new GridLayout( 2, false ) );
-		checkComp.setLayoutData( new GridData( FILL, FILL, true, false, 2, 1 ) );
+//		Composite checkComp = new Composite( parent, NONE );
+//		checkComp.setLayoutData( new GridData( FILL, FILL, true, false, 2, 1 ) );
+//		checkComp.setLayout( new GridLayout( 2, false ) );
+//
+//		SwtStdValues.setDebugColor( checkComp, SwtStdValues.COLOR_BLUE );
 
 		// Button that enables/disables children
-		enabledBtn = new Button( checkComp, CHECK );
+		enabledBtn = new Button( parent, CHECK );
 		enabledBtn.setText( "" );
 		enabledBtn.setSelection( optArg.getDefaultValue() );
-		enabledBtn.setLayoutData( new GridData( LEFT, TOP, false, false, 1, 1 ) );
+		GridData layoutData = new GridData( LEFT, TOP, false, false, 1, 1 );
+		Arg<?> childArg = optArg.getChild();
+		if ( !childArg.isSimple() ) {
+//			new Label( parent, NONE );
+			layoutData.horizontalSpan = 2;
+		}
 //		GridData btnData = new GridData();
 //		enabledBtn.setLayoutData( btnData );
-		setValueControl( enabledBtn );
+//		setValueControl( enabledBtn );
 
-		final Composite firstComp = new Composite( checkComp, NONE );
-		firstComp.setLayoutData( new GridData( FILL, FILL, true, false, 1, 1 ) );
-		firstComp.setLayout( new GridLayout( 2, false ) );
+		enabledBtn.setLayoutData( layoutData );
 
-//		firstComp.setBackground( SwtStdValues.BLUE );
+//		final Composite firstComp = new Composite( checkComp, NONE );
+//		firstComp.setLayoutData( new GridData( FILL, FILL, true, false, 1, 1 ) );
+//		firstComp.setLayout( new GridLayout( 2, false ) );
+//
+//		SwtStdValues.setDebugColor( firstComp, SwtStdValues.COLOR_DARK_BLUE );
 
 
 //		// Add panel for children
@@ -70,21 +76,29 @@ public class OptVisual extends BaseArgVisual<Boolean>
 			@Override
 			public void widgetSelected( SelectionEvent e ) {
 //				SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
-				SwtUtil.recursiveSetEnabled( firstComp, isEnabled() );
+//				SwtUtil.recursiveSetEnabled( firstComp, isEnabled() );
 
-				firstComp.setEnabled( true );
+//				firstComp.setEnabled( true );
 				enabledBtn.setEnabled( true );
+
+				setEnabled( enabledBtn.getSelection() );
 			}
 		} );
 
-		Arg<?> arg1 = optArg.getChild();
-
-		visualFactory.make( arg1 ).makeWidget( (Arg) arg1, firstComp, null, visualFactory );
+		GuiArgVisual<?> childVisual = visualFactory.make( childArg );
+		childVisual.makeWidget( (Arg) childArg, parent, enabledBtn,  visualFactory );
 	}
 
-	public boolean isEnabled() {
-		return enabledBtn.getSelection();
+
+
+	@Override
+	public void setEnabled( boolean b ) {
+		super.setEnabled( b );
+		( (OptArg) getArg() ).getChild().getVisual().setEnabled( b );
 	}
+
+
+
 
 
 

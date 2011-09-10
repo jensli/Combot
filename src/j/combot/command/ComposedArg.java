@@ -28,6 +28,13 @@ public class ComposedArg extends Arg<Object>
 		return argGroup;
 	}
 
+
+
+	@Override
+	public boolean isSimple() {
+		return false;
+	}
+
 	public Collection<Arg<?>> getChildren() {
 		return argGroup.getArgs();
 	}
