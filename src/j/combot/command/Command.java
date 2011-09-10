@@ -7,17 +7,20 @@ import j.util.util.Util;
 
 import java.util.List;
 
-public class Command extends ComposedArg<String>
+public class Command extends Arg<String>
 {
+	private ComposedArg children;
+
 	public Command( String title, String command, Arg<?>... args )
 	{
-		super( title, command , args );
+		super( title, command );
 		setVisualType( VisualTypes.COMMAND_TYPE );
+		children = new ComposedArg( "cmd comp", args );
 	}
 
 	@Override
 	public String toString() {
-		return Util.simpleToString( this, getTitle(), getChildren() );
+		return Util.simpleToString( this, getTitle(), children.getChildren() );
 	}
 
 	@Override public List<ValEntry> validate() {
@@ -28,5 +31,11 @@ public class Command extends ComposedArg<String>
 	@Override public Command clone() {
 		return (Command) super.clone();
 	}
+
+	public ArgGroup getArgGroup() {
+		return children.getArgGroup();
+	}
+
+
 
 }

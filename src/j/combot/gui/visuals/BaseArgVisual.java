@@ -47,21 +47,21 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 
 	@Override
-	public void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
+	public void makeWidget( Arg<T> arg, Composite parent, Composite childrenParent, VisualFactory visualFactory )
 	{
 		Label label = new Label( parent, NONE );
 
 		label.setText( arg.getTitle() + ":" );
 
 		valueControl = makeValueWidget( arg, parent, parent );
-		valueControl.setLayoutData( new GridData( FILL, LEFT, true, false ) );
+		valueControl.setLayoutData( new GridData( FILL, FILL, false, false ) );
 
-		new Label( parent, NONE ); // Empty label to take up a cell
+//		new Label( parent, NONE ); // Empty label to take up a cell
 
 		// Error indication
 		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
 		Control errInd = errorIndicator.makeWidget( parent );
-		errInd.setLayoutData( new GridData( FILL, LEFT, true, false ) );
+		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );
 	}
 
 	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
@@ -97,6 +97,10 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
 
+	@Override
+	public void makeChildWidgets( Arg<T> part, Composite parent, VisualFactory visualFactory ) {
+
+	}
 
 	protected SelectionAdapter makeValidationListener() {
 		return new SelectionAdapter() {

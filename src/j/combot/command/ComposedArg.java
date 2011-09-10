@@ -1,6 +1,5 @@
 package j.combot.command;
 
-import j.combot.gui.visuals.VisualType;
 import j.combot.gui.visuals.VisualTypes;
 import j.util.prefs.PrefNodeCollection;
 
@@ -8,22 +7,22 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class ComposedArg<T> extends Arg<T>
+public class ComposedArg extends Arg<Object>
 {
 	@PrefNodeCollection
 	private ArgGroup argGroup = new ArgGroup();
 
-	public ComposedArg( String title, String name, Arg<?>... children )
-	{
-		super( title, name );
-		argGroup.addAll( children );
-		setVisualType( (VisualType<T>) VisualTypes.GROUP_TYPE );
-	}
-
 	public ComposedArg( String title, Arg<?>... children )
 	{
-		this( title, "composed no name", children );
+		super( title, "Comp" );
+		argGroup.addAll( children );
+		setVisualType( VisualTypes.GROUP_TYPE );
 	}
+
+//	public ComposedArg( String title, Arg<?>... children )
+//	{
+//		this( title, "composed no name", children );
+//	}
 
 	public ArgGroup getArgGroup() {
 		return argGroup;
@@ -47,9 +46,9 @@ public class ComposedArg<T> extends Arg<T>
 	}
 
 	@Override
-	public Arg<T> clone()
+	public ComposedArg clone()
 	{
-		ComposedArg<T> cl = (ComposedArg<T>) super.clone();
+		ComposedArg cl = (ComposedArg) super.clone();
 		cl.argGroup = argGroup.clone();
 		return cl;
 	}

@@ -368,7 +368,7 @@ public class CombotGui
 
 		// Commmand title
 		GuiArgVisual<?> commandVisual = visualFactory.make( cmd );
-		commandVisual.makeWidget( (Arg) cmd, panel, visualFactory );
+		commandVisual.makeWidget( (Arg) cmd, panel, null, visualFactory );
 
 		Label comArgSep = new Label( panel, SEPARATOR | HORIZONTAL );
 		comArgSep.setLayoutData( new GridData( FILL, TOP, true, false, 2, 1 ) );
@@ -389,7 +389,7 @@ public class CombotGui
 
 		// Add the acctual args
 		for ( Arg<?> arg : cmd.getArgGroup() ) {
-			GuiUtil.createVisual( arg, argsComp, visualFactory );
+			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, null, visualFactory );
 		}
 
 		argsComp.pack();

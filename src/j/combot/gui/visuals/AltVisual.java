@@ -34,7 +34,7 @@ public class AltVisual extends BaseArgVisual<Integer> {
 
 	@Override
 	public void makeWidget(
-			Arg<Integer> part, Composite parent, VisualFactory visualFactory )
+			Arg<Integer> part, Composite parent, Composite childrenParent, VisualFactory visualFactory )
 	{
 		AltArg optArg = (AltArg) part;
 
@@ -77,7 +77,7 @@ public class AltVisual extends BaseArgVisual<Integer> {
 				}
 			} );
 
-			GuiUtil.createVisual( arg, childsComp, visualFactory );
+			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, null, visualFactory );
 		}
 
 //		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );

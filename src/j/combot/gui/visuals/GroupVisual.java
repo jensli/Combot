@@ -1,11 +1,9 @@
 package j.combot.gui.visuals;
 
 import static org.eclipse.swt.SWT.FILL;
-import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
 import j.combot.command.ComposedArg;
-import j.combot.gui.misc.GuiUtil;
 import j.swt.util.SwtStdValues;
 import j.util.util.NotImplementedException;
 
@@ -23,9 +21,9 @@ public class GroupVisual extends BaseArgVisual<Object>
 
 	@Override
 	public void makeWidget(
-			Arg<Object> part, Composite parent, VisualFactory visualFactory )
+			Arg<Object> part, Composite parent, Composite childrenParent, VisualFactory visualFactory )
 	{
-		ComposedArg<?> compArg = (ComposedArg<?>) part;
+		ComposedArg compArg = (ComposedArg) part;
 
 		// Button that enables/disables children
 		Label title = new Label( parent, NONE );
@@ -37,14 +35,15 @@ public class GroupVisual extends BaseArgVisual<Object>
 		// Add panel for children
 		final Composite childsComp = new Composite( parent, NONE );
 		childsComp.setLayout( new GridLayout( 2, false ) );
-		GridData compData = new GridData( FILL, LEFT, true, false );
+		GridData compData = new GridData( FILL, FILL, true, false );
 		compData.horizontalSpan = 2;
 		compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
 		childsComp.setLayoutData( compData );
+//		childsComp.setBackground( SwtStdValues.RED );
 
 		// Loop over children and add them reursivly.
 		for ( Arg<?> arg : compArg.getArgGroup() ) {
-			GuiUtil.createVisual( arg, childsComp, visualFactory );
+			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, null, visualFactory );
 		}
 
 		setValueControl( childsComp );

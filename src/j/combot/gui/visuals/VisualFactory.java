@@ -40,10 +40,13 @@ public class VisualFactory
 
 		GuiArgVisual<T> v = visualFact.make();
 
+		v.setArg( arg );
 		arg.setVisual( v );
+
 		for ( ValidationListener l : validationListeners ) {
 			v.addValidationListener( l );
 		}
+
 		return v;
 	};
 }

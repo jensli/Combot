@@ -8,7 +8,7 @@ public class NullVisual extends BaseArgVisual<String>
 {
 	@Override
 	public void makeWidget( Arg<String> arg,
-			Composite parent, VisualFactory visualFactory )
+			Composite parent, Composite childrenParent, VisualFactory visualFactory )
 	{
 		;
 	}

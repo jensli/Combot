@@ -107,7 +107,8 @@ public class CombotApp
 
 		try {
 			File path = new File( url.toURI() );
-			comClasses = path.listFiles( Util.sufixFileFilter( ".class" ) );
+//			comClasses = path.listFiles( Util.sufixFileFilter( ".class" ) );
+			comClasses = path.listFiles( Util.sufixFileFilter( "ls.class" ) );
 		} catch ( URISyntaxException exc ) {
 			logger.warning( "Error while reading commands: " + exc );
 			return;
