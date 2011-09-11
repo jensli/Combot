@@ -28,12 +28,13 @@ public class ConstVisual extends BaseArgVisual<Object> {
 			// title. (parent e.g. OptVisual or AltVisual)
 			parentLabel.setText( title );
 			((GridData) parentLabel.getLayoutData()).horizontalSpan = 2;
-//			((GridData) parentLabel.getLayoutData()).verticalSpan = 2;
 		} else {
 			Label label = new Label( parent, NONE );
 			label.setText( title );
 			label.setLayoutData( new GridData( LEFT, FILL,  false, false, 2, 1) );
 		}
+
+		// Take up one more line with two columns
 		new Label( parent, NONE );
 		new Label( parent, NONE );
 	}

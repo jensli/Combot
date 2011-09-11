@@ -195,7 +195,7 @@ public class CombotGui
 	}
 
 	public Command getActiveCmd() {
-		return getActiveCmdData().cmd;
+		return getActiveCommandPanel().commandData.cmd;
 	}
 
 	private CommandData getActiveCmdData() {
@@ -587,7 +587,9 @@ public class CombotGui
 		private Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
 		{
 			Composite commandPanel = new Composite( parent, NONE );
-			commandPanel.setLayout( new GridLayout( 2, false ) );
+			commandPanel.setLayoutData( new GridData( FILL, FILL, true, false ) );
+
+			commandPanel.setLayout( new GridLayout( 1, false ) );
 
 			SwtStdValues.setDebugColor( commandPanel, SwtStdValues.COLOR_DARK_GREEN );
 
@@ -604,6 +606,8 @@ public class CombotGui
 			scrolled.setShowFocusedControl( true );
 			scrolled.setAlwaysShowScrollBars( true );
 			scrolled.setLayoutData( new GridData( FILL, FILL, true, true) );
+
+			SwtStdValues.setDebugColor( scrolled, SwtStdValues.COLOR_DARK_BLUE );
 
 			// Args
 			Composite argsComp = new Composite( scrolled, NONE );

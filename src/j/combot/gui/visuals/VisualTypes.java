@@ -24,8 +24,8 @@ public final class VisualTypes
 		RADIO_TYPE;
 
 	public static VisualType<String>
-		STRING_TYPE,
 		COMMAND_TYPE,
+		STRING_TYPE,
 		NULL_TYPE;
 
 	public static VisualType<Boolean>

@@ -39,7 +39,8 @@ public class CompositeArg extends Arg<Object>
 	}
 
 	@Override
-	public void setDefaultFromVisual() {
+	public void setDefaultFromVisual()
+	{
 		for ( Arg<?> a : getChildren() ) {
 			a.setDefaultFromVisual();
 		}
@@ -52,6 +53,5 @@ public class CompositeArg extends Arg<Object>
 		cl.argGroup = argGroup.clone();
 		return cl;
 	}
-
 
 }
