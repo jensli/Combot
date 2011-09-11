@@ -71,6 +71,8 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		String title = arg.getTitle() + ":";
 
 		if ( parentLabel != null ) {
+			// The parent has already created a control where we can display our
+			// title. (parent e.g. OptVisual or AltVisual)
 			parentLabel.setText( title );
 		} else {
 			Label label = new Label( parent, NONE );
@@ -78,7 +80,10 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		}
 
 		valueControl = makeValueWidget( arg, parent, parent );
-		valueControl.setLayoutData( new GridData( FILL, FILL, false, false ) );
+
+		if ( valueControl != null ) {
+			valueControl.setLayoutData( new GridData( FILL, FILL, false, false ) );
+		}
 
 		new Label( parent, NONE ); // Empty label to take up a cell
 

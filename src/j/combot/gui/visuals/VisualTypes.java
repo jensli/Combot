@@ -15,7 +15,8 @@ public final class VisualTypes
 	private VisualTypes() {}
 
 	public static VisualType<Object>
-		GROUP_TYPE;
+		GROUP_TYPE,
+		CONST_TYPE;
 
 
 	public static VisualType<Integer>

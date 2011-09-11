@@ -24,6 +24,7 @@ import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.CommandVisual;
 import j.combot.gui.visuals.CompositeVisual;
+import j.combot.gui.visuals.ConstVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
@@ -506,6 +507,7 @@ public class CombotGui
 					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),
 					new VisFact<>( VisualTypes.NULL_TYPE, NullVisual.class ),
 					new VisFact<>( VisualTypes.OPT_TYPE, OptVisual.class ),
+					new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class )
 			};
 	}
 

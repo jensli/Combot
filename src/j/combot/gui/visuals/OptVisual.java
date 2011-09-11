@@ -37,12 +37,6 @@ public class OptVisual extends BaseArgVisual<Boolean>
 
 		GridData layoutData = new GridData( LEFT, TOP, false, false, 1, 1 );
 
-		if ( !childArg.isSimple() ) {
-			// If there are children, take up some extra space so they
-			// end up on next line
-			layoutData.horizontalSpan = 2;
-		}
-
 		enabledBtn.setLayoutData( layoutData );
 
 		enabledBtn.addSelectionListener( new SelectionAdapter() {

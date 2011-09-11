@@ -28,15 +28,6 @@ public class CompositeArg extends Arg<Object>
 		return argGroup;
 	}
 
-	/**
-	 * Used by visuals if they want to create different widgets if there are
-	 * children.
-	 */
-	@Override
-	public boolean isSimple() {
-		return false;
-	}
-
 	public Collection<Arg<?>> getChildren() {
 		return argGroup.getArgs();
 	}

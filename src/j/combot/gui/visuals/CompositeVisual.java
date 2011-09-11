@@ -31,6 +31,7 @@ public class CompositeVisual extends BaseArgVisual<Object>
 
 		if ( parentLbl != null ) {
 			parentLbl.setText( compArg.getTitle() );
+			((GridData) parentLbl.getLayoutData()).horizontalSpan = 2;
 		} else {
 			// Button that enables/disables children
 			Label title = new Label( parent, NONE );
