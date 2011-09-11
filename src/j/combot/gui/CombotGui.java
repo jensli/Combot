@@ -78,25 +78,18 @@ public class CombotGui
 	private Display display;
 	private Shell shell;
 
-	private Label status;
-	private Label command;
-
-	private Button stopButton;
-	private Button startButton;
-
-	private Composite controls;
 
 	private Tree tree;
 	private Composite rightPanel;
 
-	private Composite commandPanel;
 	private StackLayout cmdStackLayout;
-
+	private Composite commandComp;
 	private InputBox defaultsNameBox;
 
-	private StyledText outputText;
-
+	// Delete command button
 	private ToolItem delItem;
+
+	private Map<Command, CommandPanel> commandPanelMap = new HashMap<>();
 
 	private CommandData commands = new CommandData(
 			new Fun1<CommandData, Command>() {
@@ -108,15 +101,21 @@ public class CombotGui
 	private final VisualFactory visualFactory;
 	private final VisFact<?>[] VIS_FACTS;
 
-	private Map<Arg<?>, List<ValEntry>> errorMap = new HashMap<>();
-
 	// Is set as validation listener for all the ArgVisuals, is run every time
 	// something changes in the arg input controls.
 	// Sets enabled status for start button and tooltip.
 	private ValidationListener valLis;
 
 	private CombotApp app;
-	private CommandData activeCommand;
+	private CommandPanel activeCommand;
+
+	private CommandPanel getCommandPanel() {
+		return getActiveCommandPanel();
+	};
+
+	private CommandPanel getCommandPanel( Command c ) {
+		return commandPanelMap.get( c );
+	}
 
 
 	public CombotGui( CombotApp app ) {
@@ -165,7 +164,8 @@ public class CombotGui
 	{
 		display.syncExec( new Runnable() {
 			public void run() {
-				outputText.append( line + "\n" );
+
+				getCommandPanel().outputText.append( line + "\n" );
 //				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
@@ -175,7 +175,7 @@ public class CombotGui
 	{
 		display.syncExec( new Runnable() {
 			public void run() {
-				SwtUtil.appendStyled( outputText, line + "\n", SwtStdValues.COLOR_RED );
+				SwtUtil.appendStyled( getCommandPanel().outputText, line + "\n", SwtStdValues.COLOR_RED );
 //				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
 			}
 		});
@@ -189,8 +189,8 @@ public class CombotGui
 
 	public void onHasTerminated( int code )
 	{
-		setStatus( "Terminated with exit code " + code );
-		setCommandRunning( false );
+ 		getCommandPanel().setStatus( "Terminated with exit code " + code );
+ 		getCommandPanel().setCommandRunning( false );
 	}
 
 	public Command getActiveCmd() {
@@ -198,6 +198,10 @@ public class CombotGui
 	}
 
 	private CommandData getActiveCmdData() {
+		return null; //activeCommand;
+	}
+
+	private CommandPanel getActiveCommandPanel() {
 		return activeCommand;
 	}
 
@@ -214,22 +218,28 @@ public class CombotGui
 	private void initCmd( TreeItem item, Command cmd, CommandData parent )
 	{
 		item.setText( cmd.getTitle() );
-		Composite panel = makeCommandPanel( cmd, commandPanel, visualFactory );
+		CommandPanel commandPanel = new CommandPanel();
+		Composite panel = commandPanel.makeCommandPanel( cmd, commandComp, visualFactory );
+		commandPanel.comp = panel;
 		CommandData cData = new CommandData( cmd, panel, item );
+		commandPanel.commandData = cData;
+		commandPanel.item = item;
 		parent.addChild( cData  );
-		item.setData( cData );
+		item.setData( commandPanel );
 	}
 
 	public void addChildCommand( Command parent, Command child )
 	{
-		CommandData parentData = commands.getChild( parent );
-		Asserts.notNull( parentData, "Parent command do not exist in gui" );
+		CommandPanel parentPanel = getCommandPanel( parent );
+		CommandData parentData = parentPanel.commandData;
 
-		TreeItem childItem = new TreeItem( parentData.item, NONE );
+		Asserts.notNull( parentPanel, "Parent command do not exist in gui" );
+
+		TreeItem childItem = new TreeItem( parentPanel.item, NONE );
 
 		initCmd( childItem, child, parentData  );
 
-		switchActiveCommand( parentData.getChild( child ) );
+		switchActiveCommand( getCommandPanel( child ) );
 	}
 
 	public void addCommand( Command cmd )
@@ -240,15 +250,15 @@ public class CombotGui
 
 
 	// Switches to a new command panel, creating all the widgets.
-	public void switchActiveCommand( CommandData cmd )
+	public void switchActiveCommand( CommandPanel cmd )
 	{
-		delItem.setEnabled( cmd.getParent().hasParent() );
+		delItem.setEnabled( cmd.commandData.getParent().hasParent() );
 		tree.setSelection( cmd.item );
 
 		activeCommand = cmd;
 
-		cmdStackLayout.topControl =  cmd.page;
-		commandPanel.layout();
+		cmdStackLayout.topControl =  cmd.comp;
+		commandComp.layout();
 	}
 
 	private Composite makeGui( Composite parent )
@@ -264,16 +274,11 @@ public class CombotGui
 		rightPanel.setLayout( new GridLayout( 1, false ) );
 		rightPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
 
-		commandPanel = new Composite( rightPanel, NONE );
-		commandPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
+		commandComp = new Composite( rightPanel, NONE );
+		commandComp.setLayoutData( new GridData( FILL, FILL, true, true ) );
 		cmdStackLayout = new StackLayout();
-		commandPanel.setLayout( cmdStackLayout );
+		commandComp.setLayout( cmdStackLayout );
 
-		Label argButtonSep = new Label( rightPanel, SEPARATOR | HORIZONTAL );
-		argButtonSep.setLayoutData( new GridData( FILL, TOP, true, false ) );
-
-		Composite controlPanel = makeControlPanel( rightPanel );
-		controlPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
 
 		gui.layout();
 
@@ -312,7 +317,7 @@ public class CombotGui
 
 		tree.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected( SelectionEvent e ) {
-				switchActiveCommand( (CommandData) e.item.getData() );
+				switchActiveCommand( (CommandPanel) e.item.getData() );
 			}
 		} );
 
@@ -333,11 +338,13 @@ public class CombotGui
 
 	private void delCurrentCmd()
 	{
-		CommandData cmdToDel = getActiveCmdData();
+		CommandPanel p = getActiveCommandPanel();
+		CommandData cmdToDel = p.commandData;
 
-		switchActiveCommand( cmdToDel.getParent() );
+		switchActiveCommand( p );
 
-		cmdToDel.item.dispose();
+		p.item.dispose();
+		p.comp.dispose();
 
 		cmdToDel.removeSelf();
 
@@ -359,102 +366,60 @@ public class CombotGui
 	}
 
 
-	@SuppressWarnings( { "rawtypes", "unchecked" } )
-	private static Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
-	{
-		Composite panel = new Composite( parent, NONE );
-		panel.setLayout( new GridLayout( 2, false ) );
-
-		SwtStdValues.setDebugColor( panel, SwtStdValues.COLOR_DARK_GREEN );
-
-		// Commmand title
-		GuiArgVisual<?> commandVisual = visualFactory.make( cmd );
-		commandVisual.makeWidget( (Arg) cmd, panel, visualFactory );
-
-		Label comArgSep = new Label( panel, SEPARATOR | HORIZONTAL );
-		comArgSep.setLayoutData( new GridData( FILL, TOP, true, false, 2, 1 ) );
-
-		// Scrolling
-		ScrolledComposite scrolled = new ScrolledComposite( panel, V_SCROLL );
-		scrolled.setExpandHorizontal( true );
-		scrolled.setShowFocusedControl( true );
-		scrolled.setAlwaysShowScrollBars( true );
-		scrolled.setLayoutData( new GridData( FILL, FILL, true, true) );
-
-		// Args
-		Composite argsComp = new Composite( scrolled, NONE );
-		scrolled.setContent( argsComp );
-
-		SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
 
 
-		GridLayout argsLayout = new GridLayout( 2, false );
-		argsComp.setLayout( argsLayout );
-
-		// Add the acctual args
-		for ( Arg<?> arg : cmd.getArgGroup() ) {
-			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, visualFactory );
-		}
-
-		argsComp.pack();
-		scrolled.pack();
-		panel.pack();
-
-		return panel;
-	}
-
-	public Composite makeControlPanel( Composite parent )
-	{
-		Composite panel = new Composite( parent, NONE );
-		panel.setLayout( new GridLayout( 1, false ) );
-
-		controls = new Composite( panel, NONE );
-		RowLayout buttonLayout = new RowLayout( HORIZONTAL );
-		buttonLayout.pack = false;
-		buttonLayout.spacing = SwtStdValues.SPACING;
-		controls.setLayout( buttonLayout );
-
-		// Start button
-		startButton = new Button( controls, PUSH );
-		startButton.setText( "Start" );
-		startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
-
-		startButton.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected( SelectionEvent e ) {
-				app.startCmd();
-			}
-		});
-
-		// Stop button
-		stopButton = new Button( controls, PUSH );
-		stopButton.setText( "Stop" );
-		stopButton.setEnabled( false );
-
-		stopButton.addSelectionListener( new SelectionAdapter() {
-			public void widgetSelected( SelectionEvent e ) {
-				app.stopCommand();
-			}
-		});
-
-		// Status labels
-		command = new Label( panel, NONE );
-		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
-		setCommandLine( "" );
-
-		status = new Label( panel, NONE );
-		status.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
-		setStatus( "Not started" );
-
-		// Output text
-		outputText = new StyledText( panel, BORDER | V_SCROLL | H_SCROLL );
-		GridData outputData = new GridData( FILL, FILL, true, true);
-		outputData.minimumHeight = 100;
-		outputText.setLayoutData( outputData );
-
-		outputText.setEditable( false );
-
-		return panel;
-	}
+//	public Composite makeControlPanel( Composite parent )
+//	{
+//		Composite panel = new Composite( parent, NONE );
+//		panel.setLayout( new GridLayout( 1, false ) );
+//
+//		controls = new Composite( panel, NONE );
+//		RowLayout buttonLayout = new RowLayout( HORIZONTAL );
+//		buttonLayout.pack = false;
+//		buttonLayout.spacing = SwtStdValues.SPACING;
+//		controls.setLayout( buttonLayout );
+//
+//		// Start button
+//		startButton = new Button( controls, PUSH );
+//		startButton.setText( "Start" );
+//		startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
+//
+//		startButton.addSelectionListener( new SelectionAdapter() {
+//			public void widgetSelected( SelectionEvent e ) {
+//				app.startCmd();
+//			}
+//		});
+//
+//		// Stop button
+//		stopButton = new Button( controls, PUSH );
+//		stopButton.setText( "Stop" );
+//		stopButton.setEnabled( false );
+//
+//		stopButton.addSelectionListener( new SelectionAdapter() {
+//			public void widgetSelected( SelectionEvent e ) {
+//				app.stopCommand();
+//			}
+//		});
+//
+//		// Status labels
+//		command = new Label( panel, NONE );
+//		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+//		setCommandLine( "" );
+//
+//		status = new Label( panel, NONE );
+//		status.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+//		setStatus( "Not started" );
+//
+//		// Output text
+//		outputText = new StyledText( panel, BORDER | V_SCROLL | H_SCROLL );
+//		GridData outputData = new GridData( FILL, FILL, true, true);
+//		outputData.minimumHeight = 100;
+//		outputText.setLayoutData( outputData );
+//
+//		outputText.setEditable( false );
+//
+//		return panel;
+//	}
 
 
 	/**
@@ -474,32 +439,18 @@ public class CombotGui
 	}
 
 
-	private void setStatus( String s ) {
-		status.setText( "Status: " + s );
-	}
-
 	public void onCommandStarted( String line )
 	{
-		setStatus( "Running" );
-		setCommandLine( line );
-		setCommandRunning( true );
-		outputText.setText( "" );
+		getCommandPanel().setStatus( "Running" );
+		getCommandPanel().setCommandLine( line );
+		getCommandPanel().setCommandRunning( true );
+		getCommandPanel().outputText.setText( "" );
 	}
 
-
-	private void setCommandLine( String line ) {
-		command.setText( "Command line: " + line );
-	}
-
-	public void setCommandRunning( boolean b )
-	{
-		stopButton.setEnabled( b );
-		startButton.setEnabled( !b );
-	}
 
 	public void onCommandStopped()
 	{
-		stopButton.setEnabled( false );
+		getCommandPanel().stopButton.setEnabled( false );
 	}
 
 	public void dispose() {
@@ -532,19 +483,19 @@ public class CombotGui
 			public void visualValidated( ValidationEvent e )
 			{
 				if ( e.entries.isEmpty() ) {
-					errorMap.remove( e.sender );
+				    getCommandPanel().errorMap.remove( e.sender );
 				} else {
-					errorMap.put( e.sender, e.entries );
+					getCommandPanel().errorMap.put( e.sender, e.entries );
 				}
 
-				startButton.setEnabled( errorMap.isEmpty() );
+				getCommandPanel().startButton.setEnabled( getCommandPanel().errorMap.isEmpty() );
 
-				String toolTip = errorMap.isEmpty() ?  "" : "Can not start because of errors";
-				for ( ValEntry en : Iterables.concat( errorMap.values() ) ) {
+				String toolTip = getCommandPanel().errorMap.isEmpty() ?  "" : "Can not start because of errors";
+				for ( ValEntry en : Iterables.concat( getCommandPanel().errorMap.values() ) ) {
 					toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
 				}
 
-				controls.setToolTipText( toolTip );
+				getCommandPanel().controls.setToolTipText( toolTip );
 			} };
 
 
@@ -558,5 +509,146 @@ public class CombotGui
 			};
 	}
 
+
+	class CommandPanel {
+
+		public Composite comp;
+		public TreeItem item;
+
+		private CommandData commandData;
+		private Map<Arg<?>, List<ValEntry>> errorMap = new HashMap<>();
+		private Label status;
+		private Label command;
+		private Button stopButton;
+		private Button startButton;
+		private Composite controls;
+
+		private StyledText outputText;
+
+
+
+		public Composite makeControlPanel( Composite parent )
+		{
+			Composite panel = new Composite( parent, NONE );
+			panel.setLayout( new GridLayout( 1, false ) );
+
+			controls = new Composite( panel, NONE );
+			RowLayout buttonLayout = new RowLayout( HORIZONTAL );
+			buttonLayout.pack = false;
+			buttonLayout.spacing = SwtStdValues.SPACING;
+			controls.setLayout( buttonLayout );
+
+			// Start button
+			startButton = new Button( controls, PUSH );
+			startButton.setText( "Start" );
+			startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
+
+			startButton.addSelectionListener( new SelectionAdapter() {
+				public void widgetSelected( SelectionEvent e ) {
+					app.startCmd();
+				}
+			});
+
+			// Stop button
+			stopButton = new Button( controls, PUSH );
+			stopButton.setText( "Stop" );
+			stopButton.setEnabled( false );
+
+			stopButton.addSelectionListener( new SelectionAdapter() {
+				public void widgetSelected( SelectionEvent e ) {
+					app.stopCommand();
+				}
+			});
+
+			// Status labels
+			command = new Label( panel, NONE );
+			command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+			setCommandLine( "" );
+
+			status = new Label( panel, NONE );
+			status.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+			setStatus( "Not started" );
+
+			// Output text
+			outputText = new StyledText( panel, BORDER | V_SCROLL | H_SCROLL );
+			GridData outputData = new GridData( FILL, FILL, true, true);
+			outputData.minimumHeight = 100;
+			outputText.setLayoutData( outputData );
+
+			outputText.setEditable( false );
+
+			return panel;
+		}
+
+
+		@SuppressWarnings( { "rawtypes", "unchecked" } )
+		private Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
+		{
+			Composite commandPanel = new Composite( parent, NONE );
+			commandPanel.setLayout( new GridLayout( 2, false ) );
+
+			SwtStdValues.setDebugColor( commandPanel, SwtStdValues.COLOR_DARK_GREEN );
+
+			// Commmand title
+			GuiArgVisual<?> commandVisual = visualFactory.make( cmd );
+			commandVisual.makeWidget( (Arg) cmd, commandPanel, visualFactory );
+
+			Label comArgSep = new Label( commandPanel, SEPARATOR | HORIZONTAL );
+			comArgSep.setLayoutData( new GridData( FILL, TOP, true, false, 2, 1 ) );
+
+			// Scrolling
+			ScrolledComposite scrolled = new ScrolledComposite( commandPanel, V_SCROLL );
+			scrolled.setExpandHorizontal( true );
+			scrolled.setShowFocusedControl( true );
+			scrolled.setAlwaysShowScrollBars( true );
+			scrolled.setLayoutData( new GridData( FILL, FILL, true, true) );
+
+			// Args
+			Composite argsComp = new Composite( scrolled, NONE );
+			scrolled.setContent( argsComp );
+
+			SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
+
+
+			GridLayout argsLayout = new GridLayout( 2, false );
+			argsComp.setLayout( argsLayout );
+
+			// Add the acctual args
+			for ( Arg<?> arg : cmd.getArgGroup() ) {
+				visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, visualFactory );
+			}
+
+
+			Label argButtonSep = new Label( commandPanel, SEPARATOR | HORIZONTAL );
+			argButtonSep.setLayoutData( new GridData( FILL, TOP, true, false ) );
+
+			Composite controlPanel = makeControlPanel( commandPanel );
+			controlPanel.setLayoutData( new GridData( FILL, FILL, true, true ) );
+
+			argsComp.pack();
+			scrolled.pack();
+			commandPanel.pack();
+
+			return commandPanel;
+		}
+
+		private void setCommandLine( String line ) {
+			command.setText( "Command line: " + line );
+		}
+
+		public void setCommandRunning( boolean b )
+		{
+			stopButton.setEnabled( b );
+			startButton.setEnabled( !b );
+		}
+
+		private void setStatus( String s ) {
+			status.setText( "Status: " + s );
+		}
+
+
+	}
 }
+
+
 

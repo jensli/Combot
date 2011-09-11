@@ -10,13 +10,11 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CommandData extends j.util.tree2.TreeItem<Command, CommandData>
 {
 	public final Command cmd;
-	public Composite page;
-	public TreeItem item;
 
-	public CommandData( Command cmd, Composite page, TreeItem item ) {
+	public CommandData( Command cmd, Composite comp, TreeItem item ) {
 		this.cmd = cmd;
-		this.page = page;
-		this.item = item;
+//		this.comp = comp;
+//		this.item = item;
 	}
 
 	/**
