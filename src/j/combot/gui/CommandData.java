@@ -4,17 +4,12 @@ import j.combot.command.Command;
 import j.util.functional.Fun1;
 import j.util.util.Util;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
-
 public class CommandData extends j.util.tree2.TreeItem<Command, CommandData>
 {
 	public final Command cmd;
 
-	public CommandData( Command cmd, Composite comp, TreeItem item ) {
+	public CommandData( Command cmd ) {
 		this.cmd = cmd;
-//		this.comp = comp;
-//		this.item = item;
 	}
 
 	/**

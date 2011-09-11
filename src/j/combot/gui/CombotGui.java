@@ -22,6 +22,7 @@ import j.combot.command.Command;
 import j.combot.gui.misc.InputBox;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
+import j.combot.gui.visuals.AltVisual;
 import j.combot.gui.visuals.CommandVisual;
 import j.combot.gui.visuals.CompositeVisual;
 import j.combot.gui.visuals.ConstVisual;
@@ -215,16 +216,18 @@ public class CombotGui
 
 	private void initCmd( TreeItem item, Command cmd, CommandData parent )
 	{
-		item.setText( cmd.getTitle() );
+		CommandData cData = new CommandData( cmd );
+		parent.addChild( cData  );
+
 		CommandPanel commandPanel = new CommandPanel();
 		Composite panel = commandPanel.makeCommandPanel( cmd, commandComp, visualFactory );
 		commandPanel.comp = panel;
-		CommandData cData = new CommandData( cmd, panel, item );
 		commandPanel.commandData = cData;
 		commandPanel.item = item;
-		commandPanelMap.put( cmd, commandPanel );
-		parent.addChild( cData  );
+
+		item.setText( cmd.getTitle() );
 		item.setData( commandPanel );
+		commandPanelMap.put( cmd, commandPanel );
 	}
 
 	public void addChildCommand( Command parent, Command child )
@@ -350,10 +353,6 @@ public class CombotGui
 		commandPanelMap.remove( p.command );
 
 		cmdToDel.removeSelf();
-
-
-
-//		app.deleteCmd( cmdToDel.cmd );
 	}
 
 	private void saveCurrentDefaults()
@@ -370,60 +369,6 @@ public class CombotGui
 	}
 
 
-
-
-//	public Composite makeControlPanel( Composite parent )
-//	{
-//		Composite panel = new Composite( parent, NONE );
-//		panel.setLayout( new GridLayout( 1, false ) );
-//
-//		controls = new Composite( panel, NONE );
-//		RowLayout buttonLayout = new RowLayout( HORIZONTAL );
-//		buttonLayout.pack = false;
-//		buttonLayout.spacing = SwtStdValues.SPACING;
-//		controls.setLayout( buttonLayout );
-//
-//		// Start button
-//		startButton = new Button( controls, PUSH );
-//		startButton.setText( "Start" );
-//		startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
-//
-//		startButton.addSelectionListener( new SelectionAdapter() {
-//			public void widgetSelected( SelectionEvent e ) {
-//				app.startCmd();
-//			}
-//		});
-//
-//		// Stop button
-//		stopButton = new Button( controls, PUSH );
-//		stopButton.setText( "Stop" );
-//		stopButton.setEnabled( false );
-//
-//		stopButton.addSelectionListener( new SelectionAdapter() {
-//			public void widgetSelected( SelectionEvent e ) {
-//				app.stopCommand();
-//			}
-//		});
-//
-//		// Status labels
-//		command = new Label( panel, NONE );
-//		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
-//		setCommandLine( "" );
-//
-//		status = new Label( panel, NONE );
-//		status.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
-//		setStatus( "Not started" );
-//
-//		// Output text
-//		outputText = new StyledText( panel, BORDER | V_SCROLL | H_SCROLL );
-//		GridData outputData = new GridData( FILL, FILL, true, true);
-//		outputData.minimumHeight = 100;
-//		outputText.setLayoutData( outputData );
-//
-//		outputText.setEditable( false );
-//
-//		return panel;
-//	}
 
 
 	/**
@@ -510,6 +455,7 @@ public class CombotGui
 					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),
 					new VisFact<>( VisualTypes.NULL_TYPE, NullVisual.class ),
 					new VisFact<>( VisualTypes.OPT_TYPE, OptVisual.class ),
+					new VisFact<>( VisualTypes.ALT_TYPE, AltVisual.class ),
 					new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class )
 			};
 	}

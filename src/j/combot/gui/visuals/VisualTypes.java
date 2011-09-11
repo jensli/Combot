@@ -21,7 +21,7 @@ public final class VisualTypes
 
 	public static VisualType<Integer>
 		INT_TYPE,
-		RADIO_TYPE;
+		ALT_TYPE;
 
 	public static VisualType<String>
 		COMMAND_TYPE,

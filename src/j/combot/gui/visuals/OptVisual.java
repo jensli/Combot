@@ -40,8 +40,7 @@ public class OptVisual extends BaseArgVisual<Boolean>
 		enabledBtn.setLayoutData( layoutData );
 
 		enabledBtn.addSelectionListener( new SelectionAdapter() {
-			@Override
-			public void widgetSelected( SelectionEvent e ) {
+			@Override public void widgetSelected( SelectionEvent e ) {
 				setEnabled( enabledBtn.getSelection() );
 			}
 		} );

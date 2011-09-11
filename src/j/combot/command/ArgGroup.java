@@ -13,11 +13,11 @@ import com.google.common.collect.Lists;
 // Make a annotation processor that creates classes like this?
 public class ArgGroup implements Iterable<Arg<?>>
 {
-	private Collection<Arg<?>> args;
+	private List<Arg<?>> args;
 
 	public ArgGroup( Collection<Arg<?>> childs )
 	{
-		this.args = childs;
+		this.args = new ArrayList<>( childs );
 	}
 
 	public ArgGroup( Arg<?>... args ) {
@@ -27,6 +27,9 @@ public class ArgGroup implements Iterable<Arg<?>>
 	public void add( Arg<?> part ) {
 		args.add( part );
 	}
+
+
+
 
 	public void addAll( Collection<Arg<?>> parts ) {
 		args.addAll( parts );
@@ -47,11 +50,17 @@ public class ArgGroup implements Iterable<Arg<?>>
 	}
 
 
+
+
+	public Arg<?> get( int index ) {
+		return args.get( index );
+	}
+
 	public ArgGroup() {
 		this( new ArrayList<Arg<?>>( 2 ) );
 	}
 
-	public void setArgs( Collection<Arg<?>> args ) {
+	public void setArgs( List<Arg<?>> args ) {
 		this.args = args;
 	}
 

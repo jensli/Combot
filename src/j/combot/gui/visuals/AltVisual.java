@@ -1,8 +1,10 @@
 package j.combot.gui.visuals;
 
+import static org.eclipse.swt.SWT.CENTER;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
+import static org.eclipse.swt.SWT.RADIO;
 import j.combot.command.AltArg;
 import j.combot.command.Arg;
 import j.swt.util.SwtStdValues;
@@ -10,82 +12,103 @@ import j.swt.util.SwtStdValues;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
-public class AltVisual extends BaseArgVisual<Integer> {
+public class AltVisual extends BaseArgVisual<Integer>
+{
+		private List<Button> buttons = new ArrayList<>();
 
-	private Button radioBtn;
+		@SuppressWarnings( { "unchecked", "rawtypes" } )
+		@Override
+		public void makeWidget(
+				Arg<Integer> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
+		{
+			AltArg altArg = (AltArg) arg;
 
-	private List<Button> titles = new ArrayList<>();
-	private List<Composite> childComps = new ArrayList<>();
 
-	@Override
-	public Integer getValue() {
-		return 0;
+			makeTitle( parent, parentLbl, altArg.getTitle() );
+//			if ( parentLbl != null ) {
+//				parentLbl.setText( altArg.getTitle() );
+//				((GridData) parentLbl.getLayoutData()).horizontalSpan = 2;
+//			} else {
+//				// Button that enables/disables children
+//				Label title = new Label( parent, NONE );
+//				title.setText( altArg.getTitle() );
+//				title.setLayoutData( new GridData( LEFT, CENTER, true, false, 2, 1 ) );
+//			}
+
+			Composite childsComp = new Composite( parent, NONE );
+			childsComp.setLayout( new GridLayout( 2, false ) );
+			GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
+			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+			childsComp.setLayoutData( compData );
+			SwtStdValues.setDebugColor( childsComp, SwtStdValues.COLOR_RED );
+
+
+			for ( Arg<?> childArg : altArg.getChildren() ) {
+
+				// Button that enables/disables children
+				final Button button = new Button( childsComp, RADIO );
+				buttons.add( button );
+				button.setData( childArg );
+
+				// Child will set the text to its title, its not done here
+
+//				enabledBtn.setSelection( optArg.getDefaultValue() );
+
+				button.setLayoutData( new GridData( LEFT, CENTER, false, false, 1, 1 ) );
+
+
+				button.addSelectionListener( new SelectionAdapter() {
+					@Override public void widgetSelected( SelectionEvent e ) {
+						AltVisual.setEnabledWithButton( button );
+					}
+
+				} );
+
+				GuiArgVisual<?> childVisual = visualFactory.make( childArg );
+				childVisual.makeWidget( (Arg) childArg, childsComp, button,  visualFactory );
+
+//				childVisual.setEnabled( false );
+			}
+
+			Button defaultButton = buttons.get( altArg.getDefaultValue() );
+			defaultButton.setSelection( true );
+//			setEnabledWithButton( defaultButton );
+		}
+
+		private static void setEnabledWithButton( final Button button ) {
+			( (Arg<?>) button.getData() )
+				.getVisual().setEnabled( button.getSelection() );
+		}
+
+		@Override
+		public void setEnabled( boolean b ) {
+			super.setEnabled( b );
+			for ( Arg<?> a : ( (AltArg) getArg() ).getChildren() ) {
+					a.getVisual().setEnabled( b );
+			}
+		}
+
+		@Override
+		public Integer getValue()
+		{
+			int i = 0;
+
+			for ( Button b : buttons ) {
+				if ( b.getSelection() ) return i;
+				i++;
+			}
+
+			throw new IllegalStateException( "Hm. Something should be selected" );
+		}
+
+
+
 	}
 
-	@Override
-	public void makeWidget(
-			Arg<Integer> part, Composite parent, VisualFactory visualFactory )
-	{
-		AltArg optArg = (AltArg) part;
-
-		Label title = new Label( parent, NONE );
-		title.setText( optArg.getTitle() );
-
-		Composite radioParent = new Composite( parent, NONE );
-		radioParent.setLayout( new GridLayout( 2, false ) );
-		GridData radioData = new GridData( FILL, LEFT, true, false );
-		radioData.horizontalSpan = 2;
-		radioData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
-		radioParent.setLayoutData( radioData );
-
-		// Loop over children and add them reursivly.
-//		for ( Arg<?> arg : optArg.getArgGroup() ) {
-//
-//			// Button that enables/disables children
-//			radioBtn = new Button( radioParent, RADIO );
-//			radioBtn.setText( optArg.getTitle() );
-//			GridData butData = new GridData();
-//			butData.horizontalSpan = 2;
-//			radioBtn.setLayoutData( butData );
-//			setValueControl( radioBtn );
-//
-//			titles.add( radioBtn );
-//
-//			// Add panel for children
-//			final Composite childsComp = new Composite( radioParent, NONE );
-//			childsComp.setLayout( new GridLayout( 2, false ) );
-//			GridData compData = new GridData( FILL, LEFT, true, false );
-//			compData.horizontalSpan = 2;
-//			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
-//			childsComp.setLayoutData( compData );
-//
-//			childComps.add( childsComp );
-//
-//			radioBtn.addSelectionListener( new SelectionAdapter() {
-//				@Override public void widgetSelected( SelectionEvent e ) {
-//					setEnabledFromSelected();
-//				}
-//			} );
-//
-//			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, null, visualFactory );
-//		}
-
-//		SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
-
-
-	}
-
-	private void setEnabledFromSelected() {
-		// TODO: This enables/disables ALL children, should only be
-		// parent. When switching back, children should regain their
-		// previous state, not all of them should be enabled.
-//					SwtUtil.recursiveSetEnabled( childsComp, isEnabled() );
-
-	}
-}

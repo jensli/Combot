@@ -7,11 +7,12 @@ import j.combot.command.CompositeArg;
 import j.swt.util.SwtStdValues;
 import j.util.util.NotImplementedException;
 
+import java.util.List;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 public class CompositeVisual extends BaseArgVisual<Object>
 {
@@ -22,37 +23,23 @@ public class CompositeVisual extends BaseArgVisual<Object>
 		throw new NotImplementedException();
 	}
 
-
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	@Override
-	public void makeWidget( Arg<Object> part, Composite parent, Button parentLbl, VisualFactory visualFactory )
+	public void makeWidget( Arg<Object> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
 	{
-		CompositeArg compArg = (CompositeArg) part;
-
-		if ( parentLbl != null ) {
-			parentLbl.setText( compArg.getTitle() );
-			((GridData) parentLbl.getLayoutData()).horizontalSpan = 2;
-		} else {
-			// Button that enables/disables children
-			Label title = new Label( parent, NONE );
-			title.setText( compArg.getTitle() );
-			GridData titleData = new GridData();
-			titleData.horizontalSpan = 2;
-			title.setLayoutData( titleData );
-		}
+		makeTitle( parent, parentLbl, arg.getTitle() );
 
 		childsComp = new Composite( parent, NONE );
-		childsComp.setLayout( new GridLayout( 2, false ) );
-		GridData compData = new GridData( FILL, FILL, true, false );
-		compData.horizontalSpan = 2;
+		GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
 		compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
 		childsComp.setLayoutData( compData );
 
-		SwtStdValues.setDebugColor( childsComp, SwtStdValues.COLOR_RED );
+		childsComp.setLayout( new GridLayout( 2, false ) );
+		SwtStdValues.setDebugColor( childsComp, SwtStdValues.DARK_CYAN );
 
 		// Loop over children and add them reursivly.
-		for ( Arg<?> arg : compArg.getArgGroup() ) {
-			visualFactory.make( arg ).makeWidget( (Arg) arg, childsComp, visualFactory );
+		for ( Arg<?> child : ((CompositeArg) arg).getArgGroup() ) {
+			visualFactory.make( child ).makeWidget( (Arg) child, childsComp, visualFactory );
 		}
 	}
 
@@ -62,7 +49,10 @@ public class CompositeVisual extends BaseArgVisual<Object>
 	{
 		super.setEnabled( b );
 		childsComp.setEnabled( b );
-		for ( ArgVisual<?> v : ((CompositeArg) getArg()).getArgGroup().getVisuals() ) {
+
+		List<ArgVisual<?>> childs = ( (CompositeArg) getArg() ).getArgGroup().getVisuals();
+
+		for ( ArgVisual<?> v : childs ) {
 			v.setEnabled( b );
 		}
 	}

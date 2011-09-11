@@ -9,14 +9,12 @@ public class ConstArg extends Arg<Object>
 {
 	// Superclass clone method is sufficient
 
-	public ConstArg( String title, String name, String value )
+	public ConstArg( String title, String value )
 	{
-		super( title, name );
+		super( title, "const name" );
 		setVisualType( VisualTypes.CONST_TYPE );
 		setDefaultValue( value );
 	}
-
-
 
 	@Override
 	public List<String> getArgStrings() {

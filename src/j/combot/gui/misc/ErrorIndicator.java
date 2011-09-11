@@ -3,6 +3,7 @@ package j.combot.gui.misc;
 import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.ICON_ERROR;
 import static org.eclipse.swt.SWT.NONE;
+import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
 
 import org.eclipse.swt.graphics.Font;
@@ -59,6 +60,7 @@ public class ErrorIndicator
 	{
 		row = new Composite( parent, NONE );
 		row.setLayout( new RowLayout( HORIZONTAL ) );
+		SwtStdValues.setDebugColor( row, SwtStdValues.COLOR_DARK_BLUE );
 
 		errorIcon = new Label( row, NONE );
 		errorMsg = new Label( row, NONE );

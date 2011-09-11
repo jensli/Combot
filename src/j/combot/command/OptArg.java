@@ -7,7 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 
-
+/**
+ * Makes its child optional, the user can choose if its child will be included
+ * or not
+ */
 public class OptArg extends DelArg<Boolean>
 {
 	public OptArg( boolean def, Arg<?> child )
@@ -30,56 +33,15 @@ public class OptArg extends DelArg<Boolean>
 	}
 
 	@Override
-	public List<ValEntry> validate() {
-		if ( !getVisual().getValue() ) {
-			return Collections.emptyList();
-		} else {
+	public List<ValEntry> validate()
+	{
+		if ( getVisual().getValue() ) {
 			return super.validate();
+		} else {
+			return Collections.emptyList();
 		}
 	}
 
-
-
 }
-
-
-//public class OptArg extends ComposedArg<Boolean>
-//{
-//	// Super class clone method is sufficient
-//
-//	public OptArg( String title, String name, boolean def, Arg<?>... childs )
-//	{
-//		super( title, name, childs );
-//
-//		setDefaultValue( def );
-//		setVisualType( VisualTypes.OPT_TYPE );
-//		setName( StringUtil.join( getArgGroup().getNames() , " " ) );
-//	}
-//
-//	public OptArg( String title, boolean def, Arg<?>... childs )
-//	{
-//		this( title, "", def, childs );
-//	}
-//
-//
-//
-//	@Override
-//	public void setDefaultFromVisual() {
-//		super.setDefaultFromVisual(); // ComposedArg
-//		setDefaultValue( getVisual().getValue() ); // Reimplement Arg
-//	}
-//
-//	@Override
-//	public List<String> getArgStrings()
-//	{
-//		if ( !getVisual().getValue() ) {
-//			return Collections.emptyList();
-//		} else {
-//			return getArgGroup().getArgStrings();
-//		}
-//	}
-//
-//}
-
 
 

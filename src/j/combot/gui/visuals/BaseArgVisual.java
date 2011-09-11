@@ -11,6 +11,7 @@ import j.combot.validator.ValEntry;
 import j.swt.util.SwtStdValues;
 import j.util.caller.GenericCaller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,10 +54,21 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	}
 
 	@Override
-	public void setEnabled( boolean b ) {
+	public void setEnabled( boolean b )
+	{
 		enabled = b;
 		if ( valueControl != null ) valueControl.setEnabled( b );
 		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
+
+		List<ValEntry> errors;
+
+		if ( b ) {
+			errors = savedErrors;
+		} else {
+			errors = Collections.emptyList();
+		}
+
+		valCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
 
 	@Override
@@ -107,9 +119,12 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valCaller.addListener( l );
 	}
 
+	private List<ValEntry> savedErrors = Collections.emptyList();
+
 	@Override
 	public void setValidateResult( List<ValEntry> errors )
 	{
+		savedErrors = errors;
 		if ( errors.isEmpty() ) {
 			errorIndicator.clearError();
 			valueControl.setToolTipText( "" );
@@ -129,7 +144,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 	@Override
 	public void makeChildWidgets( Arg<T> part, Composite parent, VisualFactory visualFactory ) {
-
+		;
 	}
 
 	protected SelectionAdapter makeValidationListener() {
@@ -158,6 +173,20 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	@Override
 	public Control getValueControl() {
 		return valueControl;
+	}
+
+	protected static void makeTitle( Composite parent, Button parentLabel, String title )
+	{
+		if ( parentLabel != null ) {
+			// The parent has already created a control where we can display our
+			// title. (parent e.g. OptVisual or AltVisual)
+			parentLabel.setText( title );
+			((GridData) parentLabel.getLayoutData()).horizontalSpan = 2;
+		} else {
+			Label label = new Label( parent, NONE );
+			label.setText( title );
+			label.setLayoutData( new GridData( LEFT, FILL,  false, false, 2, 1) );
+		}
 	}
 
 }
