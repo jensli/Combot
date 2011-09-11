@@ -2,12 +2,14 @@ package j.combot.command;
 
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.ValEntry;
+import j.util.prefs.PrefNode;
 import j.util.util.Util;
 
 import java.util.List;
 
 public class Command extends Arg<String>
 {
+	@PrefNode
 	private CompositeArg children;
 
 	public Command( String title, String command, Arg<?>... args )
@@ -23,6 +25,10 @@ public class Command extends Arg<String>
 	}
 
 
+	@Override
+	public void setDefaultFromVisual() {
+		children.setDefaultFromVisual();
+	}
 
 	@Override
 	public List<String> getArgStrings() {

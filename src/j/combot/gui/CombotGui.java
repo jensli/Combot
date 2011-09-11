@@ -198,9 +198,6 @@ public class CombotGui
 		return getActiveCommandPanel().commandData.cmd;
 	}
 
-	private CommandData getActiveCmdData() {
-		return null; //activeCommand;
-	}
 
 	private CommandPanel getActiveCommandPanel() {
 		return activeCommand;
@@ -225,6 +222,7 @@ public class CombotGui
 		CommandData cData = new CommandData( cmd, panel, item );
 		commandPanel.commandData = cData;
 		commandPanel.item = item;
+		commandPanelMap.put( cmd, commandPanel );
 		parent.addChild( cData  );
 		item.setData( commandPanel );
 	}
@@ -328,7 +326,9 @@ public class CombotGui
 		defaultsNameBox.setTrim( true );
 
 		defaultsNameBox.setResultCallback( new Action0() {
-			public void run() { saveCurrentDefaults(); }
+			public void run() {
+				saveCurrentDefaults();
+			}
 		} );
 
 
@@ -342,12 +342,15 @@ public class CombotGui
 		CommandPanel p = getActiveCommandPanel();
 		CommandData cmdToDel = p.commandData;
 
-		switchActiveCommand( p );
+		switchActiveCommand( getCommandPanel( cmdToDel.getParent().cmd ) );
 
 		p.item.dispose();
 		p.comp.dispose();
 
+		commandPanelMap.remove( p.command );
+
 		cmdToDel.removeSelf();
+
 
 
 //		app.deleteCmd( cmdToDel.cmd );
@@ -359,7 +362,7 @@ public class CombotGui
 
 		String newTitle = defaultsNameBox.getResult();
 
-		CommandData data = getActiveCmdData();
+		CommandData data = getActiveCommandPanel().commandData;
 		CommandData parentData = data.getParent().hasParent() ?
 				data.getParent() : data;
 

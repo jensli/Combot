@@ -91,7 +91,9 @@ public class CombotApp
 
 	public static void saveCmdsPrefs( Preferences prefs, CommandData cmds ) throws BackingStoreException
 	{
+		// All top level commands
 		for ( CommandData cmdData : cmds.getChildren() ) {
+			// Derivied children with other default values
 			for ( CommandData d : cmdData.getChildren() ) {
 				Preferences cmdChildPrefs = prefs.node( cmdData.cmd.getTitle() );
 				PrefUtil.save( cmdChildPrefs, d.cmd );
@@ -119,7 +121,7 @@ public class CombotApp
 		for ( File com : comClasses ) {
 			String filename = com.getName();
 			String className = filename.substring( 0, filename.length() - ".class".length() );
-			cmds.add( makeCommand( className ) );
+			cmds.add( loadCommand( className ) );
 		}
 
 		for ( Command cmd : cmds ) {
@@ -147,12 +149,12 @@ public class CombotApp
 	 * Looks in the default package and loads the CommandFactory class with name
 	 * className, returning the Command that the factory creates.
 	 */
-	private static Command makeCommand( String className )
+	private static Command loadCommand( String factoryClassName )
 	{
 			CommandFactory commandFactory;
 
 			try {
-				commandFactory = (CommandFactory) Class.forName( className ).newInstance();
+				commandFactory = (CommandFactory) Class.forName( factoryClassName ).newInstance();
 			} catch ( InstantiationException | IllegalAccessException | ClassNotFoundException exc ) {
 				exc.printStackTrace();
 				throw new RuntimeException( exc );

@@ -28,8 +28,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	private Arg<T> arg;
 	private boolean enabled = true;
 
-	private ErrorIndicator errorIndicator = new ErrorIndicator();
-//	private List<ValidationListener> validationListeners = new ArrayList<ValidationListener>( 1 );
+	private ErrorIndicator errorIndicator;
 
 	private GenericCaller<ValidationEvent, ValidationListener> valCaller =
 			new GenericCaller<>( ValidationEvent.class, ValidationListener.class );
@@ -57,6 +56,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	public void setEnabled( boolean b ) {
 		enabled = b;
 		if ( valueControl != null ) valueControl.setEnabled( b );
+		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
 	}
 
 	@Override
@@ -88,6 +88,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		new Label( parent, NONE ); // Empty label to take up a cell
 
 		// Error indication
+		errorIndicator = new ErrorIndicator();
 		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
 		Control errInd = errorIndicator.makeWidget( parent );
 		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 1, 1 ) );

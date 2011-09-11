@@ -3,6 +3,7 @@ package j.combot.gui.misc;
 import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.ICON_ERROR;
 import static org.eclipse.swt.SWT.NONE;
+import j.swt.util.SwtUtil;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +22,7 @@ public class ErrorIndicator
 
 	public static Image cachedErrorIcon = null;
 	public static int lastFontSize = -1;
+	private Composite row;
 
 	public ErrorIndicator() {}
 
@@ -45,9 +47,17 @@ public class ErrorIndicator
 		this.font = font;
 	}
 
+	public boolean isEnabled() {
+		return row.getEnabled();
+	}
+
+	public void setEnabled( boolean b ) {
+		SwtUtil.recursiveSetEnabled( row, b );
+	}
+
 	public Control makeWidget( Composite parent )
 	{
-		Composite row = new Composite( parent, NONE );
+		row = new Composite( parent, NONE );
 		row.setLayout( new RowLayout( HORIZONTAL ) );
 
 		errorIcon = new Label( row, NONE );
