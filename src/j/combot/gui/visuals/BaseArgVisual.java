@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Label;
 public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 {
 	private Arg<T> arg;
-	private boolean enabled = true;
+	protected boolean enabled = true;
 
 	private ErrorIndicator errorIndicator;
 
@@ -51,24 +51,6 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	@Override
 	public boolean isEnabled() {
 		return enabled;
-	}
-
-	@Override
-	public void setEnabled( boolean b )
-	{
-		enabled = b;
-		if ( valueControl != null ) valueControl.setEnabled( b );
-		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
-
-		List<ValEntry> errors;
-
-		if ( b ) {
-			errors = savedErrors;
-		} else {
-			errors = Collections.emptyList();
-		}
-
-		valCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
 
 	@Override
@@ -137,6 +119,26 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 			}
 			// TODO: Set tooltip on validator control also?
 			valueControl.setToolTipText( tip );
+		}
+
+		valCaller.call( new ValidationEvent( errors, getArg() ) );
+	}
+
+	@Override
+	public void setEnabled( boolean b )
+	{
+		enabled = b;
+		if ( valueControl != null ) valueControl.setEnabled( b );
+		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
+
+		List<ValEntry> errors;
+
+		if ( b ) {
+//			errors = savedErrors;
+			errors = getArg().validate();
+		} else {
+			// Clear errors for listeners by sending empty list
+			errors = Collections.emptyList();
 		}
 
 		valCaller.call( new ValidationEvent( errors, getArg() ) );

@@ -59,9 +59,7 @@ public abstract class Arg<T> implements Cloneable
 	public List<ValEntry> validate()
 	{
 		List<ValEntry> entires = validator.validate( getVisual().getValue() );
-		for ( ValEntry e : entires ) {
-			e.sender = this;
-		}
+		for ( ValEntry e : entires ) e.sender = this;
 		return entires;
 	}
 
@@ -80,6 +78,22 @@ public abstract class Arg<T> implements Cloneable
 		}
 	}
 
+
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public Arg<T> clone() {
+		try {
+			return (Arg<T>) super.clone();
+		} catch ( CloneNotSupportedException exc ) {
+			exc.printStackTrace();
+			throw new RuntimeException( exc );
+		}
+	}
+
+
+	/////////////////////////////////////////////////////////////
+
 	public void setDefaultValue( T defaultValue ) {
 		this.defaultValue = defaultValue;
 	}
@@ -96,16 +110,6 @@ public abstract class Arg<T> implements Cloneable
 	public T getDefaultValue() {
 		return defaultValue;
 	}
-
-//	@SuppressWarnings( "unchecked" )
-//	public Arg<T> clone() {
-//			Arg<T> res;
-//			res = (Arg<T>) super.clone();
-//			// Reference to visual is shared
-////			res.visual = null;
-//			return res;
-//	}
-
 
 	public String getTitle() {
 		return title;
@@ -154,19 +158,5 @@ public abstract class Arg<T> implements Cloneable
 	public void setValueSufix( String valueSufix ) {
 		this.valueSufix = valueSufix;
 	}
-
-	@SuppressWarnings( "unchecked" )
-	@Override
-	public Arg<T> clone() {
-		try {
-			return (Arg<T>) super.clone();
-		} catch ( CloneNotSupportedException exc ) {
-			exc.printStackTrace();
-			throw new RuntimeException( exc );
-		}
-	}
-
-
-
 
 }

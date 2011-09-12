@@ -1,6 +1,7 @@
 package j.combot.command;
 
 import j.combot.gui.visuals.VisualTypes;
+import j.combot.validator.ValEntry;
 import j.util.prefs.PrefNodeCollection;
 
 import java.util.Collection;
@@ -19,17 +20,19 @@ public class CompositeArg extends Arg<Object>
 		setVisualType( VisualTypes.GROUP_TYPE );
 	}
 
-//	public ComposedArg( String title, Arg<?>... children )
-//	{
-//		this( title, "composed no name", children );
-//	}
-
 	public ArgGroup getArgGroup() {
 		return argGroup;
 	}
 
 	public Collection<Arg<?>> getChildren() {
 		return argGroup.getArgs();
+	}
+
+
+
+	@Override
+	public List<ValEntry> validate() {
+		return argGroup.validate();
 	}
 
 	@Override

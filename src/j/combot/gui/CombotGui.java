@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -220,14 +221,45 @@ public class CombotGui
 		parent.addChild( cData  );
 
 		CommandPanel commandPanel = new CommandPanel();
-		Composite panel = commandPanel.makeCommandPanel( cmd, commandComp, visualFactory );
-		commandPanel.comp = panel;
 		commandPanel.commandData = cData;
 		commandPanel.item = item;
 
 		item.setText( cmd.getTitle() );
 		item.setData( commandPanel );
 		commandPanelMap.put( cmd, commandPanel );
+
+
+		Composite panel = commandPanel.makeCommandPanel( cmd, commandComp, visualFactory );
+		commandPanel.comp = panel;
+		switchActiveCommand( getCommandPanel( cmd ) );
+
+		setInitValidateResult( cmd );
+	}
+
+	private void setInitValidateResult( Command cmd )
+	{
+		// Blaaaa..... Hack, hack.
+		List<ValEntry> l = new ArrayList<>();
+
+		for ( ValEntry e : cmd.validate() ) {
+			if ( l.isEmpty() ) {
+				l.add( e );
+				continue;
+			}
+
+
+			if ( !Objects.equals( l.get( l.size() - 1 ).sender, e.sender ) )
+			{
+				setValidationResult( e.sender, l );
+				l = new ArrayList<>();
+			}
+
+			l.add( e );
+		}
+
+		if ( !l.isEmpty() ) {
+			setValidationResult( l.get( 0 ).sender, l );
+		}
 	}
 
 	public void addChildCommand( Command parent, Command child )
@@ -241,7 +273,6 @@ public class CombotGui
 
 		initCmd( childItem, child, parentData  );
 
-		switchActiveCommand( getCommandPanel( child ) );
 	}
 
 	public void addCommand( Command cmd )
@@ -410,6 +441,7 @@ public class CombotGui
 	{
 
 		List<String> list = new ArrayList<>();
+
 		for ( CommandData cda : Iterables.skip( commands, 1 ) ) {
 			list.add( cda.cmd.getTitle() );
 		}
@@ -426,25 +458,32 @@ public class CombotGui
 
 	}
 
+	private void setValidationResult( Arg<?> sender, List<ValEntry> entries )
+	{
+		// TODO: Hack warning
+		if ( getCommandPanel() == null ) return;
+
+		if ( entries.isEmpty() ) {
+		    getCommandPanel().errorMap.remove( sender );
+		} else {
+			getCommandPanel().errorMap.put( sender, new ArrayList<>( entries ) );
+		}
+
+		getCommandPanel().startButton.setEnabled( getCommandPanel().errorMap.isEmpty() );
+
+		String toolTip = getCommandPanel().errorMap.isEmpty() ?  "" : "Can not start because of errors";
+		for ( ValEntry en : Iterables.concat( getCommandPanel().errorMap.values() ) ) {
+			toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
+		}
+
+		getCommandPanel().controls.setToolTipText( toolTip );
+	}
+
 	// Init
 	{
 		valLis = new ValidationListener() {
-			public void visualValidated( ValidationEvent e )
-			{
-				if ( e.entries.isEmpty() ) {
-				    getCommandPanel().errorMap.remove( e.sender );
-				} else {
-					getCommandPanel().errorMap.put( e.sender, e.entries );
-				}
-
-				getCommandPanel().startButton.setEnabled( getCommandPanel().errorMap.isEmpty() );
-
-				String toolTip = getCommandPanel().errorMap.isEmpty() ?  "" : "Can not start because of errors";
-				for ( ValEntry en : Iterables.concat( getCommandPanel().errorMap.values() ) ) {
-					toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
-				}
-
-				getCommandPanel().controls.setToolTipText( toolTip );
+			public void visualValidated( ValidationEvent e ) {
+					setValidationResult( e.sender, e.entries );
 			} };
 
 

@@ -41,5 +41,13 @@ public class AltArg extends Arg<Integer>
 	}
 
 
+	@Override
+	public AltArg clone()
+	{
+		AltArg cl = (AltArg) super.clone();
+		cl.children = children.clone();
+		return cl;
+	}
+
 
 }

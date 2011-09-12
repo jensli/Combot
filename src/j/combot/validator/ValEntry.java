@@ -27,4 +27,11 @@ public class ValEntry
 		return Util.twinEquals( message, e.message, sender, e.sender );
 	}
 
+	@Override
+	public String toString() {
+		return Util.simpleToString( this, sender );
+	}
+
+
+
 }

@@ -74,12 +74,12 @@ public class AltVisual extends BaseArgVisual<Integer>
 				GuiArgVisual<?> childVisual = visualFactory.make( childArg );
 				childVisual.makeWidget( (Arg) childArg, childsComp, button,  visualFactory );
 
-//				childVisual.setEnabled( false );
+				childVisual.setEnabled( false );
 			}
 
 			Button defaultButton = buttons.get( altArg.getDefaultValue() );
 			defaultButton.setSelection( true );
-//			setEnabledWithButton( defaultButton );
+			setEnabledWithButton( defaultButton );
 		}
 
 		private static void setEnabledWithButton( final Button button ) {
@@ -89,7 +89,8 @@ public class AltVisual extends BaseArgVisual<Integer>
 
 		@Override
 		public void setEnabled( boolean b ) {
-			super.setEnabled( b );
+			enabled = b;
+//			super.setEnabled( b );
 			for ( Arg<?> a : ( (AltArg) getArg() ).getChildren() ) {
 					a.getVisual().setEnabled( b );
 			}

@@ -16,6 +16,7 @@ public class find implements CommandFactory {
 							new CompositeArg( "Titt",
 									new StringArg( "Tja", "-tjo" ),
 									new IntArg( "Hm", "-ha" ) ),
+							new StringArg( "Woo", "-woo", "" ),
 							new ConstArg( "Never follow links", "-P" ),
 							new ConstArg( "Follow links", "-L" ),
 							new ConstArg( "Only in args", "-H" ) ),

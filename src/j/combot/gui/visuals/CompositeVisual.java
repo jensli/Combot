@@ -47,7 +47,8 @@ public class CompositeVisual extends BaseArgVisual<Object>
 	@Override
 	public void setEnabled( boolean b )
 	{
-		super.setEnabled( b );
+//		super.setEnabled( b );
+		enabled = b;
 		childsComp.setEnabled( b );
 
 		List<ArgVisual<?>> childs = ( (CompositeArg) getArg() ).getArgGroup().getVisuals();
