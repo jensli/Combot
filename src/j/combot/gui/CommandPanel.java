@@ -18,6 +18,7 @@ import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.combot.validator.ValEntry;
 import j.swt.util.SwtStdValues;
+import j.swt.util.SwtUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,19 +42,19 @@ import com.google.common.collect.Iterables;
 
 class CommandPanel {
 
-	public Composite comp;
-	public TreeItem item;
+	private Composite mainComposite;
+	private TreeItem item;
 	public CombotApp app;
 
-	CommandData commandData;
+	private CommandData cmdData;
 	private Map<Arg<?>, List<ValEntry>> errorMap = new HashMap<>();
+
 	private Label status;
-	Label command;
-	Button stopButton;
+	private Label command;
+	private Button stopButton;
 	private Button startButton;
 	private Composite controls;
-
-	StyledText outputText;
+	private StyledText outputText;
 
 	public void addValidateResults( Iterable<ValEntry> ves ) {
 		for ( ValEntry e : ves ) addValidateResult( e );
@@ -63,6 +64,22 @@ class CommandPanel {
 		this.app = app;
 	}
 
+
+	public void addOutput( String line ) {
+		outputText.append( line + "\n" );
+	}
+
+	public void addErrorOutput( String line ) {
+		SwtUtil.appendStyled( outputText, line, SwtStdValues.COLOR_RED );
+	}
+
+	public TreeItem getTreeItem() {
+		return item;
+	}
+
+	public Composite getComposite() {
+		return mainComposite;
+	}
 
 	public void addValidateResult( ValEntry ve )
 	{
@@ -80,7 +97,7 @@ class CommandPanel {
 		errorMap.remove( arg );
 	}
 
-	private boolean hasValidateErrors( Arg<?> arg ) {
+	public boolean hasValidateErrors( Arg<?> arg ) {
 		return errorMap.containsKey( arg );
 	}
 
@@ -103,7 +120,7 @@ class CommandPanel {
 
 		startButton.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected( SelectionEvent e ) {
-				app.startCmd();
+				app.startCmd( cmdData.cmd );
 			}
 		});
 
@@ -119,8 +136,8 @@ class CommandPanel {
 		});
 
 		// Status labels
-		command = new Label( panel, NONE );
-		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+		this.command = new Label( panel, NONE );
+		getCommand().setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
 		setCommandLine( "" );
 
 		status = new Label( panel, NONE );
@@ -149,6 +166,7 @@ class CommandPanel {
 
 		startButton.setEnabled( errorMap.isEmpty() );
 
+		// Set tooltop on the start/stop buttons
 		String toolTip = errorMap.isEmpty() ?  "" : "Can not start because of errors";
 		for ( ValEntry en : Iterables.concat( errorMap.values() ) ) {
 			toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
@@ -157,6 +175,19 @@ class CommandPanel {
 		controls.setToolTipText( toolTip );
 	}
 
+	public void init( TreeItem item, Command cmd, CommandData parent, Composite commandComp, VisualFactory visualFactory )
+	{
+		cmdData = new CommandData( cmd );
+		parent.addChild( cmdData  );
+
+		this.item = item;
+
+		mainComposite = makeCommandPanel( cmd, commandComp, visualFactory );
+
+		// Validate without displaying error messages, so that start button is
+		// disabled if there is an error.
+		addValidateResults( cmd.validate() );
+	}
 
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
 	public Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
@@ -214,7 +245,7 @@ class CommandPanel {
 	}
 
 	public void setCommandLine( String line ) {
-		command.setText( "Command line: " + line );
+		getCommand().setText( "Command line: " + line );
 	}
 
 	public void setCommandRunning( boolean b )
@@ -228,4 +259,36 @@ class CommandPanel {
 	}
 
 
+	public void onCommandStarted( String line )
+	{
+		setStatus( "Running" );
+		setCommandLine( line );
+		setCommandRunning( true );
+		outputText.setText( "" );
+	}
+
+	public void onCommandStopped()
+	{
+		stopButton.setEnabled( false );
+	}
+
+	public void dispose()
+	{
+		cmdData.removeSelf();
+		item.dispose();
+		mainComposite.dispose();
+	}
+
+	public Label getCommand() {
+		return command;
+	}
+
+	CommandData getCommandData() {
+		return cmdData;
+	}
+
+	public void onCommandTerminated( int code ) {
+ 		setStatus( "Terminated with exit code " + code );
+ 		setCommandRunning( false );
+	}
 }

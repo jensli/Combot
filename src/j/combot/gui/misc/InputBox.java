@@ -222,7 +222,7 @@ public class InputBox extends Dialog
 		return result;
 	}
 
-	public boolean isOk() {
+	public boolean isResultOk() {
 		return isOk;
 	}
 

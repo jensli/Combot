@@ -41,6 +41,7 @@ public class CombotApp
 	private Preferences rootPrefs = Preferences.userNodeForPackage( getClass() ),
 			childCmdPrefs = rootPrefs.node( COMMAND_CHILDS );
 
+	private Command runningCmd;
 
 	private ProcessCallback processCallback;
 
@@ -213,17 +214,8 @@ public class CombotApp
 		gui.addChildCommand( parentCmd, newCmd );
 	}
 
-	public void stopCommand()
+	public void startCmd( Command cmd )
 	{
-		logger.info( "Command forcefully stopped" );
-		processHandler.destroy();
-		processHandler = null;
-		gui.onCommandStopped();
-	}
-
-	public void startCmd()
-	{
-		Command cmd = gui.getActiveCmd();
 		logger.info( "Running command: " + cmd );
 
 		List<String> args = cmd.getArgStrings();
@@ -246,16 +238,41 @@ public class CombotApp
 		try {
 			processHandler.start();
 			gui.onCommandStarted( StringUtil.join( args, " " ) );
+			runningCmd = cmd;
 		} catch ( IOException exc ) {
 			logger.warning( "IO error when running command: " + cmd + "\n" + exc );
-			processHandler.destroy();
-			processHandler = null;
-			gui.signalTerminated( -1 ); // TODO: Send sensible info
+			onCommandTerminated( -1 ); // TODO: Send sensible info
 		}
+
 
 
 	}
 
+	/**
+	 * User want to stop a running command
+	 */
+	public void stopCommand()
+	{
+		logger.info( "Command forcefully stopped" );
+		processHandler.destroy();
+		gui.onCommandStopped();
+	}
+
+
+	private void onCommandTerminated( int code ) {
+		gui.onHasTerminated( code );
+		processHandler = null;
+		runningCmd = null;
+	}
+
+
+	public boolean isCmdRunnig() {
+		return runningCmd != null;
+	}
+
+	public Command getRunningCmd() {
+		return runningCmd;
+	}
 
 	public void dispose( ExitCode exitCode ) {
 		gui.dispose();
@@ -265,19 +282,33 @@ public class CombotApp
 	{
 		processCallback = new ProcessCallback() {
 
-			public void receiveOutput( String line ) {
-				gui.receiveOutput( line );
+			public void receiveOutput( final String line ) {
+				gui.runInGuiThread( new Runnable() {
+					public void run() {
+						gui.receiveOutput( line + "\n" );
+					}
+				} );
 			}
 
-			public void receiveError( String line ) {
-				gui.receiveError( line );
+			public void receiveError( final String line ) {
+				gui.runInGuiThread( new Runnable() {
+					public void run() {
+						gui.receiveError( line + "\n" );
+					}
+				} );
 			}
 
-			public void signalTerminated( int code ) {
-				gui.signalTerminated( code );
+			public void signalTerminated( final int code ) {
+				gui.runInGuiThread( new Runnable() {
+					public void run() {
+						onCommandTerminated( code );
+					}
+				} );
 			}
 		};
 
 	}
+
+
 
 }

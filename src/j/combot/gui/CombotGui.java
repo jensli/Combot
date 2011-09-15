@@ -27,10 +27,8 @@ import j.combot.gui.visuals.VisualFactory;
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.CombinedValidator;
 import j.combot.validator.EnumValidator;
-import j.combot.validator.ValEntry;
 import j.combot.validator.Validator;
 import j.swt.util.SwtStdValues;
-import j.swt.util.SwtUtil;
 import j.util.functional.Action0;
 import j.util.functional.Fun1;
 import j.util.util.Asserts;
@@ -144,48 +142,60 @@ public class CombotGui
 	private void onQuit() {
 		app.onQuit( commands );
 	}
-
 	public void receiveOutput( final String line )
 	{
-		display.syncExec( new Runnable() {
-			public void run() {
-
-				getActiveCommandPanel().outputText.append( line + "\n" );
-//				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
-			}
-		});
+		getRunningCmdPanel().addOutput( line );
 	}
 
 	public void receiveError( final String line )
 	{
-		display.syncExec( new Runnable() {
-			public void run() {
-				SwtUtil.appendStyled( getActiveCommandPanel().outputText, line + "\n", SwtStdValues.COLOR_RED );
-//				SwtUtil.scrollToMax( outputText.getHorizontalBar() );
-			}
-		});
+		getRunningCmdPanel().addErrorOutput( line );
 	}
 
-	public void signalTerminated( final int code ) {
-		display.syncExec( new Runnable() {
-			public void run() {
-				onHasTerminated( code );
-			}
-		} );
+//	public void receiveOutput( final String line )
+//	{
+//		display.syncExec( new Runnable() {
+//			public void run() {
+//				getActiveCommandPanel().addOutput( line );
+//			}
+//		});
+//	}
+//
+//	public void receiveError( final String line )
+//	{
+//		display.syncExec( new Runnable() {
+//			public void run() {
+//				getActiveCommandPanel().addErrorOutput( line );
+//			}
+//		});
+//	}
+//
+//
+//	public void signalTerminated( final int code ) {
+//		display.syncExec( new Runnable() {
+//			public void run() {
+//				onHasTerminated( code );
+//			}
+//		} );
+//	}
+
+	public void runInGuiThread( Runnable r ) {
+		display.syncExec( r );
 	}
 
 	public void onHasTerminated( int code )
 	{
- 		getActiveCommandPanel().setStatus( "Terminated with exit code " + code );
- 		getActiveCommandPanel().setCommandRunning( false );
-	}
-
-	public Command getActiveCmd() {
-		return getActiveCommandPanel().commandData.cmd;
+ 		getRunningCmdPanel().onCommandTerminated( code );
 	}
 
 
-	private CommandPanel getActiveCommandPanel() {
+	private CommandPanel getRunningCmdPanel() {
+		return getCommandPanel( app.getRunningCmd() );
+	}
+
+
+
+	private CommandPanel getSelectedCommandPanel() {
 		return activeCommand;
 	}
 
@@ -201,40 +211,25 @@ public class CombotGui
 
 	private void initCmd( TreeItem item, Command cmd, CommandData parent )
 	{
-		CommandData cData = new CommandData( cmd );
-		parent.addChild( cData  );
-
 		CommandPanel commandPanel = new CommandPanel( app );
-		commandPanel.commandData = cData;
-		commandPanel.item = item;
 
 		item.setText( cmd.getTitle() );
 		item.setData( commandPanel );
 		commandPanelMap.put( cmd, commandPanel );
 
-
-		Composite panel = commandPanel.makeCommandPanel( cmd, commandComp, visualFactory );
-		commandPanel.comp = panel;
-		switchActiveCommand( getCommandPanel( cmd ) );
-
-//		setInitValidateResult( cmd );
-
-		for ( ValEntry e : cmd.validate() ) {
-			getActiveCommandPanel().addValidateResult( e );
-		}
-
+		commandPanel.init( item, cmd, parent, commandComp, visualFactory );
+		switchActiveCommand( commandPanel );
 	}
-
 
 
 	public void addChildCommand( Command parent, Command child )
 	{
 		CommandPanel parentPanel = getCommandPanel( parent );
-		CommandData parentData = parentPanel.commandData;
+		CommandData parentData = parentPanel.getCommandData();
 
 		Asserts.notNull( parentPanel, "Parent command do not exist in gui" );
 
-		TreeItem childItem = new TreeItem( parentPanel.item, NONE );
+		TreeItem childItem = new TreeItem( parentPanel.getTreeItem(), NONE );
 
 		initCmd( childItem, child, parentData  );
 
@@ -248,14 +243,20 @@ public class CombotGui
 
 
 	// Switches to a new command panel, creating all the widgets.
-	public void switchActiveCommand( CommandPanel cmd )
+
+	public void switchActiveCommand( CommandPanel cmdPnl ) {
+		tree.setSelection( cmdPnl.getTreeItem() );
+		switchActiveCommandNoTree( cmdPnl );
+	}
+
+
+	public void switchActiveCommandNoTree( CommandPanel cmdPnl )
 	{
-		delItem.setEnabled( cmd.commandData.getParent().hasParent() );
-		tree.setSelection( cmd.item );
+		delItem.setEnabled( cmdPnl.getCommandData().getParent().hasParent() );
 
-		activeCommand = cmd;
+		activeCommand = cmdPnl;
 
-		cmdStackLayout.topControl =  cmd.comp;
+		cmdStackLayout.topControl =  cmdPnl.getComposite();
 		commandComp.layout();
 	}
 
@@ -300,7 +301,7 @@ public class CombotGui
 		saveItem.setText( "Save as new" );
 		saveItem.addSelectionListener( new SelectionAdapter() {
 			@Override public void widgetSelected( SelectionEvent e ) {
-				startCreateDefaults();
+				startCreateNewCommand();
 			}
 		} );
 
@@ -315,7 +316,7 @@ public class CombotGui
 
 		tree.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected( SelectionEvent e ) {
-				switchActiveCommand( (CommandPanel) e.item.getData() );
+				switchActiveCommandNoTree( (CommandPanel) e.item.getData() );
 			}
 		} );
 
@@ -326,7 +327,7 @@ public class CombotGui
 
 		defaultsNameBox.setResultCallback( new Action0() {
 			public void run() {
-				saveCurrentDefaults();
+				makeNewCommand();
 			}
 		} );
 
@@ -336,41 +337,27 @@ public class CombotGui
 		return panel;
 	}
 
-//	private void delCurrentCmd()
-//	{
-//		CommandPanel p = getActiveCommandPanel();
-//		CommandData cmdToDel = p.commandData;
-//
-//		switchActiveCommand( getCommandPanel( cmdToDel.getParent().cmd ) );
-//
-//		p.item.dispose();
-//		p.comp.dispose();
-//
-//		commandPanelMap.remove( p.command );
-//
-//		cmdToDel.removeSelf();
-//	}
+
 	private void delCurrentCmd()
 	{
-		CommandPanel p = getActiveCommandPanel();
-		CommandData cmdToDel = p.commandData;
+		CommandPanel cmdPanel = getSelectedCommandPanel();
 
-		switchActiveCommand( getCommandPanel( cmdToDel.getParent().cmd ) );
+		switchActiveCommand( getCommandPanel( cmdPanel.getCommandData().getParent().cmd ) );
 
-		p.item.dispose();
-		p.comp.dispose();
+		cmdPanel.dispose();
+		commandPanelMap.remove( cmdPanel.getCommand() );
 
-		commandPanelMap.remove( p.command );
-
-		cmdToDel.removeSelf();
 	}
-	private void saveCurrentDefaults()
+
+	private void makeNewCommand()
 	{
-		if ( !defaultsNameBox.isOk() ) return;
+		if ( !defaultsNameBox.isResultOk() ) return;
 
 		String newTitle = defaultsNameBox.getResult();
 
-		CommandData data = getActiveCommandPanel().commandData;
+		CommandData data = getSelectedCommandPanel().getCommandData();
+
+		// If it a top level command parentData is the same as data
 		CommandData parentData = data.getParent().hasParent() ?
 				data.getParent() : data;
 
@@ -399,25 +386,22 @@ public class CombotGui
 
 	public void onCommandStarted( String line )
 	{
-		getActiveCommandPanel().setStatus( "Running" );
-		getActiveCommandPanel().setCommandLine( line );
-		getActiveCommandPanel().setCommandRunning( true );
-		getActiveCommandPanel().outputText.setText( "" );
+		getSelectedCommandPanel().onCommandStarted( line );
 	}
 
 
 	public void onCommandStopped()
 	{
-		getActiveCommandPanel().stopButton.setEnabled( false );
+		getSelectedCommandPanel().onCommandStopped();
 	}
 
 	public void dispose() {
 		display.dispose();
 	}
 
-	private void startCreateDefaults()
+	// Open a dialog askning the user to enter a name for the new command.
+	private void startCreateNewCommand()
 	{
-
 		List<String> list = new ArrayList<>();
 
 		for ( CommandData cda : Iterables.skip( commands, 1 ) ) {
@@ -429,6 +413,7 @@ public class CombotGui
 						Validator.EMPTY_VALIDATOR,
 						new EnumValidator( list, true ) ) );
 
+		// When this dialog is closed by the user, the
 		defaultsNameBox.open();
 	}
 
@@ -443,8 +428,8 @@ public class CombotGui
 		valLis = new ValidationListener() {
 			public void visualValidated( ValidationEvent e ) {
 				// TODO: Hack warning
-				if ( getActiveCommandPanel() != null ) {;
-					getActiveCommandPanel().setValidationResult( e.sender, e.entries );
+				if ( getSelectedCommandPanel() != null ) {;
+					getSelectedCommandPanel().setValidationResult( e.sender, e.entries );
 				}
 			} };
 

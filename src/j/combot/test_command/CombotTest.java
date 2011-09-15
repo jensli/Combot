@@ -32,7 +32,7 @@ public class CombotTest {
 		inputBox.setText( "Title" );
 		inputBox.setResultCallback( new Action0() {
 			public void run() {
-				if ( inputBox.isOk() ) {
+				if ( inputBox.isResultOk() ) {
 					label.setText( inputBox.getResult() );
 				} else {
 					label.setText( "Fel" );
