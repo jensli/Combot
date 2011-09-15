@@ -101,12 +101,9 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		valCaller.addListener( l );
 	}
 
-	private List<ValEntry> savedErrors = Collections.emptyList();
-
 	@Override
 	public void setValidateResult( List<ValEntry> errors )
 	{
-		savedErrors = errors;
 		if ( errors.isEmpty() ) {
 			errorIndicator.clearError();
 			valueControl.setToolTipText( "" );

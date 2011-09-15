@@ -22,6 +22,7 @@ import j.combot.gui.visuals.ConstVisual;
 import j.combot.gui.visuals.IntVisual;
 import j.combot.gui.visuals.NullVisual;
 import j.combot.gui.visuals.OptVisual;
+import j.combot.gui.visuals.SepVisual;
 import j.combot.gui.visuals.StringVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.combot.gui.visuals.VisualTypes;
@@ -142,14 +143,14 @@ public class CombotGui
 	private void onQuit() {
 		app.onQuit( commands );
 	}
-	public void receiveOutput( final String line )
+	public void receiveOutput( Command cmd, String line )
 	{
-		getRunningCmdPanel().addOutput( line );
+		getCommandPanel( cmd ).addOutput( line );
 	}
 
-	public void receiveError( final String line )
+	public void receiveError( Command cmd, String line )
 	{
-		getRunningCmdPanel().addErrorOutput( line );
+		getCommandPanel( cmd ).addErrorOutput( line );
 	}
 
 //	public void receiveOutput( final String line )
@@ -183,14 +184,9 @@ public class CombotGui
 		display.syncExec( r );
 	}
 
-	public void onHasTerminated( int code )
+	public void onHasTerminated( Command cmd,  int code )
 	{
- 		getRunningCmdPanel().onCommandTerminated( code );
-	}
-
-
-	private CommandPanel getRunningCmdPanel() {
-		return getCommandPanel( app.getRunningCmd() );
+ 		getCommandPanel( cmd ).onCommandTerminated( code );
 	}
 
 
@@ -331,7 +327,6 @@ public class CombotGui
 			}
 		} );
 
-
 		panel.pack();
 
 		return panel;
@@ -346,7 +341,6 @@ public class CombotGui
 
 		cmdPanel.dispose();
 		commandPanelMap.remove( cmdPanel.getCommand() );
-
 	}
 
 	private void makeNewCommand()
@@ -442,7 +436,8 @@ public class CombotGui
 					new VisFact<>( VisualTypes.NULL_TYPE, NullVisual.class ),
 					new VisFact<>( VisualTypes.OPT_TYPE, OptVisual.class ),
 					new VisFact<>( VisualTypes.ALT_TYPE, AltVisual.class ),
-					new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class )
+					new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class ),
+					new VisFact<>( VisualTypes.SEP_TYPE, SepVisual.class ),
 			};
 	}
 }

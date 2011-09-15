@@ -253,16 +253,17 @@ public class CombotApp
 	 */
 	public void stopCommand()
 	{
-		logger.info( "Command forcefully stopped" );
+		logger.info( "Command stopped by user" );
 		processHandler.destroy();
 		gui.onCommandStopped();
 	}
 
 
-	private void onCommandTerminated( int code ) {
-		gui.onHasTerminated( code );
+	private void onCommandTerminated( int code )
+	{
 		processHandler = null;
 		runningCmd = null;
+		gui.onHasTerminated( runningCmd, code );
 	}
 
 
@@ -285,7 +286,7 @@ public class CombotApp
 			public void receiveOutput( final String line ) {
 				gui.runInGuiThread( new Runnable() {
 					public void run() {
-						gui.receiveOutput( line + "\n" );
+						gui.receiveOutput( runningCmd, line + "\n" );
 					}
 				} );
 			}
@@ -293,7 +294,7 @@ public class CombotApp
 			public void receiveError( final String line ) {
 				gui.runInGuiThread( new Runnable() {
 					public void run() {
-						gui.receiveError( line + "\n" );
+						gui.receiveError( runningCmd, line + "\n" );
 					}
 				} );
 			}
