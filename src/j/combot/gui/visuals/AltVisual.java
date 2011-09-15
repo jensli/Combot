@@ -45,7 +45,7 @@ public class AltVisual extends BaseArgVisual<Integer>
 			Composite childsComp = new Composite( parent, NONE );
 			childsComp.setLayout( new GridLayout( 2, false ) );
 			GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
-			compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+			compData.horizontalIndent = SwtStdValues.INDENT;
 			childsComp.setLayoutData( compData );
 			SwtStdValues.setDebugColor( childsComp, SwtStdValues.COLOR_RED );
 

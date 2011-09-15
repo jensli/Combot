@@ -31,7 +31,7 @@ public class CompositeVisual extends BaseArgVisual<Object>
 
 		childsComp = new Composite( parent, NONE );
 		GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
-		compData.horizontalIndent = (int) ( SwtStdValues.UNIT * 1.5 );
+		compData.horizontalIndent = SwtStdValues.INDENT;
 		childsComp.setLayoutData( compData );
 
 		childsComp.setLayout( new GridLayout( 2, false ) );
