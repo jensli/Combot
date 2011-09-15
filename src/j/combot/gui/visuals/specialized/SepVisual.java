@@ -1,7 +1,9 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
+import j.combot.gui.visuals.BaseArgVisual;
+import j.combot.gui.visuals.VisualFactory;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;

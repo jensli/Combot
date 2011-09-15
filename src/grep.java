@@ -2,8 +2,8 @@
 
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
-import j.combot.command.IntArg;
-import j.combot.command.StringArg;
+import j.combot.command.specialized.IntArg;
+import j.combot.command.specialized.StringArg;
 
 public class grep implements CommandFactory
 {

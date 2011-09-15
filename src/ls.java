@@ -1,9 +1,9 @@
 import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.command.CompositeArg;
-import j.combot.command.IntArg;
-import j.combot.command.OptArg;
-import j.combot.command.StringArg;
+import j.combot.command.specialized.IntArg;
+import j.combot.command.specialized.OptArg;
+import j.combot.command.specialized.StringArg;
 
 
 public class ls implements CommandFactory {

@@ -1,4 +1,4 @@
-package j.combot.command;
+package j.combot.command.specialized;
 //package j.combot.command;
 //
 //import j.util.util.NotImplementedException;

@@ -1,8 +1,9 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.BORDER;
 import j.combot.command.Arg;
-import j.combot.command.IntArg;
+import j.combot.command.specialized.IntArg;
+import j.combot.gui.visuals.BaseArgVisual;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

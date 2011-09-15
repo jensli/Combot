@@ -1,9 +1,11 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
+import j.combot.gui.visuals.BaseArgVisual;
+import j.combot.gui.visuals.VisualFactory;
 import j.swt.util.SwtStdValues;
 
 import org.eclipse.swt.layout.GridData;

@@ -1,3 +1,4 @@
+package j.combot.gui.visuals.specialized;
 //package j.combot.gui.visuals;
 //
 //import j.combot.command.Arg;

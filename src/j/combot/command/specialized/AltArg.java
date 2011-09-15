@@ -1,5 +1,7 @@
-package j.combot.command;
+package j.combot.command.specialized;
 
+import j.combot.command.Arg;
+import j.combot.command.ArgGroup;
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.ValEntry;
 import j.util.prefs.PrefNodeCollection;

@@ -1,5 +1,6 @@
-package j.combot.command;
+package j.combot.command.specialized;
 
+import j.combot.command.Arg;
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.Validator;
 

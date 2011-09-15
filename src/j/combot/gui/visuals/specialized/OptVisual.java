@@ -1,10 +1,13 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.CHECK;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.TOP;
 import j.combot.command.Arg;
-import j.combot.command.OptArg;
+import j.combot.command.specialized.OptArg;
+import j.combot.gui.visuals.BaseArgVisual;
+import j.combot.gui.visuals.GuiArgVisual;
+import j.combot.gui.visuals.VisualFactory;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

@@ -1,9 +1,10 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.BORDER;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.SINGLE;
 import j.combot.command.Arg;
+import j.combot.gui.visuals.BaseArgVisual;
 import j.combot.validator.ValEntry;
 
 import java.util.List;

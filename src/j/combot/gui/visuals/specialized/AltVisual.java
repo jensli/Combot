@@ -1,12 +1,15 @@
-package j.combot.gui.visuals;
+package j.combot.gui.visuals.specialized;
 
 import static org.eclipse.swt.SWT.CENTER;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.LEFT;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.RADIO;
-import j.combot.command.AltArg;
 import j.combot.command.Arg;
+import j.combot.command.specialized.AltArg;
+import j.combot.gui.visuals.BaseArgVisual;
+import j.combot.gui.visuals.GuiArgVisual;
+import j.combot.gui.visuals.VisualFactory;
 import j.swt.util.SwtStdValues;
 
 import java.util.ArrayList;
