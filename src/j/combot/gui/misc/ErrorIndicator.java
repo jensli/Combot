@@ -19,6 +19,8 @@ public class ErrorIndicator
 {
 	private Label errorIcon;
 	private Label errorMsg;
+
+	// Not owned, someone else disposes it
 	private Font font;
 
 	public static Image cachedErrorIcon = null;
@@ -61,7 +63,6 @@ public class ErrorIndicator
 		row = new Composite( parent, NONE );
 		row.setLayout( new RowLayout( HORIZONTAL ) );
 		SwtStdValues.setDebugColor( row, SwtStdValues.COLOR_DARK_BLUE );
-
 		errorIcon = new Label( row, NONE );
 		errorMsg = new Label( row, NONE );
 		errorMsg.setFont( font );
@@ -95,6 +96,12 @@ public class ErrorIndicator
 		}
 
 
+	}
+
+	public void dispose() {
+		if ( row != null ) {
+			row.dispose();
+		}
 	}
 
 

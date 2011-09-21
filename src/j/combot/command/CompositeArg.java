@@ -28,8 +28,6 @@ public class CompositeArg extends Arg<Void>
 		return argGroup.getArgs();
 	}
 
-
-
 	@Override
 	public List<ValEntry> validate() {
 		return argGroup.validate();

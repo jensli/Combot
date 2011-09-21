@@ -96,8 +96,7 @@ public class CombotApp
 		for ( CommandData cmdData : cmds.getChildren() ) {
 			// Derivied children with other default values
 			for ( CommandData d : cmdData.getChildren() ) {
-				Preferences cmdChildPrefs = prefs.node( cmdData.cmd.getTitle() );
-				PrefUtil.save( cmdChildPrefs, d.cmd );
+				PrefUtil.save( prefs.node( cmdData.cmd.getTitle() ), d.cmd );
 			}
 		}
 	}

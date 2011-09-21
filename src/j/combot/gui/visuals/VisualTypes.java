@@ -17,11 +17,11 @@ public final class VisualTypes
 	public static VisualType<Void>
 		GROUP_TYPE,
 		COMMAND_TYPE,
+		COLLAPSABLE_TYPE,
 		SEP_TYPE;
 
 	public static VisualType<Object>
 		CONST_TYPE;
-
 
 	public static VisualType<Integer>
 		INT_TYPE,

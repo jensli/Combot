@@ -31,7 +31,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 	private ErrorIndicator errorIndicator;
 
-	private GenericCaller<ValidationEvent, ValidationListener> valCaller =
+	private GenericCaller<ValidationEvent, ValidationListener> validateCaller =
 			new GenericCaller<>( ValidationEvent.class, ValidationListener.class );
 
 	// The sublass spesific control that gets the acctual input from the user,
@@ -98,7 +98,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 	@Override
 	public void addValidationListener( ValidationListener l ) {
-		valCaller.addListener( l );
+		validateCaller.addListener( l );
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 			valueControl.setToolTipText( tip );
 		}
 
-		valCaller.call( new ValidationEvent( errors, getArg() ) );
+		validateCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
 
 	@Override
@@ -128,22 +128,10 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		if ( valueControl != null ) valueControl.setEnabled( b );
 		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
 
-		List<ValEntry> errors;
-
-		if ( b ) {
-//			errors = savedErrors;
-			errors = getArg().validate();
-		} else {
-			// Clear errors for listeners by sending empty list
-			errors = Collections.emptyList();
-		}
-
-		valCaller.call( new ValidationEvent( errors, getArg() ) );
-	}
-
-	@Override
-	public void makeChildWidgets( Arg<T> part, Composite parent, VisualFactory visualFactory ) {
-		;
+		validateCaller.call(
+				new ValidationEvent(
+						b ? getArg().validate() : Collections.<ValEntry>emptyList(),
+						getArg() ) );
 	}
 
 	protected SelectionAdapter makeValidationListener() {
@@ -154,7 +142,6 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		};
 	}
 
-
 	public Arg<T> getArg() {
 		return arg;
 	}
@@ -164,14 +151,8 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	}
 
 	public void dispose() {
-		if ( valueControl != null ) {
-			valueControl.dispose();
-		}
-	}
-
-	@Override
-	public Control getValueControl() {
-		return valueControl;
+		if ( valueControl != null ) valueControl.dispose();
+		if ( errorIndicator != null ) errorIndicator.dispose();
 	}
 
 	protected static void makeTitle( Composite parent, Button parentLabel, String title )
