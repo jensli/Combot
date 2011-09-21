@@ -15,10 +15,11 @@ public final class VisualTypes
 	private VisualTypes() {}
 
 	public static VisualType<Void>
+		GROUP_TYPE,
+		COMMAND_TYPE,
 		SEP_TYPE;
 
 	public static VisualType<Object>
-		GROUP_TYPE,
 		CONST_TYPE;
 
 
@@ -27,7 +28,6 @@ public final class VisualTypes
 		ALT_TYPE;
 
 	public static VisualType<String>
-		COMMAND_TYPE,
 		STRING_TYPE,
 		NULL_TYPE;
 

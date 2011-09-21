@@ -7,7 +7,7 @@ import j.util.util.Util;
 
 import java.util.List;
 
-public class Command extends Arg<String>
+public class Command extends Arg<Void>
 {
 	@PrefNode
 	private CompositeArg children;

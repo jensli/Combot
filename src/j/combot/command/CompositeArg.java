@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class CompositeArg extends Arg<Object>
+public class CompositeArg extends Arg<Void>
 {
 	@PrefNodeCollection
 	private ArgGroup argGroup = new ArgGroup();

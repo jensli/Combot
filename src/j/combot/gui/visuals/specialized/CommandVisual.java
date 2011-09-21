@@ -14,10 +14,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class CommandVisual extends BaseArgVisual<String> {
+public class CommandVisual extends BaseArgVisual<Void> {
 
 	@Override
-	public void makeWidget( Arg<String> cmd, Composite parent, VisualFactory visualFactory )
+	public void makeWidget( Arg<Void> cmd, Composite parent, VisualFactory visualFactory )
 	{
 		Composite page = new Composite( parent, NONE );
 		page.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );
@@ -34,7 +34,7 @@ public class CommandVisual extends BaseArgVisual<String> {
 	}
 
 	@Override
-	public String getValue() {
+	public Void getValue() {
 		throw new UnsupportedOperationException();
 	}
 

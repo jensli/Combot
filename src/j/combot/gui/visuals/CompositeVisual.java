@@ -14,18 +14,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class CompositeVisual extends BaseArgVisual<Object>
+public class CompositeVisual extends BaseArgVisual<Void>
 {
 	private Composite childsComp;
 
 	@Override
-	public Boolean getValue() {
+	public Void getValue() {
 		throw new NotImplementedException();
 	}
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	@Override
-	public void makeWidget( Arg<Object> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
+	public void makeWidget( Arg<Void> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
 	{
 		makeTitle( parent, parentLbl, arg.getTitle() );
 
