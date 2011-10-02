@@ -1,20 +1,18 @@
 package j.combot.validator;
 
-import j.combot.command.specialized.FileArg.DialogType;
-import j.combot.command.specialized.FileArg.Val;
+import j.util.util.FileOrDir;
 import j.util.util.IssueType;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public class FileValidator extends Validator<File> {
 
-	// TODO: These types are defined in FileArg, this class should not depend on
-	// FileArg.
-	private final Val val;
-	private final DialogType dialogType;
+	private final FileVal val;
+	private final FileOrDir dialogType;
 
-	public FileValidator( Val val, DialogType type ) {
+	public FileValidator( FileVal val, FileOrDir type ) {
 		this.val = val;
 		this.dialogType = type;
 	}
@@ -22,9 +20,11 @@ public class FileValidator extends Validator<File> {
 	@Override
 	protected List<ValEntry> validateInt( File value )
 	{
+		if ( val == FileVal.NO_VALIDATION ) return Collections.emptyList();
+
 		IssueType type = val.error ? IssueType.ERROR : IssueType.WARNING;
 
-		String dirOrFile = dialogType == DialogType.FILE ? "File" : "Directory",
+		String dirOrFile = dialogType == FileOrDir.FILE ? "File" : "Directory",
 				message;
 
 		if ( value.toString().isEmpty() ) {
@@ -40,6 +40,22 @@ public class FileValidator extends Validator<File> {
 	}
 
 
+	public enum FileVal
+	{
+		ERROR_EXIST( true, true ),
+		WARN_EXIST( true, false ),
+		ERROR_NOT_EXIST( false, true ),
+		WARN_NOT_EXIST( false, false ),
+		NO_VALIDATION( false, false );
+
+		public final boolean exists, error;
+
+		private FileVal( boolean exists, boolean error ) {
+			this.exists = exists;
+			this.error = error;
+		}
+	}
 }
+
 
 

@@ -5,12 +5,12 @@ import j.combot.command.specialized.AltArg;
 import j.combot.command.specialized.ConstArg;
 import j.combot.command.specialized.ExtraArg;
 import j.combot.command.specialized.FileArg;
-import j.combot.command.specialized.FileArg.DialogType;
-import j.combot.command.specialized.FileArg.Val;
 import j.combot.command.specialized.IntArg;
 import j.combot.command.specialized.OptArg;
 import j.combot.command.specialized.Sep;
 import j.combot.command.specialized.StringArg;
+import j.combot.validator.FileValidator.FileVal;
+import j.util.util.FileOrDir;
 
 
 public class find implements CommandFactory {
@@ -30,7 +30,7 @@ public class find implements CommandFactory {
 //		)
 					new Sep(),
 
-					new FileArg( "Location", "", "/", DialogType.DIR, Val.ERR_NO_EX ),
+					new FileArg( "Location", "", "/", FileOrDir.DIR, FileVal.ERROR_NOT_EXIST ),
 
 					new Sep(),
 
