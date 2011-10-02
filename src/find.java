@@ -3,6 +3,10 @@ import j.combot.command.CommandFactory;
 import j.combot.command.CompositeArg;
 import j.combot.command.specialized.AltArg;
 import j.combot.command.specialized.ConstArg;
+import j.combot.command.specialized.ExtraArg;
+import j.combot.command.specialized.FileArg;
+import j.combot.command.specialized.FileArg.DialogType;
+import j.combot.command.specialized.FileArg.Val;
 import j.combot.command.specialized.IntArg;
 import j.combot.command.specialized.OptArg;
 import j.combot.command.specialized.Sep;
@@ -11,25 +15,32 @@ import j.combot.command.specialized.StringArg;
 
 public class find implements CommandFactory {
 
-	public Command make() {
+	public Command make()
+	{
 		return new Command( "Find command", "find",
-					new AltArg( "Symbolic link treatment", 1,
-//							new CompositeArg( "Titt",
-//									new StringArg( "Tja", "-tjo" ),
-//									new IntArg( "Hm", "-ha" ) ),
-//							new StringArg( "Woo", "-woo", "" ),
-							new ConstArg( "Never follow links", "-P" ),
-							new ConstArg( "Follow links", "-L" ),
-							new ConstArg( "Only in args", "-H" ) ),
+//					new CollapsableArg( "Advanced",
+						new AltArg( "Symbolic link treatment", 1,
+	//							new CompositeArg( "Titt",
+	//									new StringArg( "Tja", "-tjo" ),
+	//									new IntArg( "Hm", "-ha" ) ),
+	//							new StringArg( "Woo", "-woo", "" ),
+								new ConstArg( "Never follow links", "-P" ),
+								new ConstArg( "Follow links", "-L" ),
+								new ConstArg( "Only in args", "-H" ) ),
+//		)
 					new Sep(),
-					new StringArg( "Location", "", "/" ),
-					new OptArg( false, new ConstArg( "Limit depth 1", "-depth" ) ),
+
+					new FileArg( "Location", "", "/", DialogType.DIR, Val.ERR_NO_EX ),
+
 					new Sep(),
+
 					new StringArg( "Name", "-name", "*" ),
-					new OptArg( true,
+
+					new OptArg( false,
 						new CompositeArg( "Limit depth 2",
-//							new StringArg( "Search depth 1", "-maxdepth", "0" ),
-							new IntArg( "Search depth 2", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ) )
+							new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ) ),
+
+					new OptArg( false, new ExtraArg( "Extra arguments" ) )
 		);
 	}
 }

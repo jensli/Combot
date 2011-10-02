@@ -1,12 +1,13 @@
 package j.combot.validator;
 
+import j.util.util.IssueType;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
- * There objects are shared, no individual arg data should be stored here.
+ * These objects are shared, no individual arg data should be stored here.
  */
-
 public abstract class Validator<T>
 {
 	private String overrideMessage = null;
@@ -44,12 +45,16 @@ public abstract class Validator<T>
 
 	protected abstract List<ValEntry> validateInt( T value );
 
-	protected static List<ValEntry> standardValidate( boolean ok, String message )
+	protected static List<ValEntry> standardCreateList( boolean ok, String message ) {
+		return standardCreateList( ok, message, IssueType.ERROR );
+	}
+
+	protected static List<ValEntry> standardCreateList( boolean ok, String message, IssueType type )
 	{
 		if ( ok ) {
 			return Collections.emptyList();
 		} else {
-			return Collections.singletonList( new ValEntry( message ) );
+			return Collections.singletonList( new ValEntry( message, type ) );
 		}
 	}
 }

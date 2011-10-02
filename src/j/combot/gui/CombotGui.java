@@ -22,6 +22,7 @@ import j.combot.gui.visuals.specialized.AltVisual;
 import j.combot.gui.visuals.specialized.CollapsableVisual;
 import j.combot.gui.visuals.specialized.CommandVisual;
 import j.combot.gui.visuals.specialized.ConstVisual;
+import j.combot.gui.visuals.specialized.FileVisual;
 import j.combot.gui.visuals.specialized.IntVisual;
 import j.combot.gui.visuals.specialized.NullVisual;
 import j.combot.gui.visuals.specialized.OptVisual;
@@ -429,18 +430,19 @@ public class CombotGui
 			} };
 
 
-			VIS_FACTS = new VisFact[] {
-					new VisFact<>( VisualTypes.GROUP_TYPE, CompositeVisual.class ),
-					new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
-					new VisFact<>( VisualTypes.STRING_TYPE, StringVisual.class ),
-					new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),
-					new VisFact<>( VisualTypes.NULL_TYPE, NullVisual.class ),
-					new VisFact<>( VisualTypes.OPT_TYPE, OptVisual.class ),
-					new VisFact<>( VisualTypes.ALT_TYPE, AltVisual.class ),
-					new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class ),
-					new VisFact<>( VisualTypes.SEP_TYPE, SepVisual.class ),
-					new VisFact<>( VisualTypes.COLLAPSABLE_TYPE, CollapsableVisual.class ),
-			};
+		VIS_FACTS = new VisFact[] {
+				new VisFact<>( VisualTypes.GROUP_TYPE, CompositeVisual.class ),
+				new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
+				new VisFact<>( VisualTypes.STRING_TYPE, StringVisual.class ),
+				new VisFact<>( VisualTypes.COMMAND_TYPE, CommandVisual.class ),
+				new VisFact<>( VisualTypes.NULL_TYPE, NullVisual.class ),
+				new VisFact<>( VisualTypes.OPT_TYPE, OptVisual.class ),
+				new VisFact<>( VisualTypes.ALT_TYPE, AltVisual.class ),
+				new VisFact<>( VisualTypes.CONST_TYPE, ConstVisual.class ),
+				new VisFact<>( VisualTypes.SEP_TYPE, SepVisual.class ),
+				new VisFact<>( VisualTypes.FILE_TYPE, FileVisual.class ),
+				new VisFact<>( VisualTypes.COLLAPSABLE_TYPE, CollapsableVisual.class ),
+		};
 	}
 }
 

@@ -2,9 +2,16 @@ package j.combot.gui.misc;
 
 import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.ICON_ERROR;
+import static org.eclipse.swt.SWT.ICON_INFORMATION;
+import static org.eclipse.swt.SWT.ICON_WARNING;
 import static org.eclipse.swt.SWT.NONE;
 import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
+import j.util.util.IssueType;
+import j.util.util.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -23,9 +30,10 @@ public class ErrorIndicator
 	// Not owned, someone else disposes it
 	private Font font;
 
-	public static Image cachedErrorIcon = null;
-	public static int lastFontSize = -1;
+	private Image errorImage, warningImage, infoImage;
 	private Composite row;
+
+	private static Map<Pair<Integer, Integer>, Image> cachedImageMap = new HashMap<>();
 
 	public ErrorIndicator() {}
 
@@ -33,14 +41,19 @@ public class ErrorIndicator
 		makeWidget( parent );
 	}
 
-	public void setError( String message )
+	public void setIssue( IssueType type, String message )
 	{
+
+		Image i = type == IssueType.ERROR ? errorImage :
+				( type == IssueType.WARNING ? warningImage : infoImage );
+
+		errorIcon.setImage( i );
 		errorIcon.setVisible( true );
 		errorMsg.setText( message );
 		errorMsg.pack();
 	}
 
-	public void clearError()
+	public void clearIssue()
 	{
 		errorIcon.setVisible( false );
 		errorMsg.setText( "" );
@@ -68,34 +81,44 @@ public class ErrorIndicator
 		errorMsg.setFont( font );
 		errorMsg.pack();
 
-		errorIcon.setImage( makeIcon( errorMsg.getSize().y, errorMsg.getDisplay() ) );
+		errorImage = makeIcon( errorMsg.getSize().y, errorMsg.getDisplay(), ICON_ERROR );
+		infoImage = makeIcon( errorMsg.getSize().y, errorMsg.getDisplay(), ICON_INFORMATION );
+		warningImage = makeIcon( errorMsg.getSize().y, errorMsg.getDisplay(), ICON_WARNING );
+
+		errorIcon.setImage( errorImage );
 		errorIcon.setVisible( false );
 
 		return row;
 	}
 
-	public static Image makeIcon( int size, Display display )
+	// DO: Move this to a Swt util class?
+	public static Image makeIcon( int size, Display display, int img )
 	{
-		if ( size == lastFontSize && cachedErrorIcon != null ) {
-			// If the cached icon is the right size, use that one
-			return cachedErrorIcon;
-		} else {
+		Pair<Integer, Integer> p = new Pair<>( img, size );
+
+		// Check if we have created an image of right type and size earlier
+		Image i = cachedImageMap.get( p );
+
+		if ( i == null ) {
 			// Else make a new icon and set that one as the cached one
-			Image image = display.getSystemImage( ICON_ERROR );
+			Image image = display.getSystemImage( img );
 			ImageData data = image.getImageData();
+
 			data = data.scaledTo( size, size );
-			cachedErrorIcon = new Image( display, data );
+			final Image newI = new Image( display, data );
+
+			cachedImageMap.put( p, newI );
 
 			display.disposeExec( new Runnable() {
 				public void run() {
-					cachedErrorIcon.dispose();
+					newI.dispose();
 				}
 			} );
 
-			return cachedErrorIcon;
+			i = newI;
 		}
 
-
+		return i;
 	}
 
 	public void dispose() {

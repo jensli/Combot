@@ -11,6 +11,7 @@ import j.combot.validator.ValEntry;
 import j.combot.validator.Validator;
 import j.swt.util.SwtStdValues;
 import j.util.functional.Action0;
+import j.util.util.IssueType;
 
 import java.util.List;
 
@@ -180,9 +181,9 @@ public class InputBox extends Dialog
 
 		if ( updateIndicator ) {
 			if ( errors.isEmpty() ) {
-				errorIndicator.clearError();
+				errorIndicator.clearIssue();
 			} else {
-				errorIndicator.setError( errors.get( 0 ).message );
+				errorIndicator.setIssue( IssueType.ERROR,  errors.get( 0 ).message );
 			}
 		}
 	}
@@ -198,7 +199,7 @@ public class InputBox extends Dialog
 		result = getValue();
 //		if ( close ) dialog.close();
 		dialog.setVisible( false );
-		errorIndicator.clearError();
+		errorIndicator.clearIssue();
 		resultCallback.run();
 	}
 

@@ -19,6 +19,7 @@ import j.combot.gui.visuals.VisualFactory;
 import j.combot.validator.ValEntry;
 import j.swt.util.SwtStdValues;
 import j.swt.util.SwtUtil;
+import j.util.util.IssueType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,14 +57,10 @@ class CommandPanel {
 	private Composite controls;
 	private StyledText outputText;
 
-	public void addValidateResults( Iterable<ValEntry> ves ) {
-		for ( ValEntry e : ves ) addValidateResult( e );
-	}
 
 	public CommandPanel( CombotApp app ) {
 		this.app = app;
 	}
-
 
 	public void addOutput( String line ) {
 		outputText.append( line + "\n" );
@@ -81,16 +78,16 @@ class CommandPanel {
 		return mainComposite;
 	}
 
-	public void addValidateResult( ValEntry ve )
+	public void addValidateResult( ValEntry e )
 	{
-		List<ValEntry> entries = errorMap.get( ve.sender );
+		List<ValEntry> entries = errorMap.get( e.sender );
 
 		if ( entries == null ) {
 			entries = new ArrayList<>();
-			errorMap.put( ve.sender, entries );
+			errorMap.put( e.sender, entries );
 		}
 
-		entries.add( ve );
+		entries.add( e );
 	}
 
 	private void clearValidateResults( Arg<?> arg ) {
@@ -136,8 +133,8 @@ class CommandPanel {
 		});
 
 		// Status labels
-		this.command = new Label( panel, NONE );
-		getCommand().setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+		command = new Label( panel, NONE );
+		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
 		setCommandLine( "" );
 
 		status = new Label( panel, NONE );
@@ -155,13 +152,25 @@ class CommandPanel {
 		return panel;
 	}
 
+	/**
+	 * Sets the validation status of the panel, dis/enabeling start/stop buttons
+	 * when there are an error and sets tooltips.
+	 *
+	 * Called when a widet has validated itself. And when panel created.
+	 */
 	public void setValidationResult( Arg<?> sender, List<ValEntry> entries )
 	{
+		List<ValEntry> errors = new ArrayList<>();
 
-		if ( entries.isEmpty() ) {
+		for ( ValEntry e : entries ) {
+			if ( e.type == IssueType.ERROR ) errors.add( e );
+		}
+
+
+		if ( errors.isEmpty() ) {
 		    clearValidateResults( sender );
 		} else {
-			addValidateResults( entries );
+			for ( ValEntry e : errors ) addValidateResult( e );
 		}
 
 		startButton.setEnabled( errorMap.isEmpty() );
@@ -186,7 +195,9 @@ class CommandPanel {
 
 		// Validate without displaying error messages, so that start button is
 		// disabled if there is an error.
-		addValidateResults( cmd.validate() );
+		for ( ValEntry e : cmd.validate() ) {
+			if ( e.type == IssueType.ERROR ) addValidateResult( e );
+		}
 	}
 
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
@@ -211,7 +222,7 @@ class CommandPanel {
 		scrolled.setExpandHorizontal( true );
 		scrolled.setShowFocusedControl( true );
 		scrolled.setAlwaysShowScrollBars( true );
-		scrolled.setLayoutData( new GridData( FILL, FILL, true, true) );
+		scrolled.setLayoutData( new GridData( FILL, FILL, true, true ) );
 
 		SwtStdValues.setDebugColor( scrolled, SwtStdValues.COLOR_DARK_BLUE );
 

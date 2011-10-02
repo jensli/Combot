@@ -10,6 +10,7 @@ import j.swt.util.SwtStdValues;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -17,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
 public class CommandVisual extends BaseArgVisual<Void> {
 
 	@Override
-	public void makeWidget( Arg<Void> cmd, Composite parent, VisualFactory visualFactory )
+	public void makeWidget( Arg<Void> cmd, Composite parent, Button b, VisualFactory visualFactory )
 	{
 		Composite page = new Composite( parent, NONE );
 		page.setLayoutData( new GridData( FILL, LEFT, true, false, 2, 1 ) );

@@ -1,5 +1,6 @@
 package j.combot.command;
 
+import j.combot.validator.ValEntry;
 import j.combot.validator.Validator;
 import j.util.prefs.PrefNode;
 
@@ -8,13 +9,13 @@ import java.util.List;
 /**
  * Delegating Arg
  */
-public class DelArg<T> extends Arg<T> {
+public abstract class DelArg<T> extends Arg<T> {
 
 	@PrefNode
 	private Arg<?> child;
 
 	public DelArg( String title, String name, Arg<?> child ) {
-		super( "delegate", "delegate", null, Validator.NULL_VALIDATOR );
+		super( title, name, null, Validator.NULL_VALIDATOR );
 		this.child = child;
 	}
 
@@ -31,6 +32,13 @@ public class DelArg<T> extends Arg<T> {
 	@Override
 	public List<String> getArgStrings() {
 		return child.getArgStrings();
+	}
+
+
+
+	@Override
+	public List<ValEntry> validate() {
+		return child.validate();
 	}
 
 	@Override

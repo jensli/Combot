@@ -22,34 +22,11 @@ public class StringVisual  extends BaseArgVisual<String>
 {
 	private Text text;
 
-//	@Override
-//	public void makeWidget( StringArg arg, Composite parent )
-//	{
-//		Composite pair = new Composite( parent, NONE );
-//		RowLayout pairLayout = new RowLayout( HORIZONTAL );
-//		pair.setLayout( pairLayout );
-//
-//		final Button enabled = new Button( pair, SWT.CHECK );
-//		enabled.setText( arg.getTitle() + ":" );
-//
-//		enabled.addSelectionListener( new SelectionAdapter() {
-//			public void widgetSelected( SelectionEvent e ) {
-//				text.setEnabled( enabled.getSelection() );
-//			}
-//		});
-//
-//		Label label = new Label( pair, LEFT );
-//		label.setText( arg.getTitle() + ":" );
-//
-//		text = new Text( pair, SINGLE | BORDER );
-//	}
-
-
 	@Override
-	protected Control makeValueWidget( Arg<String> part, Composite parent, Composite pair )
+	protected Control makeValueWidget( Arg<String> arg, Composite parent )
 	{
-		text = new Text( pair, SINGLE | BORDER );
-		text.setText( part.getDefaultValue() );
+		text = new Text( parent, SINGLE | BORDER );
+		text.setText( arg.getDefaultValue() );
 		text.setLayoutData( new GridData( FILL, FILL, true, false ) );
 
 		text.addModifyListener( new ModifyListener() {

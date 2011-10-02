@@ -14,7 +14,7 @@ public class NotValidator extends Validator<Object>
 	}
 
 	@Override protected List<ValEntry> validateInt( Object value ) {
-		return standardValidate( Util.equals( notObject, value ), "Value can not be " + value );
+		return standardCreateList( Util.equals( notObject, value ), "Value can not be " + value );
 	}
 
 }

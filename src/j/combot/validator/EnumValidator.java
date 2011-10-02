@@ -25,10 +25,10 @@ public class EnumValidator extends Validator<Object> {
 		String values = StringUtil.join( legalValues, ", " );
 
 		if ( invert ) {
-			return standardValidate(  !legalValues.contains( value ),
+			return standardCreateList(  !legalValues.contains( value ),
 					"The value can not be one of: " + values  );
 		} else {
-			return standardValidate( legalValues.contains( value ),
+			return standardCreateList( legalValues.contains( value ),
 					"The value must be one of: " + values  );
 		}
 	}

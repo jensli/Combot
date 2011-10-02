@@ -23,7 +23,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 
-
+/**
+ * Default implementation with standard methods for creating widget, validation,
+ * dis/enable ...
+ */
 public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 {
 	private Arg<T> arg;
@@ -54,7 +57,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	}
 
 	@Override
-	public void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
+	public final void makeWidget( Arg<T> arg, Composite parent, VisualFactory visualFactory )
 	{
 		makeWidget( arg, parent, null, visualFactory );
 	}
@@ -73,11 +76,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 			label.setText( title );
 		}
 
-		valueControl = makeValueWidget( arg, parent, parent );
-
-		if ( valueControl != null ) {
-			valueControl.setLayoutData( new GridData( FILL, FILL, false, false ) );
-		}
+		valueControl = makeValueWidget( arg, parent );
 
 		new Label( parent, NONE ); // Empty label to take up a cell
 
@@ -88,11 +87,14 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 1, 1 ) );
 	}
 
-	//	protected abstract Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair );
+	/**
+	 * Template method, if subclass uses this class's makeWidget method it only
+	 * has to override this one.
+	 */
 	@SuppressWarnings( "static-method" )
-	protected Control makeValueWidget( Arg<T> arg, Composite parent, Composite pair )
+	protected Control makeValueWidget( Arg<T> arg, Composite parent )
 	{
-		return null;
+		throw new UnsupportedOperationException( "Trying to call makeValueWidget on class that do not implement it" );
 	}
 
 
@@ -105,10 +107,10 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 	public void setValidateResult( List<ValEntry> errors )
 	{
 		if ( errors.isEmpty() ) {
-			errorIndicator.clearError();
+			errorIndicator.clearIssue();
 			valueControl.setToolTipText( "" );
 		} else {
-			errorIndicator.setError( errors.get( 0 ).message );
+			errorIndicator.setIssue( errors.get( 0 ).type , errors.get( 0 ).message );
 
 			String tip = "";
 			for ( ValEntry e : errors ) {

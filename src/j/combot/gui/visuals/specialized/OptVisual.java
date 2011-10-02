@@ -29,7 +29,6 @@ public class OptVisual extends BaseArgVisual<Boolean>
 			Arg<Boolean> arg, Composite parent, Button parentLbl, VisualFactory visualFactory )
 	{
 		OptArg optArg = (OptArg) arg;
-		Arg<?> childArg = optArg.getChild();
 
 		// Button that enables/disables children
 		enabledBtn = new Button( parent, CHECK );
@@ -48,12 +47,15 @@ public class OptVisual extends BaseArgVisual<Boolean>
 			}
 		} );
 
+		Arg<?> childArg = optArg.getChild();
 		GuiArgVisual<?> childVisual = visualFactory.make( childArg );
 		childVisual.makeWidget( (Arg) childArg, parent, enabledBtn,  visualFactory );
+		setEnabled( getArg().getDefaultValue() );
 	}
 
 	@Override
-	public void setEnabled( boolean b ) {
+	public void setEnabled( boolean b )
+	{
 		super.setEnabled( b );
 		( (OptArg) getArg() ).getChild().getVisual().setEnabled( b );
 	}

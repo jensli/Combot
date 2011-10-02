@@ -38,7 +38,12 @@ public class VisualFactory
 		@SuppressWarnings( "unchecked" )
 		VisFact<T> visualFact = (VisFact<T>) map.get( arg.getVisualType() );
 
+		if ( visualFact == null ) {
+			throw new IllegalStateException( "No visual factory for VisualType " + arg.getVisualType() );
+		}
+
 		GuiArgVisual<T> v = visualFact.make();
+
 
 		v.setArg( arg );
 		arg.setVisual( v );

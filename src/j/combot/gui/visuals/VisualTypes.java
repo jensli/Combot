@@ -1,5 +1,6 @@
 package j.combot.gui.visuals;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 
@@ -33,6 +34,9 @@ public final class VisualTypes
 
 	public static VisualType<Boolean>
 		OPT_TYPE;
+
+	public static VisualType<File>
+		FILE_TYPE;
 
 	// Initialize all fields with a VisualType object
 	static {

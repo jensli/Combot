@@ -1,5 +1,17 @@
 package j.combot.app;
 
+/**
+ * TODO:
+ *
+ * Refactor Visual hierarchy. BaseVisual should only be superclass for simple
+ * single value args. A new BaseCompositeVisual should be introduced and be
+ * superclass of Composites.
+ *
+ *
+ *
+ *
+ */
+
 import j.combot.app.Bootstrapper.ExitCode;
 import j.combot.app.Bootstrapper.StartMode;
 import j.combot.command.Command;
@@ -23,7 +35,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 
 public class CombotApp
 {
@@ -260,9 +271,9 @@ public class CombotApp
 
 	private void onCommandTerminated( int code )
 	{
+		gui.onHasTerminated( runningCmd, code );
 		processHandler = null;
 		runningCmd = null;
-		gui.onHasTerminated( runningCmd, code );
 	}
 
 
