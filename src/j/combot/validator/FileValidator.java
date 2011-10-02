@@ -9,6 +9,8 @@ import java.util.List;
 
 public class FileValidator extends Validator<File> {
 
+	// TODO: These types are defined in FileArg, this class should not depend on
+	// FileArg.
 	private final Val val;
 	private final DialogType dialogType;
 
@@ -21,8 +23,9 @@ public class FileValidator extends Validator<File> {
 	protected List<ValEntry> validateInt( File value )
 	{
 		IssueType type = val.error ? IssueType.ERROR : IssueType.WARNING;
+
 		String dirOrFile = dialogType == DialogType.FILE ? "File" : "Directory",
-				message = null;
+				message;
 
 		if ( value.toString().isEmpty() ) {
 			return standardCreateList( false, "This value can not be empty" );

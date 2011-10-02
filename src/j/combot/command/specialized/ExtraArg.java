@@ -2,7 +2,7 @@ package j.combot.command.specialized;
 
 import j.combot.command.Arg;
 import j.combot.gui.visuals.VisualTypes;
-import j.combot.validator.Validator;
+import j.combot.validator.SplitStringValidator;
 import j.util.util.StringUtil;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class ExtraArg extends Arg<String>
 {
 	public ExtraArg( String title )
 	{
-		super( title, "Extra args " + title, "", Validator.NULL_VALIDATOR );
+		super( title, "Extra args " + title, "", new SplitStringValidator() );
 		setVisualType( VisualTypes.STRING_TYPE );
 	}
 
