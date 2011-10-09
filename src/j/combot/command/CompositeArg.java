@@ -4,7 +4,10 @@ import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.ValEntry;
 import j.util.prefs.PrefNodeCollection;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -36,7 +39,16 @@ public class CompositeArg extends Arg<Void>
 	@Override
 	public List<String> getArgStrings()
 	{
-		return getArgGroup().getArgStrings();
+		List<Arg<?>> l = new ArrayList<>( argGroup.getArgs() );
+
+		Collections.sort( l, new Comparator<Arg<?>>() {
+			public int compare( Arg<?> o1, Arg<?> o2 ) {
+				// Sort so that high prio is first
+				return o2.getPrio() - o1.getPrio();
+			}
+		} );
+
+		return ArgGroup.asArgGroup( l ).getArgStrings();
 	}
 
 	@Override

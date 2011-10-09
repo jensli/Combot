@@ -18,16 +18,6 @@ public class find implements CommandFactory {
 	public Command make()
 	{
 		return new Command( "Find command", "find",
-//					new CollapsableArg( "Advanced",
-						new AltArg( "Symbolic link treatment", 1,
-	//							new CompositeArg( "Titt",
-	//									new StringArg( "Tja", "-tjo" ),
-	//									new IntArg( "Hm", "-ha" ) ),
-	//							new StringArg( "Woo", "-woo", "" ),
-								new ConstArg( "Never follow links", "-P" ),
-								new ConstArg( "Follow links", "-L" ),
-								new ConstArg( "Only in args", "-H" ) ),
-//		)
 					new Sep(),
 
 					new FileArg( "Location", "", "/", FileOrDir.DIR, FileVal.ERROR_NOT_EXIST ),
@@ -40,7 +30,19 @@ public class find implements CommandFactory {
 						new CompositeArg( "Limit depth 2",
 							new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ) ),
 
-					new OptArg( false, new ExtraArg( "Extra arguments" ) )
+					new OptArg( false, new ExtraArg( "Extra arguments" ) ),
+
+//					new CollapsableArg( "Advanced",
+						new AltArg( "Symbolic link treatment", 1, 10,
+	//							new CompositeArg( "Titt",
+	//									new StringArg( "Tja", "-tjo" ),
+	//									new IntArg( "Hm", "-ha" ) ),
+	//							new StringArg( "Woo", "-woo", "" ),
+								new ConstArg( "Never follow links", "-P" ),
+								new ConstArg( "Follow links", "-L" ),
+								new ConstArg( "Only in args", "-H" ) )
+//		)
+
 		);
 	}
 }

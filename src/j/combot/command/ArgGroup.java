@@ -20,6 +20,10 @@ public class ArgGroup implements Iterable<Arg<?>>
 		this.args = new ArrayList<>( childs );
 	}
 
+	public static ArgGroup asArgGroup( List<Arg<?>> l ) {
+		return new ArgGroup( l );
+	}
+
 	public ArgGroup( Arg<?>... args ) {
 		this( Lists.newArrayList( args ) );
 	}

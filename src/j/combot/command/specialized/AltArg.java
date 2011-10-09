@@ -16,12 +16,18 @@ public class AltArg extends Arg<Integer>
 
 	public AltArg( String title, int def, Arg<?>... children )
 	{
-		super( title, "AltArg" );
+		this( title, def, 0, children );
+	}
 
+	public AltArg( String title, int def, int prio, Arg<?>... children ) {
+		super( title, "AltArg" );
 		this.children.addAll( children );
 		setDefaultValue( def );
 		setVisualType( VisualTypes.ALT_TYPE );
+		setPrio( prio );
 	}
+
+
 
 	public ArgGroup getChildren() {
 		return children;

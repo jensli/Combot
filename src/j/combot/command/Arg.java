@@ -20,6 +20,8 @@ public abstract class Arg<T> implements Cloneable
 	@PrefValue
 	private T defaultValue;
 
+	private int prio = 0;
+
 	// The text used to present the Arg in the gui.
 	@PrefNodeName
 	private String title;
@@ -159,4 +161,11 @@ public abstract class Arg<T> implements Cloneable
 		this.valueSufix = valueSufix;
 	}
 
+	public int getPrio() {
+		return prio;
+	}
+
+	public void setPrio( int prio ) {
+		this.prio = prio;
+	}
 }
