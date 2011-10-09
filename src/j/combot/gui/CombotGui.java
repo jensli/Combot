@@ -155,33 +155,6 @@ public class CombotGui
 		getCommandPanel( cmd ).addErrorOutput( line );
 	}
 
-//	public void receiveOutput( final String line )
-//	{
-//		display.syncExec( new Runnable() {
-//			public void run() {
-//				getActiveCommandPanel().addOutput( line );
-//			}
-//		});
-//	}
-//
-//	public void receiveError( final String line )
-//	{
-//		display.syncExec( new Runnable() {
-//			public void run() {
-//				getActiveCommandPanel().addErrorOutput( line );
-//			}
-//		});
-//	}
-//
-//
-//	public void signalTerminated( final int code ) {
-//		display.syncExec( new Runnable() {
-//			public void run() {
-//				onHasTerminated( code );
-//			}
-//		} );
-//	}
-
 	public void runInGuiThread( Runnable r ) {
 		display.syncExec( r );
 	}
