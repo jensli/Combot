@@ -26,6 +26,7 @@ public final class VisualTypes
 
 	public static VisualType<Integer>
 		INT_TYPE,
+		COMBO_TYPE,
 		ALT_TYPE;
 
 	public static VisualType<String>

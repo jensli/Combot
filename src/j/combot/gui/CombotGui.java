@@ -20,6 +20,7 @@ import j.combot.gui.visuals.VisualFactory;
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.gui.visuals.specialized.AltVisual;
 import j.combot.gui.visuals.specialized.CollapsableVisual;
+import j.combot.gui.visuals.specialized.ComboVisual;
 import j.combot.gui.visuals.specialized.CommandVisual;
 import j.combot.gui.visuals.specialized.ConstVisual;
 import j.combot.gui.visuals.specialized.FileVisual;
@@ -415,6 +416,7 @@ public class CombotGui
 				new VisFact<>( VisualTypes.SEP_TYPE, SepVisual.class ),
 				new VisFact<>( VisualTypes.FILE_TYPE, FileVisual.class ),
 				new VisFact<>( VisualTypes.COLLAPSABLE_TYPE, CollapsableVisual.class ),
+				new VisFact<>( VisualTypes.COMBO_TYPE, ComboVisual.class ),
 		};
 	}
 }

@@ -20,6 +20,10 @@ public abstract class Arg<T> implements Cloneable
 	@PrefValue
 	private T defaultValue;
 
+	// The priority is used when a argument and its visualisation should not
+	// be in the same order. Args are sorted acccordning to this value when
+	// their value is taken. Arg visuals are sorted in the order they are added
+	// in.
 	private int prio = 0;
 
 	// The text used to present the Arg in the gui.
