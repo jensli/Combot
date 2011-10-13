@@ -2,6 +2,7 @@ package j.combot.gui;
 
 import static org.eclipse.swt.SWT.BEGINNING;
 import static org.eclipse.swt.SWT.BORDER;
+import static org.eclipse.swt.SWT.CHECK;
 import static org.eclipse.swt.SWT.DEFAULT;
 import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.HORIZONTAL;
@@ -56,6 +57,7 @@ class CommandPanel {
 	private Button startButton;
 	private Composite controls;
 	private StyledText outputText;
+	private Button filterErrors;
 
 
 	public CommandPanel( CombotApp app ) {
@@ -63,11 +65,13 @@ class CommandPanel {
 	}
 
 	public void addOutput( String line ) {
-		outputText.append( line + "\n" );
+		outputText.append( line );
 	}
 
 	public void addErrorOutput( String line ) {
-		SwtUtil.appendStyled( outputText, line, SwtStdValues.COLOR_RED );
+		if ( !filterErrors.getSelection() ) {
+			SwtUtil.appendStyled( outputText, line, SwtStdValues.COLOR_RED );
+		}
 	}
 
 	public TreeItem getTreeItem() {
@@ -131,6 +135,11 @@ class CommandPanel {
 				app.stopCommand();
 			}
 		});
+
+		// Filter checkbox
+		filterErrors = new Button( controls, CHECK );
+		filterErrors.setText( "Filter error output" );
+		filterErrors.setSelection( false );
 
 		// Status labels
 		command = new Label( panel, NONE );
