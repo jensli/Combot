@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CompositeArg extends Arg<Void>
 {
-	@PrefNodeCollection
+	@PrefNodeCollection( inline = true )
 	private ArgGroup argGroup = new ArgGroup();
 
 	public CompositeArg( String title, Arg<?>... children )

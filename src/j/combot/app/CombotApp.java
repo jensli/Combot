@@ -18,8 +18,9 @@ import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.gui.CombotGui;
 import j.combot.gui.CommandData;
-import j.util.functional.Action1;
+import j.util.prefs.GatheredPrefenences;
 import j.util.prefs.PrefUtil;
+import j.util.process.LineProcessCallback;
 import j.util.process.ProcessCallback;
 import j.util.process.ProcessHandler;
 import j.util.util.StringUtil;
@@ -36,14 +37,13 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+
 public class CombotApp
 {
 
 	private Logger logger = Util.getClassLogger( this );
 
 	private CombotGui gui;
-
-//	private CommandContainer commands = new CommandContainer();
 
 	private ProcessHandler processHandler;
 
@@ -61,7 +61,9 @@ public class CombotApp
 
 	public static Collection<Command> loadCmdPrefs( Preferences prefs, Command cmd ) throws BackingStoreException
 	{
-		Preferences cmdPrefs = prefs.node( cmd.getTitle() );
+//		Preferences cmdPrefs = prefs.node( cmd.getTitle() );
+		// TODO:
+		Preferences cmdPrefs = new GatheredPrefenences( prefs.node( cmd.getTitle() ) );
 
 		List<Command> result = new ArrayList<>();
 
@@ -107,7 +109,9 @@ public class CombotApp
 		for ( CommandData cmdData : cmds.getChildren() ) {
 			// Derivied children with other default values
 			for ( CommandData d : cmdData.getChildren() ) {
-				PrefUtil.save( prefs.node( cmdData.cmd.getTitle() ), d.cmd );
+				// TODO:
+				PrefUtil.save( new GatheredPrefenences( prefs.node( cmdData.cmd.getTitle() ) ), d.cmd );
+//				PrefUtil.save( prefs.node( cmdData.cmd.getTitle() ), d.cmd );
 			}
 		}
 	}
@@ -185,34 +189,11 @@ public class CombotApp
 	public void init( StartMode mode )
 	{
 		logger.info( "Initializing" );
-//		try {
-//			rootPrefs.removeNode();
-//		} catch ( BackingStoreException exc ) {
-//			// TODO Auto-generated catch block
-//			exc.printStackTrace();
-//			throw new RuntimeException( exc );
-//		}
 
 		gui = new CombotGui( this );
 
-//		gui.getStartCaller().addListener( new Action0() {
-//			public void run() { startCommand(); }
-//		});
-//
-//		gui.getStopCaller().addListener( new Action0() {
-//			public void run() { stopCommand(); }
-//		});
-
-//		gui.getNewCommandCaller().addListener( new Action1<NewCommandEvent>() {
-//			public void run( NewCommandEvent arg ) {
-//				makeNewCommand( arg.parentComamnd, arg.baseCmd, arg.newTitle );
-//			}
-//		} );
-
 		gui.init();
 		loadCmds();
-//		gui.setCommadList( commands );
-//		gui.setActiveCommand( commands.get( 2 ) );
 	}
 
 	public void makeNewCommand( Command parentCmd, Command baseCmd, String newTitle )
@@ -231,31 +212,16 @@ public class CombotApp
 		List<String> args = cmd.getArgStrings();
 		args.add( 0, cmd.getName() );
 
-		processHandler = new ProcessHandler( new ProcessBuilder( args ), processCallback );
-
-		processHandler.setErrHandler( new Action1<Object>() {
-			public void run( Object arg ) {
-				if ( arg instanceof Throwable ) {
-					logger.warning( "Error in process handler: " +
-							Util.exceptionToString( (Throwable) arg ) );
-				} else {
-					logger.warning( "Error in process handler: " + arg.toString() );
-				}
-			}
-		} );
-
+		processHandler = new ProcessHandler( processCallback, args );
 
 		try {
-			processHandler.start();
+		    runningCmd = cmd;
+			processHandler.runAsync();
 			gui.onCommandStarted( StringUtil.join( args, " " ) );
-			runningCmd = cmd;
 		} catch ( IOException exc ) {
 			logger.warning( "IO error when running command: " + cmd + "\n" + exc );
 			onCommandTerminated( -1 ); // TODO: Send sensible info
 		}
-
-
-
 	}
 
 	/**
@@ -267,7 +233,6 @@ public class CombotApp
 		processHandler.destroy();
 		gui.onCommandStopped();
 	}
-
 
 	private void onCommandTerminated( int code )
 	{
@@ -289,33 +254,48 @@ public class CombotApp
 		gui.dispose();
 	}
 
-
 	{
-		processCallback = new ProcessCallback() {
+	    // Init listener for output from the command process
+		processCallback = new LineProcessCallback() {
 
-			public void receiveOutput( final String line ) {
-				gui.runInGuiThread( new Runnable() {
+            @Override
+			public void receiveStdout( final String line ) {
+				gui.runSyncInGuiThread( new Runnable() {
 					public void run() {
+					    if ( runningCmd == null ) return;
 						gui.receiveOutput( runningCmd, line + "\n" );
 					}
 				} );
 			}
 
-			public void receiveError( final String line ) {
-				gui.runInGuiThread( new Runnable() {
+            @Override
+			public void receiveStderr( final String line ) {
+				gui.runSyncInGuiThread( new Runnable() {
 					public void run() {
+					    if ( runningCmd == null ) return;
 						gui.receiveError( runningCmd, line + "\n" );
 					}
 				} );
 			}
 
+            @Override
 			public void signalTerminated( final int code ) {
-				gui.runInGuiThread( new Runnable() {
+				gui.runSyncInGuiThread( new Runnable() {
 					public void run() {
 						onCommandTerminated( code );
 					}
 				} );
 			}
+
+            @Override
+            public void handleError( Object err ) {
+                if ( err instanceof Throwable ) {
+                    logger.warning( "Error in process handler: " +
+                            Util.exceptionToString( (Throwable) err ) );
+                } else {
+                    logger.warning( "Error in process handler: " + err.toString() );
+                }
+            }
 		};
 
 	}

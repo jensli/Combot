@@ -8,9 +8,6 @@ import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.SINGLE;
 import j.combot.Globals;
 import j.combot.app.CombotApp;
-import j.combot.app.CommandContainer;
-import j.combot.command.Arg;
-import j.combot.command.ArgGroup;
 import j.combot.command.Command;
 import j.combot.gui.misc.InputBox;
 import j.combot.gui.misc.ValidationEvent;
@@ -41,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.prefs.Preferences;
 
 import org.eclipse.swt.custom.StackLayout;
@@ -118,7 +114,8 @@ public class CombotGui
 
 //		cmdData.setData( null ); // The dummy root command
 
-		visualFactory.addValidationListener( valLis );
+		// TODO: Remove?
+//		visualFactory.addValidationListener( valLis );
 		visualFactory.addAll( VIS_FACTS );
 		shell = makeShell( display );
 
@@ -146,6 +143,7 @@ public class CombotGui
 	private void onQuit() {
 		app.onQuit( commands );
 	}
+
 	public void receiveOutput( Command cmd, String line )
 	{
 		getCommandPanel( cmd ).addOutput( line );
@@ -156,7 +154,7 @@ public class CombotGui
 		getCommandPanel( cmd ).addErrorOutput( line );
 	}
 
-	public void runInGuiThread( Runnable r ) {
+	public void runSyncInGuiThread( Runnable r ) {
 		display.syncExec( r );
 	}
 
@@ -166,20 +164,20 @@ public class CombotGui
 	}
 
 
-
 	private CommandPanel getSelectedCommandPanel() {
 		return activeCommand;
 	}
 
-	public void setCommadList( CommandContainer commands )
-	{
-		for ( Entry<Command, ArgGroup> parent : commands ) {
-			addCommand( parent.getKey() );
-			for ( Arg<?> a : parent.getValue() ) {
-				addChildCommand( parent.getKey(), (Command) a );
-			}
-		}
-	}
+//	public void setCommadList( CommandContainer commands )
+//	{
+//		for ( Entry<Command, ArgGroup> parent : commands ) {
+//			addCommand( parent.getKey() );
+//
+//			for ( Arg<?> a : parent.getValue() ) {
+//				addChildCommand( parent.getKey(), (Command) a );
+//			}
+//		}
+//	}
 
 	private void initCmd( TreeItem item, Command cmd, CommandData parent )
 	{
@@ -189,7 +187,7 @@ public class CombotGui
 		item.setData( commandPanel );
 		commandPanelMap.put( cmd, commandPanel );
 
-		commandPanel.init( item, cmd, parent, commandComp, visualFactory );
+		commandPanel.init( item, cmd, parent, commandComp, visualFactory.copy() );
 		switchActiveCommand( commandPanel );
 	}
 
@@ -216,13 +214,13 @@ public class CombotGui
 
 	// Switches to a new command panel, creating all the widgets.
 
-	public void switchActiveCommand( CommandPanel cmdPnl ) {
+	private void switchActiveCommand( CommandPanel cmdPnl ) {
 		tree.setSelection( cmdPnl.getTreeItem() );
 		switchActiveCommandNoTree( cmdPnl );
 	}
 
 
-	public void switchActiveCommandNoTree( CommandPanel cmdPnl )
+	private void switchActiveCommandNoTree( CommandPanel cmdPnl )
 	{
 		delItem.setEnabled( cmdPnl.getCommandData().getParent().hasParent() );
 
@@ -316,8 +314,9 @@ public class CombotGui
 		switchActiveCommand( getCommandPanel( cmdPanel.getCommandData().getParent().cmd ) );
 
 		cmdPanel.dispose();
-		commandPanelMap.remove( cmdPanel.getCommand() );
+		commandPanelMap.remove( cmdPanel.getCommandLabel() );
 	}
+
 
 	private void makeNewCommand()
 	{
@@ -334,12 +333,9 @@ public class CombotGui
 		app.makeNewCommand( parentData.cmd, data.cmd, newTitle );
 	}
 
-
-
-
-	/**
-	 *  Doesnt return until SWT is stopped
-	 */
+    /**
+     * The SWT main loop. Doesnt return until SWT is stopped.
+     */
 	public void run()
 	{
 		shell.open();
@@ -388,7 +384,7 @@ public class CombotGui
 	}
 
 	public void onExit( Preferences prefs ) {
-
+	    // Save some gui specific prefs here?
 	}
 
 
@@ -399,10 +395,9 @@ public class CombotGui
 			public void visualValidated( ValidationEvent e ) {
 				// TODO: Hack warning
 				if ( getSelectedCommandPanel() != null ) {;
-					getSelectedCommandPanel().setValidationResult( e.sender, e.entries );
+//					getSelectedCommandPanel().setValidationResult( e.sender, e.entries );
 				}
 			} };
-
 
 		VIS_FACTS = new VisFact[] {
 				new VisFact<>( VisualTypes.GROUP_TYPE, CompositeVisual.class ),

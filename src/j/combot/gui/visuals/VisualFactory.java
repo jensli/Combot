@@ -5,6 +5,7 @@ import j.combot.gui.VisFact;
 import j.combot.gui.misc.ValidationListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +14,20 @@ import java.util.Map;
 
 public class VisualFactory
 {
-	private Map<VisualType<?>, VisFact<?>> map = new HashMap<>();
+    // Remember to add fields to copy!
 
+	private Map<VisualType<?>, VisFact<?>> map = new HashMap<>();
 	private List<ValidationListener> validationListeners = new ArrayList<>( 1 );
+
+	public VisualFactory copy()
+    {
+        VisualFactory result = new VisualFactory();
+
+        // Give copy same map but unmod, we dont plan to change it.
+        result.map = Collections.unmodifiableMap( map );
+        result.validationListeners = new ArrayList<>( validationListeners );
+        return result;
+    }
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public void addAll( VisFact<?>[] facts )
@@ -28,6 +40,11 @@ public class VisualFactory
 	public void addValidationListener( ValidationListener l ) {
 		validationListeners.add( l );
 	}
+
+    public void removeValidationListener( ValidationListener l ) {
+        validationListeners.remove( l );
+    }
+
 
 	public <T> void add( VisualType<T> type, VisFact<T> fact ) {
 		map.put( type, fact );
@@ -54,6 +71,7 @@ public class VisualFactory
 
 		return v;
 	};
+
 }
 
 

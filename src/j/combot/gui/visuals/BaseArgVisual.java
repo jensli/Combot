@@ -34,6 +34,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 	private ErrorIndicator errorIndicator;
 
+	// TODO: Show this be moved to Arg?
 	private GenericCaller<ValidationEvent, ValidationListener> validateCaller =
 			new GenericCaller<>( ValidationEvent.class, ValidationListener.class );
 
@@ -122,6 +123,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 		validateCaller.call( new ValidationEvent( errors, getArg() ) );
 	}
+
 
 	@Override
 	public void setEnabled( boolean b )

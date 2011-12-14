@@ -2,6 +2,7 @@ package j.combot.validator;
 
 import j.util.util.FileOrDir;
 import j.util.util.IssueType;
+import j.util.util.Util;
 
 import java.io.File;
 import java.util.Collections;
@@ -12,12 +13,18 @@ public class FileValidator extends Validator<File> {
 	private final FileVal val;
 	private final FileOrDir dialogType;
 
+	/**
+	 * Decides what validation strategy to use. Check if the file exists or
+	 * not exist, and issue a warning or an error.
+	 */
 	public enum FileVal
 	{
 		ERROR_EXIST( true, true ),
 		WARN_EXIST( true, false ),
+
 		ERROR_NOT_EXIST( false, true ),
 		WARN_NOT_EXIST( false, false ),
+
 		NO_VALIDATION( false, false );
 
 		public final boolean exists, error;
@@ -36,6 +43,8 @@ public class FileValidator extends Validator<File> {
 	@Override
 	protected List<ValEntry> validateInt( File value )
 	{
+	    value = new File( Util.expandHome( value.toString() ) );
+
 		if ( val == FileVal.NO_VALIDATION ) return Collections.emptyList();
 
 		if ( value.toString().isEmpty() ) {
@@ -44,8 +53,8 @@ public class FileValidator extends Validator<File> {
 
 		IssueType type = val.error ? IssueType.ERROR : IssueType.WARNING;
 
-		boolean exists = value.exists(),
-				isOk = val.exists ? !exists : exists;
+		boolean //exists = value.exists(),
+				isOk = val.exists != value.exists(); //? !exists : exists;  //
 
 		String dirOrFile = dialogType == FileOrDir.FILE ? "File" : "Directory",
 				message;

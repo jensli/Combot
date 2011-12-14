@@ -15,6 +15,8 @@ import static org.eclipse.swt.SWT.V_SCROLL;
 import j.combot.app.CombotApp;
 import j.combot.command.Arg;
 import j.combot.command.Command;
+import j.combot.gui.misc.ValidationEvent;
+import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.combot.validator.ValEntry;
@@ -52,12 +54,15 @@ class CommandPanel {
 	private Map<Arg<?>, List<ValEntry>> errorMap = new HashMap<>();
 
 	private Label status;
-	private Label command;
+	private Label commandLabel;
 	private Button stopButton;
 	private Button startButton;
 	private Composite controls;
 	private StyledText outputText;
 	private Button filterErrors;
+    private ValidationListener valLis;
+
+    private boolean startupOngoing = true;
 
 
 	public CommandPanel( CombotApp app ) {
@@ -82,7 +87,7 @@ class CommandPanel {
 		return mainComposite;
 	}
 
-	public void addValidateResult( ValEntry e )
+	private void addValidateResult( ValEntry e )
 	{
 		List<ValEntry> entries = errorMap.get( e.sender );
 
@@ -98,12 +103,7 @@ class CommandPanel {
 		errorMap.remove( arg );
 	}
 
-	public boolean hasValidateErrors( Arg<?> arg ) {
-		return errorMap.containsKey( arg );
-	}
-
-
-	public Composite makeControlPanel( Composite parent )
+	private Composite makeControlPanel( Composite parent )
 	{
 		Composite panel = new Composite( parent, NONE );
 		panel.setLayout( new GridLayout( 1, false ) );
@@ -142,8 +142,8 @@ class CommandPanel {
 		filterErrors.setSelection( false );
 
 		// Status labels
-		command = new Label( panel, NONE );
-		command.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
+		commandLabel = new Label( panel, NONE );
+		commandLabel.setLayoutData( new GridData( FILL, BEGINNING, true, false ) );
 		setCommandLine( "" );
 
 		status = new Label( panel, NONE );
@@ -167,15 +167,18 @@ class CommandPanel {
 	 *
 	 * Called when a widet has validated itself. And when panel created.
 	 */
-	public void setValidationResult( Arg<?> sender, List<ValEntry> entries )
+	private void setValidationResult( Arg<?> sender, List<ValEntry> entries )
 	{
+	    if ( startupOngoing ) return; // Ignore validation during startup
+
 		List<ValEntry> errors = new ArrayList<>();
 
 		for ( ValEntry e : entries ) {
 			if ( e.type == IssueType.ERROR ) errors.add( e );
 		}
 
-
+		// TODO: Map is not really cleared. Seems to contain other args of same
+		// type.
 		if ( errors.isEmpty() ) {
 		    clearValidateResults( sender );
 		} else {
@@ -193,7 +196,8 @@ class CommandPanel {
 		controls.setToolTipText( toolTip );
 	}
 
-	public void init( TreeItem item, Command cmd, CommandData parent, Composite commandComp, VisualFactory visualFactory )
+	public void init( TreeItem item, Command cmd, CommandData parent,
+			Composite commandComp, VisualFactory visualFactory )
 	{
 		cmdData = new CommandData( cmd );
 		parent.addChild( cmdData  );
@@ -201,6 +205,8 @@ class CommandPanel {
 		this.item = item;
 
 		mainComposite = makeCommandPanel( cmd, commandComp, visualFactory );
+
+		startupOngoing = false;
 
 		// Validate without displaying error messages, so that start button is
 		// disabled if there is an error.
@@ -210,10 +216,13 @@ class CommandPanel {
 	}
 
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
-	public Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
+	private Composite makeCommandPanel( Command cmd, Composite parent, VisualFactory visualFactory )
 	{
 		Composite commandPanel = new Composite( parent, NONE );
 		commandPanel.setLayoutData( new GridData( FILL, FILL, true, false ) );
+
+		// This change only affect out copy of visFact
+		visualFactory.addValidationListener( valLis );
 
 		commandPanel.setLayout( new GridLayout( 1, false ) );
 
@@ -264,11 +273,11 @@ class CommandPanel {
 		return commandPanel;
 	}
 
-	public void setCommandLine( String line ) {
-		getCommand().setText( "Command line: " + line );
+	private void setCommandLine( String line ) {
+		getCommandLabel().setText( "Command line: " + line );
 	}
 
-	public void setCommandRunning( boolean b )
+	private void setCommandRunning( boolean b )
 	{
 		stopButton.setEnabled( b );
 		startButton.setEnabled( !b );
@@ -299,16 +308,23 @@ class CommandPanel {
 		mainComposite.dispose();
 	}
 
-	public Label getCommand() {
-		return command;
+	public Label getCommandLabel() {
+		return commandLabel;
 	}
 
-	CommandData getCommandData() {
+	public CommandData getCommandData() {
 		return cmdData;
 	}
 
 	public void onCommandTerminated( int code ) {
  		setStatus( "Terminated with exit code " + code );
  		setCommandRunning( false );
+	}
+
+	{
+    	valLis = new ValidationListener() {
+            public void visualValidated( ValidationEvent e ) {
+                setValidationResult( e.sender, e.entries );
+            } };
 	}
 }

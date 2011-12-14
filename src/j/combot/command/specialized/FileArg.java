@@ -5,6 +5,7 @@ import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.FileValidator;
 import j.combot.validator.FileValidator.FileVal;
 import j.util.util.FileOrDir;
+import j.util.util.Util;
 
 import java.io.File;
 import java.util.Collections;
@@ -25,7 +26,7 @@ public class FileArg extends Arg<File>
 
 	@Override
 	public List<String> getArgStrings() {
-		return Collections.singletonList( getVisual().getValue().toString() );
+		return Collections.singletonList( Util.expandHome( getVisual().getValue().toString() ) );
 	}
 
 	public FileOrDir getDialogType() {

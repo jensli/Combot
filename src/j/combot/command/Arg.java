@@ -4,6 +4,7 @@ import j.combot.gui.visuals.ArgVisual;
 import j.combot.gui.visuals.VisualType;
 import j.combot.validator.ValEntry;
 import j.combot.validator.Validator;
+import j.util.prefs.PrefName;
 import j.util.prefs.PrefNodeName;
 import j.util.prefs.PrefValue;
 import j.util.util.Util;
@@ -18,6 +19,7 @@ public abstract class Arg<T> implements Cloneable
 
 	// The value that is set to the visual when the arg is loaded.
 	@PrefValue
+	@PrefName( "def" )
 	private T defaultValue;
 
 	// The priority is used when a argument and its visualisation should not
@@ -34,8 +36,7 @@ public abstract class Arg<T> implements Cloneable
 	private String name;
 
 	// prefix is prepended to arg when it is created, sufix if appended.
-	private String
-		valuePrefix, valueSufix;
+	private String valuePrefix, valueSufix;
 
 	// Decides whethere the value in the visual is valid, or returns a list of
 	// errors. Often run when value in visual changes.

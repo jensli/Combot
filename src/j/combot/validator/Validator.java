@@ -29,6 +29,10 @@ public abstract class Validator<T>
 	}
 
 
+	/**
+	 * Standart implementation to help with construction of result list.
+	 * Calls template method validateInt.
+	 */
 	public final List<ValEntry> validate( T value )
 	{
 		List<ValEntry> result = validateInt( value );
