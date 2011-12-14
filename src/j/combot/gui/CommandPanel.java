@@ -25,9 +25,7 @@ import j.swt.util.SwtUtil;
 import j.util.util.IssueType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
@@ -42,7 +40,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 class CommandPanel {
 
@@ -51,7 +50,7 @@ class CommandPanel {
 	public CombotApp app;
 
 	private CommandData cmdData;
-	private Map<Arg<?>, List<ValEntry>> errorMap = new HashMap<>();
+    private Multimap<Arg<?>, ValEntry> errorMultimap = LinkedHashMultimap.create();
 
 	private Label status;
 	private Label commandLabel;
@@ -60,7 +59,6 @@ class CommandPanel {
 	private Composite controls;
 	private StyledText outputText;
 	private Button filterErrors;
-    private ValidationListener valLis;
 
     private boolean startupOngoing = true;
 
@@ -87,22 +85,6 @@ class CommandPanel {
 		return mainComposite;
 	}
 
-	private void addValidateResult( ValEntry e )
-	{
-		List<ValEntry> entries = errorMap.get( e.sender );
-
-		if ( entries == null ) {
-			entries = new ArrayList<>();
-			errorMap.put( e.sender, entries );
-		}
-
-		entries.add( e );
-	}
-
-	private void clearValidateResults( Arg<?> arg ) {
-		errorMap.remove( arg );
-	}
-
 	private Composite makeControlPanel( Composite parent )
 	{
 		Composite panel = new Composite( parent, NONE );
@@ -123,7 +105,7 @@ class CommandPanel {
 			public void widgetSelected( SelectionEvent e ) {
 				app.startCmd( cmdData.cmd );
 			}
-		});
+        } );
 
 		// Stop button
 		stopButton = new Button( controls, PUSH );
@@ -134,7 +116,7 @@ class CommandPanel {
 			public void widgetSelected( SelectionEvent e ) {
 				app.stopCommand();
 			}
-		});
+		} );
 
 		// Filter checkbox
 		filterErrors = new Button( controls, CHECK );
@@ -177,24 +159,23 @@ class CommandPanel {
 			if ( e.type == IssueType.ERROR ) errors.add( e );
 		}
 
-		// TODO: Map is not really cleared. Seems to contain other args of same
-		// type.
-		if ( errors.isEmpty() ) {
-		    clearValidateResults( sender );
-		} else {
-			for ( ValEntry e : errors ) addValidateResult( e );
-		}
+		errorMultimap.replaceValues( sender, entries );
 
-		startButton.setEnabled( errorMap.isEmpty() );
+		updateControlErrorReporting();
+	}
+
+    private void updateControlErrorReporting()
+    {
+        startButton.setEnabled( errorMultimap.isEmpty() );
 
 		// Set tooltop on the start/stop buttons
-		String toolTip = errorMap.isEmpty() ?  "" : "Can not start because of errors";
-		for ( ValEntry en : Iterables.concat( errorMap.values() ) ) {
+		String toolTip = errorMultimap.isEmpty() ?  "" : "Can not start because of errors";
+        for ( ValEntry en : errorMultimap.values() ) {
 			toolTip += "\n" + en.sender.getTitle() + ": " + en.message;
 		}
 
 		controls.setToolTipText( toolTip );
-	}
+    }
 
 	public void init( TreeItem item, Command cmd, CommandData parent,
 			Composite commandComp, VisualFactory visualFactory )
@@ -211,8 +192,10 @@ class CommandPanel {
 		// Validate without displaying error messages, so that start button is
 		// disabled if there is an error.
 		for ( ValEntry e : cmd.validate() ) {
-			if ( e.type == IssueType.ERROR ) addValidateResult( e );
+			if ( e.type == IssueType.ERROR ) errorMultimap.put( e.sender, e );
 		}
+
+		updateControlErrorReporting();
 	}
 
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
@@ -221,8 +204,14 @@ class CommandPanel {
 		Composite commandPanel = new Composite( parent, NONE );
 		commandPanel.setLayoutData( new GridData( FILL, FILL, true, false ) );
 
-		// This change only affect out copy of visFact
-		visualFactory.addValidationListener( valLis );
+		// This change only affect out copy of visFact.
+	    // Validation listener for all the ArgVisuals, is run every time
+	    // something changes in the arg input controls.
+	    // Sets enabled status for start button and tooltip.
+		visualFactory.addValidationListener( new ValidationListener() {
+	        public void visualValidated( ValidationEvent e ) {
+	            setValidationResult( e.sender, e.entries );
+	        } } );
 
 		commandPanel.setLayout( new GridLayout( 1, false ) );
 
@@ -321,10 +310,4 @@ class CommandPanel {
  		setCommandRunning( false );
 	}
 
-	{
-    	valLis = new ValidationListener() {
-            public void visualValidated( ValidationEvent e ) {
-                setValidationResult( e.sender, e.entries );
-            } };
-	}
 }

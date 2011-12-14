@@ -13,6 +13,8 @@ public class FileValidator extends Validator<File> {
 	private final FileVal val;
 	private final FileOrDir dialogType;
 
+	private boolean tildeForHome = true;
+
 	/**
 	 * Decides what validation strategy to use. Check if the file exists or
 	 * not exist, and issue a warning or an error.
@@ -35,7 +37,11 @@ public class FileValidator extends Validator<File> {
 		}
 	}
 
-	public FileValidator( FileVal val, FileOrDir type ) {
+	public void setTildeForHome( boolean tildeForHome ) {
+        this.tildeForHome = tildeForHome;
+    }
+
+    public FileValidator( FileVal val, FileOrDir type ) {
 		this.val = val;
 		this.dialogType = type;
 	}
@@ -43,7 +49,9 @@ public class FileValidator extends Validator<File> {
 	@Override
 	protected List<ValEntry> validateInt( File value )
 	{
-	    value = new File( Util.expandHome( value.toString() ) );
+	    if ( tildeForHome ) {
+	        value = new File( Util.expandHome( value.toString() ) );
+	    }
 
 		if ( val == FileVal.NO_VALIDATION ) return Collections.emptyList();
 

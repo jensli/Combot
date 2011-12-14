@@ -10,8 +10,6 @@ import j.combot.Globals;
 import j.combot.app.CombotApp;
 import j.combot.command.Command;
 import j.combot.gui.misc.InputBox;
-import j.combot.gui.misc.ValidationEvent;
-import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.CompositeVisual;
 import j.combot.gui.visuals.VisualFactory;
 import j.combot.gui.visuals.VisualTypes;
@@ -87,11 +85,6 @@ public class CombotGui
 
 	private final VisualFactory visualFactory;
 	private final VisFact<?>[] VIS_FACTS;
-
-	// Is set as validation listener for all the ArgVisuals, is run every time
-	// something changes in the arg input controls.
-	// Sets enabled status for start button and tooltip.
-	private ValidationListener valLis;
 
 	private CombotApp app;
 	private CommandPanel activeCommand;
@@ -391,14 +384,6 @@ public class CombotGui
 
 	// Init
 	{
-		valLis = new ValidationListener() {
-			public void visualValidated( ValidationEvent e ) {
-				// TODO: Hack warning
-				if ( getSelectedCommandPanel() != null ) {;
-//					getSelectedCommandPanel().setValidationResult( e.sender, e.entries );
-				}
-			} };
-
 		VIS_FACTS = new VisFact[] {
 				new VisFact<>( VisualTypes.GROUP_TYPE, CompositeVisual.class ),
 				new VisFact<>( VisualTypes.INT_TYPE, IntVisual.class ),
