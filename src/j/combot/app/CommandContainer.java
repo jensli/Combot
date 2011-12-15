@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Iterables;
 
+// TODO: Not used, remove?
 public class CommandContainer implements Iterable<Entry<Command, ArgGroup>>
 {
 	private Map<Command, ArgGroup> commands = new LinkedHashMap<>();
@@ -32,8 +33,8 @@ public class CommandContainer implements Iterable<Entry<Command, ArgGroup>>
 	}
 
 	public Iterable<Arg<?>> getLinear() {
-		return Iterables.concat( 
-					commands.keySet(), 
+		return Iterables.concat(
+					commands.keySet(),
 					Iterables.concat( commands.values() ) );
 	}
 

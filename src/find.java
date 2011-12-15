@@ -2,7 +2,7 @@ import j.combot.command.Command;
 import j.combot.command.CommandFactory;
 import j.combot.command.CompositeArg;
 import j.combot.command.specialized.EnumArg;
-import j.combot.command.specialized.EnumArg.Value;
+import j.combot.command.specialized.EnumArg.Entry;
 import j.combot.command.specialized.ExtraArg;
 import j.combot.command.specialized.FileArg;
 import j.combot.command.specialized.IntArg;
@@ -28,9 +28,9 @@ public class find implements CommandFactory {
 					new OptArg( false, new ExtraArg( "Extra arguments" ) ),
 
 					new EnumArg( "Symbolic link treatment", 10,
-							new Value( "Never follow links", "-P" ),
-							new Value( "Follow links", "-L" ),
-							new Value( "Only follow links in args", "-H" ) )
+							new Entry( "Never follow links", "-P" ),
+							new Entry( "Follow links", "-L" ),
+							new Entry( "Only follow links in args", "-H" ) )
 
 //					new AltArg( "Symbolic link treatment", 1, 10,
 //							new ConstArg( "Never follow links", "-P" ),

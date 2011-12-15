@@ -33,7 +33,7 @@ import j.util.functional.Fun1;
 import j.util.util.Asserts;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -74,7 +74,7 @@ public class CombotGui
 	// Delete command button
 	private ToolItem delItem;
 
-	private Map<Command, CommandPanel> commandPanelMap = new HashMap<>();
+	private Map<Command, CommandPanel> commandPanelMap = new LinkedHashMap<>();
 
 	private CommandData commands = new CommandData(
 			new Fun1<CommandData, Command>() {
@@ -105,10 +105,6 @@ public class CombotGui
 		display = new Display();
 		SwtStdValues.init( display );
 
-//		cmdData.setData( null ); // The dummy root command
-
-		// TODO: Remove?
-//		visualFactory.addValidationListener( valLis );
 		visualFactory.addAll( VIS_FACTS );
 		shell = makeShell( display );
 
@@ -151,26 +147,15 @@ public class CombotGui
 		display.syncExec( r );
 	}
 
-	public void onHasTerminated( Command cmd,  int code )
+	public void onHasTerminated( Command cmd,  int code, String msg )
 	{
- 		getCommandPanel( cmd ).onCommandTerminated( code );
+ 		getCommandPanel( cmd ).onCommandTerminated( code, msg );
 	}
 
 
 	private CommandPanel getSelectedCommandPanel() {
 		return activeCommand;
 	}
-
-//	public void setCommadList( CommandContainer commands )
-//	{
-//		for ( Entry<Command, ArgGroup> parent : commands ) {
-//			addCommand( parent.getKey() );
-//
-//			for ( Arg<?> a : parent.getValue() ) {
-//				addChildCommand( parent.getKey(), (Command) a );
-//			}
-//		}
-//	}
 
 	private void initCmd( TreeItem item, Command cmd, CommandData parent )
 	{
@@ -205,14 +190,13 @@ public class CombotGui
 	}
 
 
-	// Switches to a new command panel, creating all the widgets.
-
+	// Switches to a new command panel
 	private void switchActiveCommand( CommandPanel cmdPnl ) {
 		tree.setSelection( cmdPnl.getTreeItem() );
 		switchActiveCommandNoTree( cmdPnl );
 	}
 
-
+	// Switches to a new command panel without updating the tree selection
 	private void switchActiveCommandNoTree( CommandPanel cmdPnl )
 	{
 		delItem.setEnabled( cmdPnl.getCommandData().getParent().hasParent() );
@@ -399,6 +383,10 @@ public class CombotGui
 				new VisFact<>( VisualTypes.COMBO_TYPE, ComboVisual.class ),
 		};
 	}
+
+    public void setActiveCommand( int i ) {
+        switchActiveCommand( Iterables.get( commandPanelMap.values(), i  ) );
+    }
 }
 
 

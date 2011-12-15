@@ -9,6 +9,7 @@ import j.util.prefs.PrefNodeName;
 import j.util.prefs.PrefValue;
 import j.util.util.Util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -65,8 +66,12 @@ public abstract class Arg<T> implements Cloneable
 
 	public List<ValEntry> validate()
 	{
-		List<ValEntry> entires = validator.validate( getVisual().getValue() );
-		for ( ValEntry e : entires ) e.sender = this;
+		List<ValEntry> entires = new ArrayList<>();
+
+		for ( ValEntry e : validator.validate( getVisual().getValue() ) ) {
+		    entires.add( e.substSender( this ) );
+		}
+
 		return entires;
 	}
 
@@ -98,15 +103,14 @@ public abstract class Arg<T> implements Cloneable
 		}
 	}
 
+	public void setDefaultFromVisual() {
+        setDefaultValue( getVisual().getValue() );
+    }
 
 	/////////////////////////////////////////////////////////////
 
 	public void setDefaultValue( T defaultValue ) {
 		this.defaultValue = defaultValue;
-	}
-
-	public void setDefaultFromVisual() {
-		setDefaultValue( getVisual().getValue() );
 	}
 
 	@Override

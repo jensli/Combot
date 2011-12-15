@@ -3,6 +3,7 @@ package j.combot.gui.visuals;
 import j.combot.command.Arg;
 import j.combot.gui.VisFact;
 import j.combot.gui.misc.ValidationListener;
+import j.util.util.Asserts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,17 +51,21 @@ public class VisualFactory
 		map.put( type, fact );
 	}
 
+	/**
+	 * Creates a Visual that should reprenent the arg. Sets the visual in the
+	 * arg and adds a validation listener, returns the new Visual.
+	 *
+	 * @param arg
+	 * @return
+	 */
 	public <T> GuiArgVisual<T> make( Arg<T> arg )
 	{
 		@SuppressWarnings( "unchecked" )
 		VisFact<T> visualFact = (VisFact<T>) map.get( arg.getVisualType() );
 
-		if ( visualFact == null ) {
-			throw new IllegalStateException( "No visual factory for VisualType " + arg.getVisualType() );
-		}
+		Asserts.state( visualFact != null, "No visual factory for VisualType " + arg.getVisualType() );
 
 		GuiArgVisual<T> v = visualFact.make();
-
 
 		v.setArg( arg );
 		arg.setVisual( v );

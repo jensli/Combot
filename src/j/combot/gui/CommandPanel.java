@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
-class CommandPanel {
-
+class CommandPanel
+{
 	private Composite mainComposite;
 	private TreeItem item;
 	public CombotApp app;
@@ -228,26 +228,14 @@ class CommandPanel {
 		ScrolledComposite scrolled = new ScrolledComposite( commandPanel, V_SCROLL );
 		scrolled.setExpandHorizontal( true );
 		scrolled.setShowFocusedControl( true );
-		scrolled.setAlwaysShowScrollBars( true );
 		scrolled.setLayoutData( new GridData( FILL, FILL, true, true ) );
+//		scrolled.setAlwaysShowScrollBars( true );
 
 		SwtStdValues.setDebugColor( scrolled, SwtStdValues.COLOR_DARK_BLUE );
 
 		// Args
-		Composite argsComp = new Composite( scrolled, NONE );
-		scrolled.setContent( argsComp );
-
-		SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
-
-
-		GridLayout argsLayout = new GridLayout( 2, false );
-		argsComp.setLayout( argsLayout );
-
-		// Add the acctual args
-		for ( Arg<?> arg : cmd.getArgGroup() ) {
-			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, visualFactory );
-		}
-
+		Composite argsComp = makeArgsPanel( cmd, visualFactory, scrolled );
+	    scrolled.setContent( argsComp );
 
 		Label argButtonSep = new Label( commandPanel, SEPARATOR | HORIZONTAL );
 		argButtonSep.setLayoutData( new GridData( FILL, TOP, true, false ) );
@@ -261,6 +249,25 @@ class CommandPanel {
 
 		return commandPanel;
 	}
+
+    @SuppressWarnings( { "unchecked", "rawtypes" } )
+    private static Composite makeArgsPanel( Command cmd, VisualFactory visualFactory,
+            ScrolledComposite parent )
+    {
+        Composite argsComp = new Composite( parent, NONE );
+
+		SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
+
+		GridLayout argsLayout = new GridLayout( 2, false );
+		argsComp.setLayout( argsLayout );
+
+		// Add the acctual args
+		for ( Arg<?> arg : cmd.getArgGroup() ) {
+			visualFactory.make( arg ).makeWidget( (Arg) arg, argsComp, visualFactory );
+		}
+
+        return argsComp;
+    }
 
 	private void setCommandLine( String line ) {
 		getCommandLabel().setText( "Command line: " + line );
@@ -305,9 +312,15 @@ class CommandPanel {
 		return cmdData;
 	}
 
-	public void onCommandTerminated( int code ) {
- 		setStatus( "Terminated with exit code " + code );
- 		setCommandRunning( false );
+	public void onCommandTerminated( int code, String msg )
+	{
+	    setCommandRunning( false );
+
+	    if ( msg != null ) {
+	        setStatus( msg );
+	    } else {
+	        setStatus( "Terminated with exit code " + code );
+	    }
 	}
 
 }

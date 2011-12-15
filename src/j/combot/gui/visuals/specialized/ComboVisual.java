@@ -4,7 +4,7 @@ import static org.eclipse.swt.SWT.DROP_DOWN;
 import static org.eclipse.swt.SWT.READ_ONLY;
 import j.combot.command.Arg;
 import j.combot.command.specialized.EnumArg;
-import j.combot.command.specialized.EnumArg.Value;
+import j.combot.command.specialized.EnumArg.Entry;
 import j.combot.gui.visuals.BaseArgVisual;
 
 import org.eclipse.swt.widgets.Combo;
@@ -27,7 +27,7 @@ public class ComboVisual extends BaseArgVisual<Integer>
 
 		combo = new Combo( parent, READ_ONLY | DROP_DOWN );
 
-		for ( Value s : enumArg.getValues() ) {
+		for ( Entry s : enumArg.getValues() ) {
 			combo.add( s.getTitle() );
 		}
 

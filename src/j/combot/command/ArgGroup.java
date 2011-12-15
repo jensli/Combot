@@ -3,6 +3,7 @@ package j.combot.command;
 import j.combot.gui.visuals.ArgVisual;
 import j.combot.validator.ValEntry;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,7 +12,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 // Make a annotation processor that creates classes like this?
-public class ArgGroup implements Iterable<Arg<?>>
+public class ArgGroup extends AbstractCollection<Arg<?>>
 {
 	private List<Arg<?>> args;
 
@@ -28,15 +29,12 @@ public class ArgGroup implements Iterable<Arg<?>>
 		this( Lists.newArrayList( args ) );
 	}
 
-	public void add( Arg<?> part ) {
-		args.add( part );
+	public boolean add( Arg<?> part ) {
+		return args.add( part );
 	}
 
-
-
-
-	public void addAll( Collection<Arg<?>> parts ) {
-		args.addAll( parts );
+	public boolean addAll( Collection<? extends Arg<?>> parts ) {
+		return args.addAll( parts );
 	}
 
 	public void addAll( Arg<?>... parts ) {
@@ -45,16 +43,18 @@ public class ArgGroup implements Iterable<Arg<?>>
 		}
 	}
 
-	public boolean isEmpty() {
+	@Override
+    public int size() {
+	    return args.size();
+    }
+
+    public boolean isEmpty() {
 		return args.isEmpty();
 	}
 
 	public Collection<Arg<?>> getArgs() {
 		return args;
 	}
-
-
-
 
 	public Arg<?> get( int index ) {
 		return args.get( index );
@@ -129,5 +129,10 @@ public class ArgGroup implements Iterable<Arg<?>>
 		return new ArgGroup( result );
 	}
 
+    public void setDefaultFromVisual() {
+        for ( Arg<?> a : args ) {
+            a.setDefaultFromVisual();
+        }
+    }
 
 }

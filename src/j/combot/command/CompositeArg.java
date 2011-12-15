@@ -16,6 +16,9 @@ public class CompositeArg extends Arg<Void>
 	@PrefNodeCollection( inline = true )
 	private ArgGroup argGroup = new ArgGroup();
 
+	/**
+	 * Composites have to visible appearance to their title and name does not matter.
+	 */
 	public CompositeArg( String title, Arg<?>... children )
 	{
 		super( title, "Comp" );
@@ -43,8 +46,7 @@ public class CompositeArg extends Arg<Void>
 
 		Collections.sort( l, new Comparator<Arg<?>>() {
 			public int compare( Arg<?> o1, Arg<?> o2 ) {
-				// Sort so that high prio is first
-				return o2.getPrio() - o1.getPrio();
+				return o2.getPrio() - o1.getPrio(); // Sort high prio first
 			}
 		} );
 

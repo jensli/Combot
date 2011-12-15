@@ -10,10 +10,10 @@ import java.util.List;
 
 public class EnumArg extends Arg<Integer> {
 
-	public static class Value {
+	public static class Entry {
 		private final String title, name;
 
-		public Value( String title, String name ) {
+		public Entry( String title, String name ) {
 			this.title = title;
 			this.name = name;
 		}
@@ -27,13 +27,13 @@ public class EnumArg extends Arg<Integer> {
 		}
 	}
 
-	private List<Value> values;
+	private List<Entry> values;
 
-	public EnumArg( String title, Value... vals ) {
+	public EnumArg( String title, Entry... vals ) {
 		this( title, 0, vals );
 	}
 
-	public EnumArg( String title, int prio, Value... vals ) {
+	public EnumArg( String title, int prio, Entry... vals ) {
 		super( title, "" );
 		setPrio( prio );
 		setVisualType( VisualTypes.COMBO_TYPE );
@@ -48,7 +48,7 @@ public class EnumArg extends Arg<Integer> {
 				values.get( getVisual().getValue() ).getName() );
 	}
 
-	public List<Value> getValues() {
+	public List<Entry> getValues() {
 		return values;
 	}
 }

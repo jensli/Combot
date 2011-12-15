@@ -3,8 +3,13 @@ package j.combot.command;
 import j.combot.gui.visuals.VisualTypes;
 import j.combot.validator.ValEntry;
 import j.util.prefs.PrefNode;
+import j.util.process.ProcessCallback;
+import j.util.process.ProcessHandler;
+import j.util.util.Pair;
+import j.util.util.StringUtil;
 import j.util.util.Util;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Command extends Arg<Void>
@@ -15,15 +20,14 @@ public class Command extends Arg<Void>
 	public Command( String title, String command, Arg<?>... args )
 	{
 		super( title, command );
-		setVisualType( VisualTypes.COMMAND_TYPE );
 		children = new CompositeArg( "cmd comp", args );
+		setVisualType( VisualTypes.COMMAND_TYPE );
 	}
 
 	@Override
 	public String toString() {
 		return Util.simpleToString( this, getTitle(), children.getChildren() );
 	}
-
 
 	@Override
 	public void setDefaultFromVisual() {
@@ -33,6 +37,13 @@ public class Command extends Arg<Void>
 	@Override
 	public List<String> getArgStrings() {
 		return children.getArgStrings();
+	}
+
+	public Pair<ProcessHandler, String> createProcessHander( ProcessCallback callback ) throws IOException
+	{
+        List<String> args = getArgStrings();
+        args.add( 0, getName() );
+        return new Pair<>( new ProcessHandler( callback, args ), StringUtil.join( args, " " ) );
 	}
 
 	@Override
@@ -66,9 +77,6 @@ public class Command extends Arg<Void>
 		Command other = (Command) obj;
 		return getTitle().equals( other.getTitle() );
 	}
-
-
-
 
 
 }

@@ -23,7 +23,7 @@ import j.util.prefs.PrefUtil;
 import j.util.process.LineProcessCallback;
 import j.util.process.ProcessCallback;
 import j.util.process.ProcessHandler;
-import j.util.util.StringUtil;
+import j.util.util.Pair;
 import j.util.util.Util;
 
 import java.io.File;
@@ -155,8 +155,7 @@ public class CombotApp
 			}
 		}
 
-
-
+		gui.setActiveCommand( 0 );
 	}
 
 
@@ -209,18 +208,19 @@ public class CombotApp
 	{
 		logger.info( "Running command: " + cmd );
 
-		List<String> args = cmd.getArgStrings();
-		args.add( 0, cmd.getName() );
-
-		processHandler = new ProcessHandler( processCallback, args );
-
 		try {
+		    Pair<ProcessHandler, String> p = cmd.createProcessHander( processCallback );
+		    processHandler = p.a;
+//		processHandler.setCallback( processCallback );
+
 		    runningCmd = cmd;
 			processHandler.runAsync();
-			gui.onCommandStarted( StringUtil.join( args, " " ) );
+			gui.onCommandStarted( p.b );
+
 		} catch ( IOException exc ) {
+		    // TODO: Hack, constant in code:
 			logger.warning( "IO error when running command: " + cmd + "\n" + exc );
-			onCommandTerminated( -1 ); // TODO: Send sensible info
+			onCommandTerminated( -1, "Could not start command: " + exc );
 		}
 	}
 
@@ -234,9 +234,9 @@ public class CombotApp
 		gui.onCommandStopped();
 	}
 
-	private void onCommandTerminated( int code )
+	private void onCommandTerminated( int code, String msg )
 	{
-		gui.onHasTerminated( runningCmd, code );
+		gui.onHasTerminated( runningCmd, code, msg );
 		processHandler = null;
 		runningCmd = null;
 	}
@@ -282,7 +282,7 @@ public class CombotApp
 			public void signalTerminated( final int code ) {
 				gui.runSyncInGuiThread( new Runnable() {
 					public void run() {
-						onCommandTerminated( code );
+						onCommandTerminated( code, null );
 					}
 				} );
 			}

@@ -2,6 +2,7 @@ package j.combot.validator;
 
 import j.util.util.IssueType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,16 +36,19 @@ public abstract class Validator<T>
 	 */
 	public final List<ValEntry> validate( T value )
 	{
-		List<ValEntry> result = validateInt( value );
+		List<ValEntry> result1 = validateInt( value ),
+		        result2 = new ArrayList<>();;
 
 		// Overwrite valitators message if overrideMessage is set
 		if ( overrideMessage != null ) {
-			for ( ValEntry e : result ) {
-				e.message = overrideMessage;
+			for ( ValEntry e : result1 ) {
+			    result2.add( e.substMessage( overrideMessage ) );
 			}
+		} else {
+		    result2 = result1;
 		}
 
-		return result;
+		return result2;
 	}
 
 	protected abstract List<ValEntry> validateInt( T value );
