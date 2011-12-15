@@ -79,17 +79,10 @@ public abstract class Arg<T> implements Cloneable
 	{
 		String value = getVisual().getValue().toString();
 
-		if ( value.isEmpty() ) {
-			return Collections.emptyList();
-		} else if ( getName().isEmpty() ) {
-			return Collections.singletonList( value );
-		} else {
-			// Here is coded the behaviour to return args and parameters as
-			// distingt tokens
-			return Arrays.asList( getName(), value );
-		}
+		return  getName().isEmpty() ?
+		        Collections.singletonList( value )
+		        : Arrays.asList( getName(), value );
 	}
-
 
 
 	@SuppressWarnings( "unchecked" )
@@ -98,7 +91,6 @@ public abstract class Arg<T> implements Cloneable
 		try {
 			return (Arg<T>) super.clone();
 		} catch ( CloneNotSupportedException exc ) {
-			exc.printStackTrace();
 			throw new RuntimeException( exc );
 		}
 	}
