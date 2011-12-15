@@ -133,6 +133,12 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 		if ( valueControl != null ) valueControl.setEnabled( b );
 		if ( errorIndicator != null ) errorIndicator.setEnabled( b );
 
+		// Send a Validation event, to send errors if we are enabling,
+		// or to clear error if we are disabeling.
+
+        // History: Here was OptArg.validate was called, calling its child, but
+        // OptArg set as sender. This bug was due to a too entangled class
+        // hierarcy. Should refactor.
 		validateCaller.call(
 				new ValidationEvent(
 						b ? getArg().validate() : Collections.<ValEntry>emptyList(),

@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class BootstrapperRunner<ARGS_T extends StartArgs>
 {
-	private Logger logger = Util.getClassLogger( this );
+	private Logger logger = Logger.getLogger( this.getClass().getName() );
 
 	private Bootstrapper app;
 	private String[] args;

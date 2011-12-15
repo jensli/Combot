@@ -34,9 +34,9 @@ public class find_grep implements CommandFactory {
                         new Entry( "Follow links", "-L" ),
                         new Entry( "Only follow links in args", "-H" ) ) ),
 
-                new Command( "Grep command", "grep",
+                new Command( "Grep 1", "grep",
                     new StringArg( "Pattern", "" ) ),
-                new Command( "Grep command", "grep",
+                new Command( "Grep 2", "grep",
                     new StringArg( "Pattern", "" ) )
                 );
     }

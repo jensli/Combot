@@ -19,7 +19,7 @@ import com.google.common.collect.Iterables;
  */
 public class PipeCommand extends Command
 {
-    @PrefNodeCollection( inline = true )
+    @PrefNodeCollection
     private ArgGroup pipedCmds;
 
     public PipeCommand( String title, String command, Command... cmds )

@@ -82,7 +82,7 @@ public abstract class Arg<T> implements Cloneable
 		if ( value.isEmpty() ) {
 			return Collections.emptyList();
 		} else if ( getName().isEmpty() ) {
-			return Arrays.asList( value );
+			return Collections.singletonList( value );
 		} else {
 			// Here is coded the behaviour to return args and parameters as
 			// distingt tokens

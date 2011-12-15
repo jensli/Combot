@@ -34,8 +34,6 @@ public abstract class DelArg<T> extends Arg<T> {
 		return child.getArgStrings();
 	}
 
-
-
 	@Override
 	public List<ValEntry> validate() {
 		return child.validate();

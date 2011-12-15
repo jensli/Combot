@@ -40,9 +40,6 @@ import java.util.prefs.Preferences;
 
 public class CombotApp
 {
-
-	private Logger logger = Util.getClassLogger( this );
-
 	private CombotGui gui;
 
 	private ProcessHandler processHandler;
@@ -55,6 +52,8 @@ public class CombotApp
 	private Command runningCmd;
 
 	private ProcessCallback processCallback;
+
+	private Logger logger = Logger.getLogger( this.getClass().getName() );
 
 	public CombotApp( StartArgs args ) {
 	}

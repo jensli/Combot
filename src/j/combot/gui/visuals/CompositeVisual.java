@@ -47,7 +47,6 @@ public class CompositeVisual extends BaseArgVisual<Void>
 	@Override
 	public void setEnabled( boolean b )
 	{
-//		super.setEnabled( b );
 		enabled = b;
 		childsComp.setEnabled( b );
 

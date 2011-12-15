@@ -16,9 +16,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 
-
-
-
 public class OptVisual extends BaseArgVisual<Boolean>
 {
 	private Button enabledBtn;
@@ -56,8 +53,8 @@ public class OptVisual extends BaseArgVisual<Boolean>
 	@Override
 	public void setEnabled( boolean b )
 	{
-		super.setEnabled( b );
-		( (OptArg) getArg() ).getChild().getVisual().setEnabled( b );
+	    enabled = b;
+        ( (OptArg) getArg() ).getChild().getVisual().setEnabled( b );
 	}
 
 
@@ -65,8 +62,6 @@ public class OptVisual extends BaseArgVisual<Boolean>
 	public Boolean getValue() {
 		return enabledBtn.getSelection();
 	}
-
-
 
 }
 
