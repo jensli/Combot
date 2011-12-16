@@ -3,7 +3,6 @@ package j.combot.app;
 import j.combot.app.Bootstrapper.ExitCode;
 import j.combot.app.Bootstrapper.RunMode;
 import j.combot.app.Bootstrapper.StartMode;
-import j.util.util.Util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

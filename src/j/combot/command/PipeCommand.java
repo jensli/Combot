@@ -32,14 +32,13 @@ public class PipeCommand extends Command
     @Override
     public Pair<ProcessHandler, String> createProcessHander( ProcessCallback callback ) throws IOException
     {
+        Iterable<Command> cmds = Iterables.filter( pipedCmds, Command.class );
         Pair<ProcessHandler, String>
-            first = ((Command) pipedCmds.get( 0 ) ).createProcessHander( callback ),
+            first = Iterables.get( cmds, 0 ).createProcessHander( callback ),
             p;
 
         ProcessHandler firstProcHand = first.a,
                 prevProcHand = firstProcHand;
-
-        Iterable<Command> cmds = Iterables.filter( pipedCmds, Command.class );
 
         String cmdStr = first.b;
 
