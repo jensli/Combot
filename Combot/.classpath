@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0"/>
-	<classpathentry kind="lib" path="lib/JavaUtilities/lib/guava-10.0.1.jar" sourcepath="/RefProject/lib/java/Guava/guava-10.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/swt.jar" sourcepath="/RefProject/lib/java/SWT/src.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JavaUtilities"/>
 	<classpathentry kind="output" path="bin"/>
