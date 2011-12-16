@@ -8,17 +8,17 @@ import j.combot.command.specialized.StringArg;
 
 public class ls implements CommandFactory {
 
-	public Command make() {
-		return new Command( "List command", "ls",
-				new StringArg( "Pattern", "" ),
-				new OptArg( true, new StringArg( "Hejj", "hej" ) ),
-				new OptArg( true,
-						new CompositeArg( "Some group",
-								new StringArg( "Hej", "hej" ),
-								new IntArg( "Int", "int" )
-						)
-				)
-		);
-	}
+    public Command make() {
+        return new Command( "List command", "ls",
+                new StringArg( "Pattern", "" ),
+                new OptArg( true, new StringArg( "Hejj", "hej" ) ),
+                new OptArg( true,
+                        new CompositeArg( "Some group",
+                                new StringArg( "Hej", "hej" ),
+                                new IntArg( "Int", "int" )
+                        )
+                )
+        );
+    }
 
 }

@@ -8,7 +8,7 @@ import j.combot.command.specialized.CollapsableArg;
 import j.combot.gui.visuals.BaseArgVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
-import j.swt.util.SwtStdValues;
+import j.combot.util.SwtUtil;
 
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -49,7 +49,7 @@ public class CollapsableVisual extends BaseArgVisual<Void> {
 
 		Composite stupidExpComp = new Composite( expandBar, NONE );
 		stupidExpComp.setLayout( new GridLayout( 2, false ) );
-		SwtStdValues.setDebugColor( stupidExpComp, SwtStdValues.COLOR_DARK_YELLOW );
+		SwtUtil.setDebugColor( stupidExpComp, SwtUtil.COLOR_DARK_YELLOW );
 
 		new Label( stupidExpComp, NONE ).setText( "Grrr" );
 		new Label( stupidExpComp, NONE ).setText( "Grrr" );

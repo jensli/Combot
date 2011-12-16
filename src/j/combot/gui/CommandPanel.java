@@ -19,9 +19,8 @@ import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
+import j.combot.util.SwtUtil;
 import j.combot.validator.ValEntry;
-import j.swt.util.SwtStdValues;
-import j.swt.util.SwtUtil;
 import j.util.util.IssueType;
 
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ class CommandPanel
 
 	public void addErrorOutput( String line ) {
 		if ( !filterErrors.getSelection() ) {
-			SwtUtil.appendStyled( outputText, line, SwtStdValues.COLOR_RED );
+			SwtUtil.appendStyled( outputText, line, SwtUtil.COLOR_RED );
 		}
 	}
 
@@ -93,13 +92,13 @@ class CommandPanel
 		controls = new Composite( panel, NONE );
 		RowLayout buttonLayout = new RowLayout( HORIZONTAL );
 		buttonLayout.pack = false;
-		buttonLayout.spacing = SwtStdValues.SPACING;
+		buttonLayout.spacing = SwtUtil.SPACING;
 		controls.setLayout( buttonLayout );
 
 		// Start button
 		startButton = new Button( controls, PUSH );
 		startButton.setText( "Start" );
-		startButton.setLayoutData( new RowData( SwtStdValues.BUTTON_WIDTH, DEFAULT ) );
+		startButton.setLayoutData( new RowData( SwtUtil.BUTTON_WIDTH, DEFAULT ) );
 
 		startButton.addSelectionListener( new SelectionAdapter() {
 			public void widgetSelected( SelectionEvent e ) {
@@ -215,7 +214,7 @@ class CommandPanel
 
 		commandPanel.setLayout( new GridLayout( 1, false ) );
 
-		SwtStdValues.setDebugColor( commandPanel, SwtStdValues.COLOR_DARK_GREEN );
+		SwtUtil.setDebugColor( commandPanel, SwtUtil.COLOR_DARK_GREEN );
 
 		// Commmand title
 		GuiArgVisual<?> commandVisual = visualFactory.make( cmd );
@@ -231,7 +230,7 @@ class CommandPanel
 		scrolled.setLayoutData( new GridData( FILL, FILL, true, true ) );
 //		scrolled.setAlwaysShowScrollBars( true );
 
-		SwtStdValues.setDebugColor( scrolled, SwtStdValues.COLOR_DARK_BLUE );
+		SwtUtil.setDebugColor( scrolled, SwtUtil.COLOR_DARK_BLUE );
 
 		// Args
 		Composite argsComp = makeArgsPanel( cmd, visualFactory, scrolled );
@@ -256,7 +255,7 @@ class CommandPanel
     {
         Composite argsComp = new Composite( parent, NONE );
 
-		SwtStdValues.setDebugColor( argsComp, SwtStdValues.COLOR_DARK_YELLOW );
+		SwtUtil.setDebugColor( argsComp, SwtUtil.COLOR_DARK_YELLOW );
 
 		GridLayout argsLayout = new GridLayout( 2, false );
 		argsComp.setLayout( argsLayout );

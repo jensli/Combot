@@ -8,8 +8,8 @@ import static org.eclipse.swt.SWT.SINGLE;
 import j.combot.command.Arg;
 import j.combot.command.specialized.FileArg;
 import j.combot.gui.visuals.BaseArgVisual;
+import j.combot.util.SwtUtil;
 import j.combot.validator.ValEntry;
-import j.swt.util.SwtStdValues;
 
 import java.io.File;
 import java.util.List;
@@ -56,7 +56,7 @@ public class FileVisual extends BaseArgVisual<File>
 		Button browseButton = new Button( fileComp, PUSH );
 		browseButton.setText( "Browse..." );
 		GridData buttonData = new GridData( FILL, FILL, false, false );
-		buttonData.widthHint = SwtStdValues.BUTTON_WIDTH;
+		buttonData.widthHint = SwtUtil.BUTTON_WIDTH;
 		browseButton.setLayoutData( buttonData );
 
 

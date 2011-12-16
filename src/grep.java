@@ -7,18 +7,18 @@ import j.combot.command.specialized.StringArg;
 
 public class grep implements CommandFactory
 {
-	@Override public Command make()
-	{
-		return
-			new Command( "Grep command", "grep",
-					new IntArg( "Search depth", "-d" ),
-					new StringArg( "Pattern", "" )
-				);
-	}
+    @Override public Command make()
+    {
+        return
+            new Command( "Grep command", "grep",
+                    new IntArg( "Search depth", "-d" ),
+                    new StringArg( "Pattern", "" )
+                );
+    }
 
 
-	public static grep makeInstance() {
-		return new grep();
-	}
+    public static grep makeInstance() {
+        return new grep();
+    }
 
 }

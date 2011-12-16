@@ -4,7 +4,7 @@ import static org.eclipse.swt.SWT.FILL;
 import static org.eclipse.swt.SWT.NONE;
 import j.combot.command.Arg;
 import j.combot.command.CompositeArg;
-import j.swt.util.SwtStdValues;
+import j.combot.util.SwtUtil;
 import j.util.util.NotImplementedException;
 
 import java.util.List;
@@ -31,11 +31,11 @@ public class CompositeVisual extends BaseArgVisual<Void>
 
 		childsComp = new Composite( parent, NONE );
 		GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
-		compData.horizontalIndent = SwtStdValues.INDENT;
+		compData.horizontalIndent = SwtUtil.INDENT;
 		childsComp.setLayoutData( compData );
 
 		childsComp.setLayout( new GridLayout( 2, false ) );
-		SwtStdValues.setDebugColor( childsComp, SwtStdValues.DARK_CYAN );
+		SwtUtil.setDebugColor( childsComp, SwtUtil.DARK_CYAN );
 
 		// Loop over children and add them reursivly.
 		for ( Arg<?> child : ((CompositeArg) arg).getArgGroup() ) {

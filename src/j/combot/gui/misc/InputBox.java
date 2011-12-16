@@ -7,9 +7,9 @@ import static org.eclipse.swt.SWT.HORIZONTAL;
 import static org.eclipse.swt.SWT.NONE;
 import static org.eclipse.swt.SWT.PUSH;
 import static org.eclipse.swt.SWT.SEPARATOR;
+import j.combot.util.SwtUtil;
 import j.combot.validator.ValEntry;
 import j.combot.validator.Validator;
-import j.swt.util.SwtStdValues;
 import j.util.functional.Action0;
 import j.util.util.IssueType;
 
@@ -87,9 +87,9 @@ public class InputBox extends Dialog
 		dialog = new Shell( getParent(), getStyle() );
 		dialog.setText( getText() );
 		FormLayout formLayout = new FormLayout();
-		formLayout.marginWidth = SwtStdValues.SPACING;
-		formLayout.marginHeight = SwtStdValues.SPACING;
-		formLayout.spacing = SwtStdValues.SPACING;
+		formLayout.marginWidth = SwtUtil.SPACING;
+		formLayout.marginHeight = SwtUtil.SPACING;
+		formLayout.spacing = SwtUtil.SPACING;
 		dialog.setLayout( formLayout );
 
 		Label label = new Label( dialog, NONE );
@@ -100,7 +100,7 @@ public class InputBox extends Dialog
 		ok = new Button( dialog, PUSH );
 		ok.setText( "OK" );
 		data = new FormData();
-		data.width = SwtStdValues.BUTTON_WIDTH;
+		data.width = SwtUtil.BUTTON_WIDTH;
 		data.right = new FormAttachment( 100, 0 );
 		data.bottom = new FormAttachment( 100, 0 );
 		ok.setLayoutData( data );
@@ -108,7 +108,7 @@ public class InputBox extends Dialog
 		Button cancel = new Button( dialog, PUSH );
 		cancel.setText( "Cancel" );
 		data = new FormData();
-		data.width = SwtStdValues.BUTTON_WIDTH;
+		data.width = SwtUtil.BUTTON_WIDTH;
 		data.right = new FormAttachment( ok, 0, DEFAULT );
 		data.bottom = new FormAttachment( 100, 0 );
 		cancel.setLayoutData( data );

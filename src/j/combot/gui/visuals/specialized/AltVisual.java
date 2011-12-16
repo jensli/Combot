@@ -10,7 +10,7 @@ import j.combot.command.specialized.AltArg;
 import j.combot.gui.visuals.BaseArgVisual;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualFactory;
-import j.swt.util.SwtStdValues;
+import j.combot.util.SwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,9 @@ public class AltVisual extends BaseArgVisual<Integer>
 			Composite childsComp = new Composite( parent, NONE );
 			childsComp.setLayout( new GridLayout( 2, false ) );
 			GridData compData = new GridData( FILL, FILL, true, false, 2, 1 );
-			compData.horizontalIndent = SwtStdValues.INDENT;
+			compData.horizontalIndent = SwtUtil.INDENT;
 			childsComp.setLayoutData( compData );
-			SwtStdValues.setDebugColor( childsComp, SwtStdValues.COLOR_RED );
+			SwtUtil.setDebugColor( childsComp, SwtUtil.COLOR_RED );
 
 
 			for ( Arg<?> childArg : altArg.getChildren() ) {

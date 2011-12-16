@@ -7,8 +7,8 @@ import j.combot.command.Arg;
 import j.combot.gui.misc.ErrorIndicator;
 import j.combot.gui.misc.ValidationEvent;
 import j.combot.gui.misc.ValidationListener;
+import j.combot.util.SwtUtil;
 import j.combot.validator.ValEntry;
-import j.swt.util.SwtStdValues;
 import j.util.caller.GenericCaller;
 
 import java.util.Collections;
@@ -83,7 +83,7 @@ public abstract class BaseArgVisual<T> implements GuiArgVisual<T>
 
 		// Error indication
 		errorIndicator = new ErrorIndicator();
-		errorIndicator.setFont( SwtStdValues.SMALL_FONT );
+		errorIndicator.setFont( SwtUtil.SMALL_FONT );
 		Control errInd = errorIndicator.makeWidget( parent );
 		errInd.setLayoutData( new GridData( FILL, LEFT, true, false, 1, 1 ) );
 	}

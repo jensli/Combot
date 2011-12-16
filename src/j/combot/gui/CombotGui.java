@@ -24,10 +24,10 @@ import j.combot.gui.visuals.specialized.NullVisual;
 import j.combot.gui.visuals.specialized.OptVisual;
 import j.combot.gui.visuals.specialized.SepVisual;
 import j.combot.gui.visuals.specialized.StringVisual;
+import j.combot.util.SwtUtil;
 import j.combot.validator.CombinedValidator;
 import j.combot.validator.EnumValidator;
 import j.combot.validator.Validator;
-import j.swt.util.SwtStdValues;
 import j.util.functional.Action0;
 import j.util.functional.Fun1;
 import j.util.util.Asserts;
@@ -103,7 +103,7 @@ public class CombotGui
 	{
 		Display.setAppName( Globals.APP_NAME );
 		display = new Display();
-		SwtStdValues.init( display );
+		SwtUtil.init( display );
 
 		visualFactory.addAll( VIS_FACTS );
 		shell = makeShell( display );

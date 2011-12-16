@@ -5,8 +5,7 @@ import static org.eclipse.swt.SWT.ICON_ERROR;
 import static org.eclipse.swt.SWT.ICON_INFORMATION;
 import static org.eclipse.swt.SWT.ICON_WARNING;
 import static org.eclipse.swt.SWT.NONE;
-import j.swt.util.SwtStdValues;
-import j.swt.util.SwtUtil;
+import j.combot.util.SwtUtil;
 import j.util.util.IssueType;
 import j.util.util.Pair;
 
@@ -75,7 +74,7 @@ public class ErrorIndicator
 	{
 		row = new Composite( parent, NONE );
 		row.setLayout( new RowLayout( HORIZONTAL ) );
-		SwtStdValues.setDebugColor( row, SwtStdValues.COLOR_DARK_BLUE );
+		SwtUtil.setDebugColor( row, SwtUtil.COLOR_DARK_BLUE );
 		errorIcon = new Label( row, NONE );
 		errorMsg = new Label( row, NONE );
 		errorMsg.setFont( font );
