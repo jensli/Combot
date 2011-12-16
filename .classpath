@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JavaUtilities"/>
+	<classpathentry kind="src" path="lib/JavaUtilities/src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SwtLib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SwtUtilities"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0"/>
+	<classpathentry kind="lib" path="lib/JavaUtilities/lib/guava-10.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/JavaUtilities/lib/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
