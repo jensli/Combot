@@ -1,0 +1,21 @@
+Combot TODO list
+================
+
+Refactoring
+-----------
+* Refactor Visual hierarchy
+* Clean up pipe support, possibly refactor Command and PipeCommand classes
+
+
+New features
+------------
+* Add configurable command dir location.
+* Create mode for running without command list (single command mode)
+* Add web address Arg and Visual
+* Icon!
+
+
+Defect fixes
+------------
+* Fix scaling of command panel (add sith?)
+* Fix CollapsableArg

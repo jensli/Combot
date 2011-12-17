@@ -55,7 +55,7 @@ public class CombotApp
 
 	private Logger logger = Logger.getLogger( this.getClass().getName() );
 
-	public CombotApp( StartArgs args ) {
+	public CombotApp( CombotArgs args ) {
 	}
 
 	public static Collection<Command> loadCmdPrefs( Preferences prefs, Command cmd ) throws BackingStoreException

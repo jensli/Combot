@@ -1,0 +1,33 @@
+Instructions for creating a new command GUI dialog with Combot
+==============================================================
+
+Examples for most of the features can be found in the example commands, located in Combot/Combot/src directory.
+
+A command GUI is created by giving Combot a Command java object representing the command. This is done by providing a CommandFactory that creates the command. This is done by writing a java class implementing the factory.
+
+The CommandFactory for the unix find example command looks like this:
+
+public class find implements CommandFactory {
+
+    public Command make()
+    {
+        return new Command( "Find command", "find",
+                    new FileArg( "Location", "", "/", FileOrDir.DIR, FileVal.ERROR_NOT_EXIST ),
+
+                    new StringArg( "Name", "-name", "*" ),
+
+                    new OptArg( false,
+                        new CompositeArg( "Limit depth",
+                            new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ) ),
+                    new OptArg( false, new ExtraArg( "Extra arguments" ) ),
+
+                    new AltArg( "Symbolic link treatment", 1, 10,
+                            new ConstArg( "Never follow links", "-P" ),
+                            new ConstArg( "Follow links", "-L" ),
+                            new ConstArg( "Only follow links in args", "-H" ) )
+
+        );
+    }
+}
+
+

@@ -1,0 +1,59 @@
+
+Cloning the repository, necessary steps
+=======================================
+
+git clone git@github.com:jensli/Combot.git
+git submodule init
+git submodule update
+
+Explanation:
+1) Using git to download a local copy of the repository (you probably need a Github account with an SSH public key for this)
+2) Initiating the submodules, (i.e. the util repository that Combot uses)
+3) Downloading the submodule
+
+
+Importing into Eclipse
+=======================
+
+Import the Eclipse projects Combot and JavaUtilities, located in the parent Combot directory.
+Run the j.combot.app.Main class.
+
+Building with Ant
+=================
+
+Change location to Combot/Combot
+
+Run command:
+ant
+
+If the standard JDK on your system is not JDK 7, follow instructions below to get it.  
+Then run command:
+
+JAVA_HOME=~/bin/jdk1.7.0/ ant
+
+
+Running from command line
+=========================
+
+java -cp bin:../JavaUtilities/bin:lib/swt.jar:../JavaUtilities/lib/guava-10.0.1.jar j.combot.app.Main
+
+If the standard JRE on your system is not JRE 7, follow instructions below to get it.  
+Then run the java 
+
+~/bin/jdk1.7.0/bin/java -cp bin:../JavaUtilities/bin:lib/swt.jar:../JavaUtilities/lib/guava-10.0.1.jar j.combot.app.Main
+
+
+Downloading JDK 7
+=================
+On Linux, one good way of doing this without modifying you current Java installation:
+
+Download the tar.gz version from here: www.oracle.com/technetwork/java/javase/downloads/jdk-7u2-download-1377129.html
+
+Unpack it to a arbitrary location of your choice (in this text, the location ~/bin/jdk1.7.0/ is used). This locations has to be specified when invoking java commands on the new JDK (e.g. java, javac, ant).
+
+-------
+
+On Windows, download one of the exe files, and run the installer.
+
+
+
