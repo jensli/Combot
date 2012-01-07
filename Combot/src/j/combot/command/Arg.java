@@ -36,9 +36,6 @@ public abstract class Arg<T> implements Cloneable
 	// Used as the acctual arg name, often in the form "-name"
 	private String name;
 
-	// prefix is prepended to arg when it is created, sufix if appended.
-	private String valuePrefix, valueSufix;
-
 	// Decides whethere the value in the visual is valid, or returns a list of
 	// errors. Often run when value in visual changes.
 	private Validator<? super T> validator;
@@ -144,22 +141,6 @@ public abstract class Arg<T> implements Cloneable
 
 	public void setName( String name ) {
 		this.name = name;
-	}
-
-	public String getValuePrefix() {
-		return valuePrefix;
-	}
-
-	public void setValuePrefix( String valuePrefix ) {
-		this.valuePrefix = valuePrefix;
-	}
-
-	public String getValueSufix() {
-		return valueSufix;
-	}
-
-	public void setValueSufix( String valueSufix ) {
-		this.valueSufix = valueSufix;
 	}
 
 	public int getPrio() {
