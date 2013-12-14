@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
  * ArgVisual, that decides which kind of visual a certain kind on arg gets. I
  * this way an And arg can chose which kind of visual it wants without knowing
  * anything about the contcrete visuals.
+ * 
+ * This is an enum with type parameters.
  */
 public final class VisualTypes
 {
@@ -46,7 +48,6 @@ public final class VisualTypes
 					f.set( null, new VisualType<>( f.getName() ) );
 			}
 		} catch ( ReflectiveOperationException exc ) {
-			exc.printStackTrace();
 			throw new RuntimeException( exc );
 		}
 	}

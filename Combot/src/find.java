@@ -22,6 +22,8 @@ public class find implements CommandFactory {
 
                 new StringArg( "Name", "-name", "*" ),
 
+//                new OptArg( false, new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ):
+                
                 new OptArg( false,
                     new CompositeArg( "Limit depth",
                         new IntArg( "Search depth", "-maxdepth", 0, Integer.MAX_VALUE, 10 ) ) ),

@@ -3,6 +3,9 @@ package j.combot.gui;
 import j.combot.gui.visuals.GuiArgVisual;
 import j.combot.gui.visuals.VisualType;
 
+/**
+ * This is just a tuple.
+ */
 public class VisFact<T>
 {
 	private VisualType<T> type;
