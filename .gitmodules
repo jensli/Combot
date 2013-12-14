@@ -1,0 +1,3 @@
+[submodule "Java_Util"]
+	path = Java_Util
+	url = git@github.com:jensli/Java_Util.git
