@@ -7,7 +7,6 @@ import j.combot.command.specialized.StringArg;
 
 
 public class ls implements CommandFactory {
-
     public Command make() {
         return new Command( "List command", "ls",
                 new StringArg( "Pattern", "" ),
@@ -20,5 +19,4 @@ public class ls implements CommandFactory {
                 )
         );
     }
-
 }
